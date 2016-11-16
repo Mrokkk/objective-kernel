@@ -12,8 +12,9 @@ set_property(SOURCE arch/head.S PROPERTY LANGUAGE C)
 include_directories(include)
 include_directories(yacppl/include)
 include_directories(lib)
+include_directories(arch)
 
-add_executable(os arch/head.S cxx.cpp main.cpp lib/cstring.cpp)
+add_executable(os arch/head.S cxx.cpp main.cpp lib/cstring.cpp drivers/vga.cpp)
 
 add_custom_target(
     runqemu
