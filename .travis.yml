@@ -1,22 +1,21 @@
 sudo: required
 dist: trusty
-addons:
-    apt:
-        sources:
-            - ubuntu-toolchain-r-test
-        packages:
-            - g++-6
-            - valgrind
-            - qemu
-            - python3
 
-compiler: g++-6
+before_install:
+  - sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
+  - sudo apt-get update -qq
+
+install:
+    - sudo apt-get install binutils gcc-6 g++-6 qemu
 
 cache:
     - ccache
-    - packages
+
+compiler:
+    - g++-6
 
 language: cpp
+
 script:
     - mkdir -p build && cd build
     - CXX=g++-6 CC=gcc-6 cmake -DCI_BUILD=ON ..

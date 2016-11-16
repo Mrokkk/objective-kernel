@@ -2,7 +2,8 @@ cmake_minimum_required(VERSION 3.0)
 project(os)
 
 enable_language(C)
-set(CMAKE_C_FLAGS "-ffreestanding -Wall -Wextra -Werror -g3 -O0 -Wl,-T${CMAKE_SOURCE_DIR}/arch/linker.ld -Wl,-Map=kernel.map -nostartfiles -m32 -Wl,--oformat -Wl,elf32-i386 -Wl,-m -Wl,elf_i386")
+
+set(CMAKE_C_FLAGS "-ffreestanding -Wall -Wextra -Werror -g3 -O0 -Wl,-T${CMAKE_SOURCE_DIR}/arch/linker.ld -Wl,-Map=kernel.map -Wl,-nostartfiles -nostdlib -m32 -Wl,--oformat -Wl,elf32-i386 -Wl,-m -Wl,elf_i386")
 set(CMAKE_CXX_FLAGS "${CMAKE_C_FLAGS} -std=gnu++14")
 
 if(CI_BUILD)
