@@ -10,6 +10,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_C_FLAGS} -std=gnu++14")
 set_property(SOURCE arch/head.S PROPERTY LANGUAGE C)
 
 include_directories(include)
+include_directories(yacppl/include)
 
 add_executable(os arch/head.S constructors.cpp main.cpp)
 
