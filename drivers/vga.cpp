@@ -160,9 +160,7 @@ void display_print(const char *text) {
 
 }
 
-int display_write(struct inode *inode, struct file *file, const char *buffer, unsigned int size) {
-
-    (void)inode; (void)file;
+int display_write(struct inode *, struct file *, const char *buffer, unsigned int size) {
 
     while (size--)
         putch(*buffer++);
