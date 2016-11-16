@@ -13,6 +13,7 @@ include_directories(include)
 include_directories(yacppl/include)
 include_directories(lib)
 include_directories(arch)
+include_directories(drivers)
 
 add_executable(os arch/head.S cxx.cpp main.cpp lib/cstring.cpp drivers/vga.cpp)
 
