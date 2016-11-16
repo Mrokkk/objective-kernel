@@ -11,6 +11,7 @@ set_property(SOURCE arch/head.S PROPERTY LANGUAGE C)
 
 include_directories(include)
 include_directories(yacppl/include)
+include_directories(lib)
 
 add_executable(os arch/head.S cxx.cpp main.cpp lib/cstring.cpp)
 
