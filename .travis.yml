@@ -19,6 +19,6 @@ language: cpp
 script:
     - mkdir -p build && cd build
     - CXX=g++-6 CC=gcc-6 cmake -DCI_BUILD=ON ..
-    - make runqemu -j$(nproc)
-    - ./runqemu-nographic
+    - make runqemu-iso -j$(nproc)
+    - ./runqemu-iso-nographic
 

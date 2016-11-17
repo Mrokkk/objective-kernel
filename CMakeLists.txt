@@ -26,3 +26,19 @@ add_custom_target(
     COMMENT "Creating runqemu executables"
 )
 
+add_custom_target(
+    iso
+    COMMAND ${CMAKE_SOURCE_DIR}/CMake/isomaker.sh
+    DEPENDS ${PROJECT_NAME}
+    COMMENT "Building bootable ISO"
+)
+
+add_custom_target(
+    runqemu-iso
+    COMMAND echo exec qemu-system-i386 -cdrom ${CMAKE_BINARY_DIR}/os.iso -serial stdio -no-reboot -cpu core2duo \\$$@ > ${CMAKE_BINARY_DIR}/runqemu-iso
+    COMMAND echo exec qemu-system-i386 -cdrom ${CMAKE_BINARY_DIR}/os.iso -display none -serial stdio -no-reboot -cpu core2duo \\$$@ > ${CMAKE_BINARY_DIR}/runqemu-iso-nographic
+    COMMAND chmod +x runqemu*
+    DEPENDS iso
+    COMMENT "Creating runqemu executables for ISO"
+)
+
