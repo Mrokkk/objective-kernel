@@ -19,8 +19,8 @@ add_executable(${PROJECT_NAME}
 
 add_custom_target(
     runqemu
-    COMMAND echo exec qemu-system-i386 -kernel ${CMAKE_BINARY_DIR}/${PROJECT_NAME} -serial stdio -no-reboot \\$$@ > ${CMAKE_BINARY_DIR}/runqemu
-    COMMAND echo exec qemu-system-i386 -kernel ${CMAKE_BINARY_DIR}/${PROJECT_NAME} -display none -serial stdio -no-reboot \\$$@ > ${CMAKE_BINARY_DIR}/runqemu-nographic
+    COMMAND echo exec qemu-system-i386 -kernel ${CMAKE_BINARY_DIR}/${PROJECT_NAME} -serial stdio -no-reboot -cpu core2duo \\$$@ > ${CMAKE_BINARY_DIR}/runqemu
+    COMMAND echo exec qemu-system-i386 -kernel ${CMAKE_BINARY_DIR}/${PROJECT_NAME} -display none -serial stdio -no-reboot -cpu core2duo \\$$@ > ${CMAKE_BINARY_DIR}/runqemu-nographic
     COMMAND chmod +x runqemu*
     DEPENDS ${PROJECT_NAME}
     COMMENT "Creating runqemu executables"
