@@ -16,7 +16,12 @@ int printf(const char *fmt, ...);
 
 #define assert_neq(v1, v2) \
     { \
-        if ((v1) == (v2)) printf("assertion failed: line %d: %d != %d\n", __LINE__, v1, v2); \
+        if ((v1) == (v2)) printf("assertion failed: line %d: %d == %d\n", __LINE__, v1, v2); \
+    }
+
+#define assert_gt(v1, v2) \
+    { \
+        if ((v1) <= (v2)) printf("assertion failed: line %d: %d != %d\n", __LINE__, v1, v2); \
     }
 
 asmlinkage __noreturn void main() {
@@ -38,6 +43,8 @@ asmlinkage __noreturn void main() {
         auto d = new int(5);
         delete d;
         assert_eq(c, d);
+        assert_gt(reinterpret_cast<unsigned int>(c), reinterpret_cast<unsigned int>(b.get()));
+        assert_gt(reinterpret_cast<unsigned int>(b.get()), reinterpret_cast<unsigned int>(a.get()));
     }
     printf("all tests passed!");
 #ifdef CI
