@@ -1,4 +1,4 @@
-#include <multiboot.h>
+#include <basic/multiboot.h>
 
 #define FLAGS         MULTIBOOT_HEADER_FLAGS
 #define MAGIC         MULTIBOOT_HEADER_MAGIC

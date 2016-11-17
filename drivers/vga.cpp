@@ -1,5 +1,5 @@
-#include <cstring.h>
-#include <port.h>
+#include <lib/cstring.h>
+#include <arch/port.h>
 
 #define VIDEO_SEGMENT (0xb8000)
 

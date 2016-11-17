@@ -10,11 +10,8 @@ endif()
 
 set_property(SOURCE arch/head.S PROPERTY LANGUAGE C)
 
-include_directories(include)
 include_directories(yacppl/include)
-include_directories(lib)
-include_directories(arch)
-include_directories(drivers)
+include_directories(${CMAKE_SOURCE_DIR})
 
 add_executable(${PROJECT_NAME}
     arch/head.S cxx.cpp main.cpp lib/cstring.cpp drivers/vga.cpp

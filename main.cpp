@@ -1,6 +1,6 @@
-#include <linkage.h>
-#include <vga.h>
-#include <reboot.h>
+#include <basic/linkage.h>
+#include <drivers/vga.h>
+#include <arch/reboot.h>
 
 #define __noreturn __attribute__((noreturn))
 
