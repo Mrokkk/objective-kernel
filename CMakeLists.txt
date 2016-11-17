@@ -14,7 +14,7 @@ include_directories(yacppl/include)
 include_directories(${CMAKE_SOURCE_DIR})
 
 add_executable(${PROJECT_NAME}
-    arch/head.S cxx.cpp kernel/main.cpp kernel/allocator.cpp lib/cstring.cpp drivers/vga.cpp
+    arch/head.S cxx.cpp kernel/main.cpp kernel/allocator.cpp lib/cstring.cpp lib/printf.cpp drivers/vga.cpp
 )
 
 add_custom_target(
