@@ -9,7 +9,7 @@ asmlinkage char _end[];
 
 asmlinkage __noreturn void main() {
     video_init();
-    auto a = yacppl::make_shared<int>(2);
+    auto a = yacppl::make_shared<int>(1);
     auto b = yacppl::make_unique<char>(2);
     auto c = new int{4};
     delete c;

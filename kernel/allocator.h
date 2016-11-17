@@ -11,7 +11,7 @@ class allocator {
         union {
             struct {
                 unsigned int size;
-                char free;
+                char free = 0;
                 yacppl::af_list::list_head blocks;
             } control;
             struct {
@@ -19,6 +19,9 @@ class allocator {
                 unsigned int block_ptr[0];
             } data;
         };
+        memory_block(unsigned int size) {
+            control.size = size;
+        }
     } __attribute__((packed));
 
     yacppl::af_list::list_head _blocks;
@@ -31,13 +34,7 @@ class allocator {
     }
 
     memory_block *create_memory_block(unsigned int size) {
-        memory_block *new_block = nullptr;
-        if (!(new_block = static_cast<memory_block *>(grow_heap(_memory_block_size + size))))
-            return new_block;
-        new_block->control.size = size;
-        new_block->control.free = 0;
-        list_init(&new_block->control.blocks);
-        return new_block;
+        return new(static_cast<memory_block *>(grow_heap(_memory_block_size + size))) memory_block(size);
     }
 
 public:

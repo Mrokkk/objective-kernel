@@ -12,6 +12,10 @@ void *operator new(unsigned int size) {
     return kernel::a.allocate(size);
 }
 
+void *operator new(unsigned int, void *address) {
+    return address;
+}
+
 void operator delete(void *address) noexcept {
     kernel::a.free(address);
 }
