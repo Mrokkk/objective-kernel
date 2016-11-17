@@ -1,7 +1,7 @@
 project(os C CXX)
 cmake_minimum_required(VERSION 3.0)
 
-set(CMAKE_C_FLAGS "-ffreestanding -Wall -Wextra -Werror -g3 -O0 -Wl,-T${CMAKE_SOURCE_DIR}/arch/linker.ld -Wl,-Map=kernel.map -nostartfiles -nostdlib -m32 -Wl,--oformat -Wl,elf32-i386 -Wl,-m -Wl,elf_i386")
+set(CMAKE_C_FLAGS "-ffreestanding -Wall -Wextra -Werror -fno-exceptions -g3 -O0 -Wl,-T${CMAKE_SOURCE_DIR}/arch/linker.ld -Wl,-Map=kernel.map -nostartfiles -nostdlib -m32 -Wl,--oformat -Wl,elf32-i386 -Wl,-m -Wl,elf_i386")
 set(CMAKE_CXX_FLAGS "${CMAKE_C_FLAGS} -std=gnu++14")
 
 if(CI_BUILD)
@@ -14,7 +14,7 @@ include_directories(yacppl/include)
 include_directories(${CMAKE_SOURCE_DIR})
 
 add_executable(${PROJECT_NAME}
-    arch/head.S cxx.cpp main.cpp lib/cstring.cpp drivers/vga.cpp
+    arch/head.S cxx.cpp kernel/main.cpp kernel/allocator.cpp lib/cstring.cpp drivers/vga.cpp
 )
 
 add_custom_target(
