@@ -50,24 +50,23 @@ public:
         memory_block *temp = nullptr;
         list_for_each_entry(temp, &_blocks, control.blocks) {
             if (temp->control.free && temp->control.size >= size) {
-                unsigned int old_size = temp->control.size;
+                auto old_size = temp->control.size;
                 if (old_size <= size + 2 * _memory_block_size) {
                     temp->control.free = 0;
                 }
                 else {
                     temp = new(temp) memory_block(size);
-                    new_block = (memory_block *)
-                        ((unsigned int) temp->data.block_ptr + size);
+                    new_block = reinterpret_cast<memory_block *>(reinterpret_cast<unsigned int>(temp->data.block_ptr) + size);
                     new_block->control.size = old_size - _memory_block_size - temp->control.size;
                     new_block->control.free = 1;
                     list_add(&new_block->control.blocks, &temp->control.blocks);
                 }
-                return (void *) temp->data.block_ptr;
+                return static_cast<void *>(temp->data.block_ptr);
             }
         }
         if (!(new_block = create_memory_block(size))) return 0;
         list_add_tail(&new_block->control.blocks, &_blocks);
-        return (void *) new_block->data.block_ptr;
+        return static_cast<void *>(new_block->data.block_ptr);
     }
 
     int free(void *address) {
@@ -78,8 +77,7 @@ public:
                 return 0;
             }
             if (temp->control.blocks.next != &_blocks) {
-                memory_block *next =
-                    list_entry(temp->control.blocks.next, memory_block, control.blocks);
+                auto next = list_entry(temp->control.blocks.next, memory_block, control.blocks);
                 if (next->control.free && temp->control.free) {
                     temp->control.size = temp->control.size + next->control.size + _memory_block_size;
                     list_del(&next->control.blocks);
