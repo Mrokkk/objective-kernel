@@ -14,7 +14,8 @@ addons:
 cache:
     - ccache
 
-language: cpp, c
+language: c
+compiler: gcc
 
 script:
     - mkdir -p build && cd build
