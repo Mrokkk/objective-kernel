@@ -28,14 +28,14 @@ class allocator {
     yacppl::af_list::list_head _blocks;
     char *_heap = nullptr;
 
-    inline void *grow_heap(unsigned long value) {
+    void *grow_heap(unsigned long value) {
         auto prev_heap = _heap;
         _heap += value;
         return prev_heap;
     }
 
     memory_block *create_memory_block(unsigned int size) {
-        return new(static_cast<memory_block *>(grow_heap(_memory_block_size + size))) memory_block(size);
+        return new(grow_heap(_memory_block_size + size)) memory_block(size);
     }
 
 public:
@@ -46,7 +46,7 @@ public:
     void *allocate(unsigned long size) {
         if (size % _memory_block_size)
             size = (size / _memory_block_size) * _memory_block_size + _memory_block_size;
-        memory_block *new_block;
+        memory_block *new_block = nullptr;
         memory_block *temp = nullptr;
         list_for_each_entry(temp, &_blocks, control.blocks) {
             if (temp->control.free && temp->control.size >= size) {
