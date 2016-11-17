@@ -1,6 +1,6 @@
 #include <kernel/allocator.h>
 #include <basic/linkage.h>
-#include <cstdint>
+#include <stddef.h>
 
 asmlinkage char _end[];
 

@@ -1,4 +1,4 @@
-#include <stdint.h>
+#include <stddef.h>
 #include <lib/cstring.h>
 
 extern "C" {
