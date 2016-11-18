@@ -1,5 +1,5 @@
 #include <kernel/allocator.h>
-#include <kernel/heap_allocator.hpp>
+#include <kernel/heap_allocator.h>
 #include <basic/linkage.h>
 #include <stddef.h>
 

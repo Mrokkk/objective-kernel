@@ -4,7 +4,7 @@
 
 namespace kernel {
 
-class heap_allocator {
+class heap_allocator final {
 
     char *_heap = nullptr;
 

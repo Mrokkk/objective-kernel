@@ -6,7 +6,7 @@
 namespace kernel {
 
 template <class Heap_Allocator, unsigned short _memory_block_size = 16>
-class allocator {
+class allocator final {
 
     union memory_block {
         struct {
