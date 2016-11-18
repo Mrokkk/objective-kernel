@@ -79,6 +79,10 @@ public:
         return -1;
     }
 
+    unsigned int get_size() {
+        return sizeof(memory_block);
+    }
+
 };
 
 } // namespace kernel

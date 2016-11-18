@@ -7,7 +7,7 @@ asmlinkage char _end[];
 
 namespace kernel {
 static allocator<heap_allocator, 16> a(_end);
-}
+} // namespace kernel
 
 void *operator new(unsigned int size) {
     return kernel::a.allocate(size);

@@ -1,5 +1,7 @@
 #pragma once
 
+namespace kernel {
+
 class heap_allocator {
 
     char *_heap = nullptr;
@@ -17,4 +19,6 @@ public:
     }
 
 };
+
+} // namespace kernel
 
