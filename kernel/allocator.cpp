@@ -25,13 +25,13 @@ void *_Allocator::allocate(size_t size) {
         if (temp->control.free && temp->control.size >= size) {
             auto old_size = temp->control.size;
             if (old_size <= size + 2 * _memory_block_size) {
-                temp->control.free = 0;
+                temp->control.free = false;
             }
             else {
                 temp = new(temp) memory_block(size);
                 new_block = reinterpret_cast<memory_block *>(reinterpret_cast<size_t>(temp->data.block_ptr) + size);
                 new_block->control.size = old_size - _memory_block_size - temp->control.size;
-                new_block->control.free = 1;
+                new_block->control.free = true;
                 list_add(&new_block->control.blocks, &temp->control.blocks);
             }
             return static_cast<void *>(temp->data.block_ptr);
@@ -46,8 +46,8 @@ template <class Heap_Allocator, size_t _memory_block_size>
 int _Allocator::free(void *address) {
     memory_block *temp;
     list_for_each_entry(temp, &_blocks, control.blocks) {
-        if ((unsigned int) temp->data.block_ptr == (unsigned int) address) {
-            temp->control.free = 1;
+        if (reinterpret_cast<unsigned int>(temp->data.block_ptr) == reinterpret_cast<unsigned long>(address)) {
+            temp->control.free = true;
             return 0;
         }
         if (temp->control.blocks.next != &_blocks) {

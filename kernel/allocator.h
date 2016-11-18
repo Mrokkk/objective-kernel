@@ -12,7 +12,7 @@ class allocator final {
 
         struct {
             size_t size;
-            char free;
+            bool free;
             yacppl::af_list::list_head blocks;
         } control;
 
@@ -23,7 +23,7 @@ class allocator final {
 
         explicit memory_block(size_t size) {
             control.size = size;
-            control.free = 0;
+            control.free = false;
         }
 
     } __packed;
