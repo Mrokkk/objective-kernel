@@ -13,6 +13,9 @@
 .global _start
 _start:
 
+    pushl $0
+    popfl
+
     movl $0x08, %eax
     mov %ax, %ds
     mov %ax, %es
@@ -23,6 +26,9 @@ _start:
 
     call _init
     call main
+
+1:
+    jmp 1b
 
 .skip 1024
     stack:
