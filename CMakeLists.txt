@@ -58,7 +58,7 @@ add_custom_target(
     COMMAND echo exec qemu-system-i386 -kernel ${CMAKE_BINARY_DIR}/${PROJECT_NAME}-tests -display none -serial stdio -no-reboot -cpu core2duo \\$$@ > ${CMAKE_BINARY_DIR}/runtests
     COMMAND chmod +x runtests
     COMMAND ${CMAKE_BINARY_DIR}/runtests
-    DEPENDS ${PROJECT_NAME}
+    DEPENDS ${PROJECT_NAME}-tests
     COMMENT "Creating runqemu executables"
 )
 

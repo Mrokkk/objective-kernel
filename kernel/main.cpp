@@ -10,9 +10,6 @@ int printf(const char *fmt, ...);
 asmlinkage __noreturn void main() {
     video_init();
     printf("Hello World!\n");
-#ifdef CI
-    reboot();
-#endif
     while (1);
 }
 
