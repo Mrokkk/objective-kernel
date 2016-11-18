@@ -8,11 +8,19 @@ addons:
         packages:
             - gcc-6
             - g++-6
+            - clang-3.8
             - qemu
             - genisoimage
 
 cache:
     - ccache
+
+matrix:
+    include:
+        - env:
+            COMPILER=g++-6
+        - env:
+            COMPILER=clang++-3.8
 
 language: c
 compiler: gcc
@@ -21,6 +29,6 @@ script:
     - qemu-system-i386 --version
     - qemu-system-i386 --help
     - mkdir -p build && cd build
-    - CXX=g++-6 CC=gcc-6 cmake -DCI_BUILD=ON ..
+    - CXX=$COMPILER CC=gcc-6 cmake -DCI_BUILD=ON ..
     - VERBOSE=1 make runqemu-iso -j$(nproc)
 
