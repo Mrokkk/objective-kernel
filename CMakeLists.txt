@@ -14,8 +14,18 @@ set_property(SOURCE arch/head.S PROPERTY LANGUAGE C)
 include_directories(yacppl/include)
 include_directories(${CMAKE_SOURCE_DIR})
 
+add_library(${PROJECT_NAME}-all OBJECT
+    arch/head.S cxx.cpp  kernel/allocator.cpp lib/cstring.cpp lib/printf.cpp drivers/vga.cpp drivers/serial.cpp
+)
+
 add_executable(${PROJECT_NAME}
-    arch/head.S cxx.cpp kernel/main.cpp kernel/allocator.cpp lib/cstring.cpp lib/printf.cpp drivers/vga.cpp
+    $<TARGET_OBJECTS:${PROJECT_NAME}-all>
+    kernel/main.cpp
+)
+
+add_executable(${PROJECT_NAME}-tests
+    $<TARGET_OBJECTS:${PROJECT_NAME}-all>
+    tests/main.cpp
 )
 
 add_custom_target(
@@ -41,5 +51,14 @@ add_custom_target(
     COMMAND chmod +x runqemu*
     DEPENDS iso
     COMMENT "Creating runqemu executables for ISO"
+)
+
+add_custom_target(
+    runtests
+    COMMAND echo exec qemu-system-i386 -kernel ${CMAKE_BINARY_DIR}/${PROJECT_NAME}-tests -display none -serial stdio -no-reboot -cpu core2duo \\$$@ > ${CMAKE_BINARY_DIR}/runtests
+    COMMAND chmod +x runtests
+    COMMAND ${CMAKE_BINARY_DIR}/runtests
+    DEPENDS ${PROJECT_NAME}
+    COMMENT "Creating runqemu executables"
 )
 
