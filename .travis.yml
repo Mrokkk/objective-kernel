@@ -18,8 +18,9 @@ language: c
 compiler: gcc
 
 script:
+    - qemu-system-i386 --version
+    - qemu-system-i386 --help
     - mkdir -p build && cd build
     - CXX=g++-6 CC=gcc-6 cmake -DCI_BUILD=ON ..
-    - make runqemu-iso -j$(nproc)
-    - ./runqemu-iso-nographic
+    - VERBOSE=1 make runqemu-iso -j$(nproc)
 
