@@ -22,7 +22,7 @@ class allocator final {
             unsigned int block_ptr[0];
         } data;
 
-        memory_block(size_t size) {
+        explicit memory_block(size_t size) {
             control.size = size;
             control.free = 0;
         }

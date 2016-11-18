@@ -1,6 +1,5 @@
 #include <kernel/allocator.h>
 #include <kernel/heap_allocator.h>
-#include <basic/linkage.h>
 
 asmlinkage char _end[];
 
