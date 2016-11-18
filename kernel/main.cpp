@@ -3,8 +3,6 @@
 #include <arch/reboot.h>
 #include <pointer.h>
 
-#define __noreturn __attribute__((noreturn))
-
 asmlinkage char _end[];
 
 int printf(const char *fmt, ...);

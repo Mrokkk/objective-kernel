@@ -9,4 +9,5 @@
 #endif
 
 #define __packed __attribute__((packed))
+#define __noreturn __attribute__((noreturn))
 
