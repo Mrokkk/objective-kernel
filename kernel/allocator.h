@@ -1,6 +1,5 @@
 #pragma once
 
-#include <stddef.h>
 #include <af_list.h>
 #include <basic/definitions.h>
 

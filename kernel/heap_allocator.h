@@ -1,6 +1,6 @@
 #pragma once
 
-#include <stddef.h>
+#include <basic/definitions.h>
 
 namespace kernel {
 

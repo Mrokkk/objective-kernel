@@ -1,7 +1,7 @@
-#include <stddef.h>
+#include <basic/definitions.h>
 #include <lib/cstring.h>
 
-extern "C" {
+asmlinkage {
 
 int strcmp(const char *string1, const char *string2) {
     if (string1 == 0 || string2 == 0) return 1;
