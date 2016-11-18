@@ -1,11 +1,12 @@
 #include <kernel/allocator.h>
+#include <kernel/heap_allocator.hpp>
 #include <basic/linkage.h>
 #include <stddef.h>
 
 asmlinkage char _end[];
 
 namespace kernel {
-static allocator<16> a(_end);
+static allocator<heap_allocator, 16> a(_end);
 }
 
 void *operator new(unsigned int size) {

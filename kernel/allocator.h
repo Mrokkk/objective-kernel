@@ -4,21 +4,19 @@
 
 namespace kernel {
 
-template <unsigned short _memory_block_size = 16>
+template <class Heap_Allocator, unsigned short _memory_block_size = 16>
 class allocator {
 
-    struct memory_block {
-        union {
-            struct {
-                unsigned int size;
-                char free;
-                yacppl::af_list::list_head blocks;
-            } control;
-            struct {
-                unsigned char dummy[_memory_block_size];
-                unsigned int block_ptr[0];
-            } data;
-        };
+    union memory_block {
+        struct {
+            unsigned int size;
+            char free;
+            yacppl::af_list::list_head blocks;
+        } control;
+        struct {
+            unsigned char dummy[_memory_block_size];
+            unsigned int block_ptr[0];
+        } data;
         memory_block(unsigned int size) {
             control.size = size;
             control.free = 0;
@@ -26,22 +24,16 @@ class allocator {
     } __attribute__((packed));
 
     yacppl::af_list::list_head _blocks;
-    char *_heap = nullptr;
-
-    void *grow_heap(unsigned long value) {
-        auto prev_heap = _heap;
-        _heap += value;
-        return prev_heap;
-    }
+    Heap_Allocator _heap_allocator;
 
     memory_block *create_memory_block(unsigned int size) {
-        return new(grow_heap(_memory_block_size + size)) memory_block(size);
+        return new(_heap_allocator.grow_heap(_memory_block_size + size)) memory_block(size);
     }
 
 public:
 
     explicit allocator(char *heap_start)
-        : _heap(heap_start) {}
+        : _heap_allocator(heap_start) {}
 
     void *allocate(unsigned long size) {
         if (size % _memory_block_size)
