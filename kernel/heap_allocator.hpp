@@ -1,5 +1,7 @@
 #pragma once
 
+#include <stddef.h>
+
 namespace kernel {
 
 class heap_allocator {
@@ -12,7 +14,7 @@ public:
         : _heap(heap_start) {
     }
 
-    void *grow_heap(unsigned long value) {
+    void *grow_heap(size_t value) {
         auto prev_heap = _heap;
         _heap += value;
         return prev_heap;

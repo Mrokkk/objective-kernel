@@ -1,5 +1,6 @@
 #pragma once
 
+#include <stddef.h>
 #include <af_list.h>
 
 namespace kernel {
@@ -9,7 +10,7 @@ class allocator {
 
     union memory_block {
         struct {
-            unsigned int size;
+            size_t size;
             char free;
             yacppl::af_list::list_head blocks;
         } control;
@@ -17,7 +18,7 @@ class allocator {
             unsigned char dummy[_memory_block_size];
             unsigned int block_ptr[0];
         } data;
-        memory_block(unsigned int size) {
+        memory_block(size_t size) {
             control.size = size;
             control.free = 0;
         }
@@ -26,7 +27,7 @@ class allocator {
     yacppl::af_list::list_head _blocks;
     Heap_Allocator _heap_allocator;
 
-    memory_block *create_memory_block(unsigned int size) {
+    memory_block *create_memory_block(size_t size) {
         return new(_heap_allocator.grow_heap(_memory_block_size + size)) memory_block(size);
     }
 
@@ -35,7 +36,7 @@ public:
     explicit allocator(char *heap_start)
         : _heap_allocator(heap_start) {}
 
-    void *allocate(unsigned long size) {
+    void *allocate(size_t size) {
         if (size % _memory_block_size)
             size = (size / _memory_block_size) * _memory_block_size + _memory_block_size;
         memory_block *new_block = nullptr;
@@ -48,7 +49,7 @@ public:
                 }
                 else {
                     temp = new(temp) memory_block(size);
-                    new_block = reinterpret_cast<memory_block *>(reinterpret_cast<unsigned int>(temp->data.block_ptr) + size);
+                    new_block = reinterpret_cast<memory_block *>(reinterpret_cast<size_t>(temp->data.block_ptr) + size);
                     new_block->control.size = old_size - _memory_block_size - temp->control.size;
                     new_block->control.free = 1;
                     list_add(&new_block->control.blocks, &temp->control.blocks);
@@ -79,7 +80,7 @@ public:
         return -1;
     }
 
-    unsigned int get_size() {
+    size_t get_size() {
         return sizeof(memory_block);
     }
 
