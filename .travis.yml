@@ -22,12 +22,10 @@ matrix:
         - env:
             COMPILER=clang++-3.8
 
-language: c
-compiler: gcc
+language: cpp
 
 script:
     - qemu-system-i386 --version
-    - qemu-system-i386 --help
     - mkdir -p build && cd build
     - CXX=$COMPILER CC=gcc-6 cmake -DCI_BUILD=ON ..
     - VERBOSE=1 make runqemu-iso -j$(nproc)
