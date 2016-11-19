@@ -1,7 +1,6 @@
 #pragma once
 
 #include <af_list.h>
-#include <basic/definitions.h>
 
 namespace kernel {
 

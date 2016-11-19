@@ -1,4 +1,3 @@
-#include <basic/definitions.h>
 #include <lib/cstring.h>
 
 asmlinkage {

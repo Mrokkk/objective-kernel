@@ -1,5 +1,3 @@
-#include <basic/definitions.h>
-
 asmlinkage {
 
 extern void (*__init_array_start)();

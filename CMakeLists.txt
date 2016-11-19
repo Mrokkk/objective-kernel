@@ -2,7 +2,7 @@ project(os C CXX)
 cmake_minimum_required(VERSION 3.0)
 
 set(CMAKE_C_FLAGS "-ffreestanding -Wall -Wextra -Werror -fno-exceptions -g3 -O0 -m32")
-set(CMAKE_CXX_FLAGS "${CMAKE_C_FLAGS} -std=gnu++14 -fdiagnostics-color=always")
+set(CMAKE_CXX_FLAGS "${CMAKE_C_FLAGS} -std=gnu++14 -fdiagnostics-color=always -include ${CMAKE_SOURCE_DIR}/basic/definitions.h")
 set(CMAKE_EXE_LINKER_FLAGS "-Wl,-T${CMAKE_SOURCE_DIR}/arch/linker.ld -Wl,-Map=kernel.map -Wl,--oformat -Wl,elf32-i386 -Wl,-m -Wl,elf_i386 -nostartfiles -nostdlib")
 
 if(CI_BUILD)

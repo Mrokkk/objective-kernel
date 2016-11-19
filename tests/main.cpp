@@ -1,4 +1,3 @@
-#include <basic/definitions.h>
 #include <drivers/serial.h>
 #include <arch/reboot.h>
 #include <pointer.h>

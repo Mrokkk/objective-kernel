@@ -1,4 +1,3 @@
-#include <basic/definitions.h>
 #include <drivers/vga.h>
 #include <arch/reboot.h>
 #include <pointer.h>
