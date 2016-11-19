@@ -1,4 +1,4 @@
-#include <basic/multiboot.h>
+#include <arch/multiboot.h>
 
 #define FLAGS         MULTIBOOT_HEADER_FLAGS
 #define MAGIC         MULTIBOOT_HEADER_MAGIC
@@ -13,9 +13,6 @@
 .global _start
 _start:
 
-    pushl $0
-    popfl
-
     movl $0x08, %eax
     mov %ax, %ds
     mov %ax, %es
@@ -23,6 +20,9 @@ _start:
     mov %ax, %gs
 
     mov $stack, %esp
+
+    pushl $0
+    popfl
 
     call _init
     call main
@@ -32,6 +32,4 @@ _start:
 
 .skip 1024
     stack:
-
-
 
