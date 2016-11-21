@@ -1,32 +1,23 @@
 sudo: required
-dist: trusty
 
-addons:
-    apt:
-        sources:
-            - ubuntu-toolchain-r-test
-        packages:
-            - gcc-6
-            - g++-6
-            - clang-3.8
-            - qemu
-            - genisoimage
-
-cache:
-    - ccache
+before_install:
+    - docker pull mrokkk/kernel-devel
 
 matrix:
     include:
         - env:
-            COMPILER=g++-6
+            - IMAGE=mrokkk/kernel-devel
+            - COMPILER=g++
+          services:
+            - docker
         - env:
-            COMPILER=clang++-3.8
+            - IMAGE=mrokkk/kernel-devel
+            - COMPILER=clang++
+          services:
+            - docker
 
 language: cpp
 
 script:
-    - qemu-system-i386 --version
-    - mkdir -p build && cd build
-    - CXX=$COMPILER CC=gcc-6 cmake -DCI_BUILD=ON ..
-    - VERBOSE=1 make runqemu-iso -j$(nproc)
+    - ./ci.sh
 
