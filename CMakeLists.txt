@@ -9,6 +9,10 @@ if(CI_BUILD)
     add_definitions("-DCI")
 endif()
 
+if(MULTIBOOT2)
+    add_definitions("-DMULTIBOOT2")
+endif()
+
 set_property(SOURCE arch/head.S PROPERTY LANGUAGE C)
 
 include_directories(yacppl/include)
