@@ -48,7 +48,7 @@ int printf(const char *fmt, ...) {
 char testMap[1024*1024];
 
 TEST(allocator, can_allocate) {
-    kernel::allocator<kernel::heap_allocator, 32> testAllocator1(testMap);
+    kernel::allocator<kernel::heap_allocator, 16> testAllocator1(testMap);
     auto result = testAllocator1.allocate(10);
     ASSERT_TRUE(static_cast<void *>(result) == reinterpret_cast<void *>(static_cast<char *>(testMap) + 32));
     auto result2 = testAllocator1.free(result);
