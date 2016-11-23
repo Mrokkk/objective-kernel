@@ -37,15 +37,15 @@ char *strrchr(const char *string, int c) {
     return 0;
 }
 
-unsigned int strlen(const char *string) {
+size_t strlen(const char *string) {
     char *temp;
     for (temp=(char *)string; *temp!=0; temp++);
     return temp-string;
 }
 
-unsigned int strnlen(const char *s, unsigned int maxlen) {
+size_t strnlen(const char *s, size_t maxlen) {
     const char *e;
-    unsigned int n;
+    size_t n;
     for (e = s, n = 0; *e && n < maxlen; e++, n++);
     return n;
 }
@@ -67,11 +67,11 @@ char *strchr(const char *string, int c) {
 
 }
 
-void *memcpy(void *dest, const void *src, unsigned int size) {
-    unsigned int size4;
-    unsigned int *d4, *s4;
+void *memcpy(void *dest, const void *src, size_t size) {
+    size_t size4;
+    size_t *d4, *s4;
     unsigned char *d1, *s1;
-    for (size4 = size >> 2, d4 = (unsigned int *)dest, s4 = (unsigned int *)src;
+    for (size4 = size >> 2, d4 = (size_t *)dest, s4 = (size_t *)src;
          size4>0;
          size4--, *d4++ = *s4++
     );
@@ -83,7 +83,7 @@ void *memcpy(void *dest, const void *src, unsigned int size) {
 
 }
 
-void *memcpyw(unsigned short *dest, const unsigned short *src, unsigned int count) {
+void *memcpyw(unsigned short *dest, const unsigned short *src, size_t count) {
     unsigned short *s, *d;
     for (s = (unsigned short *)src, d = (unsigned short *)dest;
          count != 0;
@@ -93,8 +93,8 @@ void *memcpyw(unsigned short *dest, const unsigned short *src, unsigned int coun
 
 }
 
-void *memset(void *ptr, int c, unsigned int size) {
-    unsigned int i;
+void *memset(void *ptr, int c, size_t size) {
+    size_t i;
     if (ptr == 0) return 0;
     for (i=0; i<size; i++)
         ((char *)ptr)[i] = c;
@@ -102,7 +102,7 @@ void *memset(void *ptr, int c, unsigned int size) {
 
 }
 
-void *memsetw(unsigned short *dest, unsigned short val, unsigned int count) {
+void *memsetw(unsigned short *dest, unsigned short val, size_t count) {
     unsigned short *temp;
     for (temp = (unsigned short *)dest;
          count != 0;

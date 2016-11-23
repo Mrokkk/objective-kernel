@@ -2,9 +2,7 @@
 
 extern "C" {
 
-using size_t = unsigned int;
-
-unsigned int strlen(const char *string);
+extern size_t strlen(const char *string);
 extern size_t strnlen(const char *s, size_t count);
 extern char *strcpy(char *__restrict, const char *__restrict);
 
