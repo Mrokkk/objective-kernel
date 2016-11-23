@@ -46,14 +46,32 @@ int printf(const char *fmt, ...) {
 
 char testMap[1024*1024];
 
-
 asmlinkage __noreturn void main() {
     serial_init();
-    kernel::allocator<kernel::heap_allocator, 16> testAllocator1(testMap);
+    kernel::allocator<kernel::heap_allocator, 32> testAllocator1(testMap);
     auto result = testAllocator1.allocate(10);
-    assert_eq(result, static_cast<void *>(testMap + 16));
+    assert_eq(result, static_cast<void *>(testMap + 32));
     auto result2 = testAllocator1.free(result);
     assert(!result2);
+    for (int i = 0; i < 1024; i++) {
+        auto a = yacppl::make_shared<int>(1);
+        assert_eq(*a, 1);
+        auto b = yacppl::make_unique<char>(2);
+        assert_eq(*b, 2);
+        assert_neq(reinterpret_cast<unsigned int>(b.get()), reinterpret_cast<unsigned int>(a.get()));
+        auto c = new int{498};
+        assert_eq(*c, 498);
+        assert_neq(reinterpret_cast<unsigned int>(c), reinterpret_cast<unsigned int>(a.get()));
+        assert_neq(reinterpret_cast<unsigned int>(c), reinterpret_cast<unsigned int>(b.get()));
+        assert_eq(*a, 1);
+        assert_eq(*b, 2);
+        delete c;
+        auto d = new int(5);
+        delete d;
+        assert_eq(c, d);
+        assert_gt(reinterpret_cast<unsigned int>(c), reinterpret_cast<unsigned int>(b.get()));
+        assert_gt(reinterpret_cast<unsigned int>(b.get()), reinterpret_cast<unsigned int>(a.get()));
+    }
     printf("all tests passed!\n");
     reboot();
     while (1);

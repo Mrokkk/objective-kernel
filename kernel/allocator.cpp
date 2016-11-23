@@ -5,7 +5,7 @@ asmlinkage char _end[];
 
 namespace kernel {
 
-static allocator<heap_allocator, 16> a(_end);
+static allocator<heap_allocator, 32> a(_end);
 
 #define _Memory_block typename allocator<Heap_Allocator, _memory_block_size>::memory_block
 #define _Allocator allocator<Heap_Allocator, _memory_block_size>
@@ -20,43 +20,43 @@ void *_Allocator::allocate(size_t size) {
     if (size % _memory_block_size)
         size = (size / _memory_block_size) * _memory_block_size + _memory_block_size;
     memory_block *new_block = nullptr;
-    memory_block *temp = nullptr;
-    list_for_each_entry(temp, &_blocks, control.blocks) {
-        if (temp->control.free && temp->control.size >= size) {
-            auto old_size = temp->control.size;
+    for (auto &temp : _blocks) {
+        if (temp.free && temp.size >= size) {
+            auto old_size = temp.size;
             if (old_size <= size + 2 * _memory_block_size) {
-                temp->control.free = false;
+                temp.free = false;
             }
             else {
-                temp = new(temp) memory_block(size);
-                new_block = reinterpret_cast<memory_block *>(reinterpret_cast<size_t>(temp->data.block_ptr) + size);
-                new_block->control.size = old_size - _memory_block_size - temp->control.size;
-                new_block->control.free = true;
-                list_add(&new_block->control.blocks, &temp->control.blocks);
+                auto block = new(&temp) memory_block(size);
+                new_block = reinterpret_cast<memory_block *>(reinterpret_cast<size_t>(reinterpret_cast<memory_block_data *>(block)->block_ptr) + size);
+                new_block->size = old_size - _memory_block_size - temp.size;
+                new_block->free = true;
+                temp.blocks.add_front(&new_block->blocks);
             }
-            return static_cast<void *>(temp->data.block_ptr);
+            return static_cast<void *>(reinterpret_cast<memory_block_data *>(&temp)->block_ptr);
         }
     }
     if (!(new_block = create_memory_block(size))) return 0;
-    list_add_tail(&new_block->control.blocks, &_blocks);
-    return static_cast<void *>(new_block->data.block_ptr);
+    _blocks.add(&new_block->blocks);
+    return static_cast<void *>(reinterpret_cast<memory_block_data *>(new_block)->block_ptr);
 }
 
 template <class Heap_Allocator, size_t _memory_block_size>
 int _Allocator::free(void *address) {
-    memory_block *temp;
-    list_for_each_entry(temp, &_blocks, control.blocks) {
-        if (reinterpret_cast<unsigned int>(temp->data.block_ptr) == reinterpret_cast<unsigned long>(address)) {
-            temp->control.free = true;
+    for (auto &temp : _blocks) {
+        if (reinterpret_cast<unsigned long>(reinterpret_cast<memory_block_data *>(&temp)->block_ptr) == reinterpret_cast<unsigned long>(address)) {
+            temp.free = true;
             return 0;
         }
-        if (temp->control.blocks.next != &_blocks) {
-            auto next = list_entry(temp->control.blocks.next, memory_block, control.blocks);
-            if (next->control.free && temp->control.free) {
-                temp->control.size = temp->control.size + next->control.size + _memory_block_size;
-                list_del(&next->control.blocks);
+#if 0
+        if (temp.blocks.next != &_blocks) {
+            auto next = temp.next_entry();
+            if (next->free && temp->free) {
+                temp.size = temp.size + next->size + _memory_block_size;
+                list_del(&next->blocks);
             }
         }
+#endif
     }
     return -1;
 }
