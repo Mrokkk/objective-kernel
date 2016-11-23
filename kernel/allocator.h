@@ -10,13 +10,14 @@ namespace kernel {
 template <class Heap_Allocator, size_t _memory_block_size>
 class allocator final {
 
+    class memory_block {
 
-    struct memory_block_data {
-        unsigned char dummy[_memory_block_size];
-        unsigned int block_ptr[0];
-    } __packed;
+        struct _data {
+            unsigned char dummy[_memory_block_size];
+            unsigned int block_ptr[0];
+        } __packed;
 
-    struct memory_block {
+    public:
 
         size_t size;
         bool free;
@@ -27,7 +28,7 @@ class allocator final {
         }
 
         void *data() {
-            return reinterpret_cast<memory_block_data *>(this)->block_ptr;
+            return reinterpret_cast<_data *>(this)->block_ptr;
         }
 
     };
