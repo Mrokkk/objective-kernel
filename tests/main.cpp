@@ -6,6 +6,7 @@
 #include <lib/cstring.h>
 #include <kernel/allocator.h>
 #include <kernel/heap_allocator.h>
+#include "tests.h"
 
 asmlinkage char _end[];
 
@@ -46,13 +47,16 @@ int printf(const char *fmt, ...) {
 
 char testMap[1024*1024];
 
-asmlinkage __noreturn void main() {
-    serial_init();
+TEST(allocator, can_allocate) {
     kernel::allocator<kernel::heap_allocator, 32> testAllocator1(testMap);
     auto result = testAllocator1.allocate(10);
-    assert_eq(result, static_cast<void *>(testMap + 32));
+    ASSERT_TRUE(static_cast<void *>(result) == reinterpret_cast<void *>(static_cast<char *>(testMap) + 32));
     auto result2 = testAllocator1.free(result);
     assert(!result2);
+}
+
+asmlinkage __noreturn void main() {
+    serial_init();
     for (int i = 0; i < 1024; i++) {
         auto a = yacppl::make_shared<int>(1);
         assert_eq(*a, 1);
@@ -72,6 +76,7 @@ asmlinkage __noreturn void main() {
         assert_gt(reinterpret_cast<unsigned int>(c), reinterpret_cast<unsigned int>(b.get()));
         assert_gt(reinterpret_cast<unsigned int>(b.get()), reinterpret_cast<unsigned int>(a.get()));
     }
+    allocator_can_allocate(&__allocator_can_allocate);
     printf("all tests passed!\n");
     reboot();
     while (1);
