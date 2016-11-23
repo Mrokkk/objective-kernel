@@ -25,59 +25,42 @@ int printf(const char *fmt, ...) {
     return printed;
 }
 
-#define assert_eq(v1, v2) \
-    { \
-        if ((v1) != (v2)) printf("assertion failed: line %d: %d != %d\n", __LINE__, v1, v2); \
-    }
-
-#define assert_neq(v1, v2) \
-    { \
-        if ((v1) == (v2)) printf("assertion failed: line %d: %d == %d\n", __LINE__, v1, v2); \
-    }
-
-#define assert_gt(v1, v2) \
-    { \
-        if ((v1) <= (v2)) printf("assertion failed: line %d: %d != %d\n", __LINE__, v1, v2); \
-    }
-
-#define assert(cond) \
-    { \
-        if (!(cond)) printf("assertion failed: line %d\n", __LINE__); \
-    } \
-
 char testMap[1024*1024];
 
 TEST(allocator, can_allocate) {
-    kernel::allocator<kernel::heap_allocator, 16> testAllocator1(testMap);
+    kernel::allocator<kernel::heap_allocator, 32> testAllocator1(testMap);
     auto result = testAllocator1.allocate(10);
-    ASSERT_TRUE(static_cast<void *>(result) == reinterpret_cast<void *>(static_cast<char *>(testMap) + 32));
+    REQUIRE(static_cast<void *>(result) == reinterpret_cast<void *>(static_cast<char *>(testMap) + 32));
     auto result2 = testAllocator1.free(result);
-    assert(!result2);
+    REQUIRE_FALSE(result2);
+}
+
+TEST(kernel_allocator, can_allocate_and_free) {
+    for (int i = 0; i < 1024; i++) {
+        auto a = yacppl::make_shared<int>(1);
+        REQUIRE(*a == 1);
+        auto b = yacppl::make_unique<char>(2);
+        REQUIRE(*b == 2);
+        REQUIRE(reinterpret_cast<unsigned int>(b.get()) != reinterpret_cast<unsigned int>(a.get()));
+        auto c = new int{498};
+        REQUIRE(*c == 498);
+        REQUIRE(reinterpret_cast<unsigned int>(c) != reinterpret_cast<unsigned int>(a.get()));
+        REQUIRE(reinterpret_cast<unsigned int>(c) != reinterpret_cast<unsigned int>(b.get()));
+        REQUIRE(*a == 1);
+        REQUIRE(*b == 2);
+        delete c;
+        auto d = new int(5);
+        delete d;
+        REQUIRE(c == d);
+        REQUIRE(reinterpret_cast<unsigned int>(c) > reinterpret_cast<unsigned int>(b.get()));
+        REQUIRE(reinterpret_cast<unsigned int>(b.get()) > reinterpret_cast<unsigned int>(a.get()));
+    }
 }
 
 asmlinkage __noreturn void main() {
     serial_init();
-    for (int i = 0; i < 1024; i++) {
-        auto a = yacppl::make_shared<int>(1);
-        assert_eq(*a, 1);
-        auto b = yacppl::make_unique<char>(2);
-        assert_eq(*b, 2);
-        assert_neq(reinterpret_cast<unsigned int>(b.get()), reinterpret_cast<unsigned int>(a.get()));
-        auto c = new int{498};
-        assert_eq(*c, 498);
-        assert_neq(reinterpret_cast<unsigned int>(c), reinterpret_cast<unsigned int>(a.get()));
-        assert_neq(reinterpret_cast<unsigned int>(c), reinterpret_cast<unsigned int>(b.get()));
-        assert_eq(*a, 1);
-        assert_eq(*b, 2);
-        delete c;
-        auto d = new int(5);
-        delete d;
-        assert_eq(c, d);
-        assert_gt(reinterpret_cast<unsigned int>(c), reinterpret_cast<unsigned int>(b.get()));
-        assert_gt(reinterpret_cast<unsigned int>(b.get()), reinterpret_cast<unsigned int>(a.get()));
-    }
-    allocator_can_allocate(&__allocator_can_allocate);
-    printf("all tests passed!\n");
+    TEST_RUN(allocator, can_allocate);
+    TEST_RUN(kernel_allocator, can_allocate_and_free);
     reboot();
     while (1);
 }

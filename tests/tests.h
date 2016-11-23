@@ -12,19 +12,21 @@ struct test_case {
     }
 };
 
-#define ASSERT_TRUE(cond) \
+#define REQUIRE(cond) \
     { \
         _test_case->assertions++; \
         if (!(cond)) { \
             _test_case->failed++; \
+            printf("assertion failed: %s:%d: \'%s\' is false\n", __FILE__, __LINE__, #cond); \
         } \
     }
 
-#define ASSERT_FALSE(cond) \
+#define REQUIRE_FALSE(cond) \
     { \
         _test_case->assertions++; \
         if ((cond)) { \
             _test_case->failed++; \
+            printf("assertion failed: %s:%d: \'%s\' is true\n", __FILE__, __LINE__, #cond); \
         } \
     }
 
@@ -33,4 +35,9 @@ struct test_case {
     test_case __##suite##_##name{suite##_##name}; \
     static void suite##_##name(test_case *_test_case)
 
+#define TEST_RUN(suite, name) \
+    __##suite##_##name.call(); \
+    printf("[%s.%s] ", #suite, #name); \
+    if (__##suite##_##name.failed) printf("FAILED\n"); \
+    else printf("OK\n");
 
