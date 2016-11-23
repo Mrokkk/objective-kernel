@@ -1,6 +1,15 @@
 project(os C CXX)
 cmake_minimum_required(VERSION 3.0)
 
+if(GCC_CROSS_COMPILER)
+    set(CMAKE_C_COMPILER_WORKS 1)
+    set(CMAKE_CXX_COMPILER_WORKS 1)
+    set(CMAKE_C_COMPILER i686-elf-gcc)
+    set(CMAKE_CXX_COMPILER i686-elf-g++)
+    set(CMAKE_SHARED_LIBRARY_LINK_C_FLAGS)
+    set(CMAKE_SHARED_LIBRARY_LINK_CXX_FLAGS)
+endif()
+
 set(CMAKE_C_FLAGS "-ffreestanding -Wall -Wextra -Werror -fno-exceptions -g3 -O0 -m32")
 set(CMAKE_CXX_FLAGS "${CMAKE_C_FLAGS} -std=gnu++14 -fdiagnostics-color=always -include ${CMAKE_SOURCE_DIR}/basic/definitions.h")
 set(CMAKE_EXE_LINKER_FLAGS "-Wl,-T${CMAKE_SOURCE_DIR}/arch/linker.ld -Wl,-Map=kernel.map -Wl,--oformat -Wl,elf32-i386 -Wl,-m -Wl,elf_i386 -nostartfiles -nostdlib")
