@@ -48,15 +48,13 @@ int _Allocator::free(void *address) {
             temp.free = true;
             return 0;
         }
-#if 0
-        if (temp.blocks.next != &_blocks) {
-            auto next = temp.next_entry();
-            if (next->free && temp->free) {
-                temp.size = temp.size + next->size + _memory_block_size;
-                list_del(&next->blocks);
-            }
+        //if (temp.blocks.next != &_blocks) {
+        auto next = temp.blocks.next_entry();
+        if (next->free && temp.free) {
+            temp.size = temp.size + next->size + _memory_block_size;
+            next->blocks.remove();
         }
-#endif
+        //}
     }
     return -1;
 }
