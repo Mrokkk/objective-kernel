@@ -66,12 +66,17 @@ add_custom_target(
     COMMENT "Creating runqemu executables for ISO"
 )
 
+configure_file(${CMAKE_SOURCE_DIR}/CMake/runtests.in ${CMAKE_BINARY_DIR}/runtests)
+
+add_custom_target(
+    runtests-create
+    COMMAND chmod +x ${CMAKE_BINARY_DIR}/runtests
+)
+
 add_custom_target(
     runtests
-    COMMAND echo exec qemu-system-i386 -kernel ${CMAKE_BINARY_DIR}/${PROJECT_NAME}-tests -display none -serial stdio -no-reboot -cpu core2duo \\$$@ > ${CMAKE_BINARY_DIR}/runtests
-    COMMAND chmod +x runtests
     COMMAND ${CMAKE_BINARY_DIR}/runtests
-    DEPENDS ${PROJECT_NAME}-tests
-    COMMENT "Creating runqemu executables"
+    DEPENDS ${PROJECT_NAME}-tests runtests-create
+    COMMENT "Running tests"
 )
 

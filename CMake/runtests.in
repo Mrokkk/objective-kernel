@@ -1,0 +1,8 @@
+#!/bin/bash
+
+qemu-system-i386 -kernel @CMAKE_BINARY_DIR@/@PROJECT_NAME@-tests -display none -serial stdio -no-reboot -cpu core2duo $@ > log
+cat log
+if grep -q "failed" log; then
+    exit 1
+fi
+
