@@ -27,10 +27,17 @@ char testMap[1024*1024];
 
 TEST(allocator, can_allocate) {
     constexpr size_t memory_block_size = 32;
-    kernel::allocator<kernel::heap_allocator, memory_block_size> testAllocator1(testMap);
-    for (auto i = 0; i < 1024; ++i) {
-        auto result = testAllocator1.allocate(10);
-        REQUIRE(static_cast<void *>(result) == static_cast<void *>(static_cast<char *>(testMap) + memory_block_size + memory_block_size * 2 * i));
+    auto expected = testMap + memory_block_size;
+    kernel::allocator<kernel::heap_allocator, memory_block_size> testAllocator(testMap);
+    for (auto i = 1; i < 1025; ++i) {
+        auto result = testAllocator.allocate(i);
+        REQUIRE(result == expected);
+        *static_cast<unsigned int *>(result) = i;
+        expected += memory_block_size * (2 + (i - 1) / memory_block_size);
+    }
+    for (unsigned int i = 1024; i > 0; --i) {
+        expected -= memory_block_size * (2 + (i - 1) / memory_block_size);
+        REQUIRE(*reinterpret_cast<unsigned int *>(expected) == i);
     }
 }
 
@@ -52,6 +59,9 @@ TEST(allocator, can_divide_blocks) {
     auto data5 = testAllocator1.allocate(2);
     expected += memory_block_size * 2;
     REQUIRE(static_cast<void *>(data5) == static_cast<void *>(expected));
+    auto data6 = testAllocator1.allocate(2);
+    expected += memory_block_size * 2;
+    REQUIRE(static_cast<void *>(data6) == static_cast<void *>(expected));
 }
 
 TEST(kernel_allocator, can_allocate_and_free) {
@@ -78,6 +88,7 @@ TEST(kernel_allocator, can_allocate_and_free) {
 
 asmlinkage __noreturn void main() {
     serial_init();
+    printf("\n");
     TEST_RUN(allocator, can_allocate);
     TEST_RUN(allocator, can_divide_blocks);
     TEST_RUN(kernel_allocator, can_allocate_and_free);

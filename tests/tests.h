@@ -36,8 +36,9 @@ struct test_case {
     static void suite##_##name(test_case *_test_case)
 
 #define TEST_RUN(suite, name) \
+    printf("[  RUN   ] %s.%s\n", #suite, #name); \
     __##suite##_##name.call(); \
-    printf("[%s.%s] ", #suite, #name); \
-    if (__##suite##_##name.failed) printf("FAILED\n"); \
-    else printf("OK\n");
+    if (__##suite##_##name.failed) printf("[  FAIL  ] "); \
+    else printf("[  PASS  ] "); \
+    printf("%s.%s (%u assertions)\n\n", #suite, #name, __##suite##_##name.assertions)
 
