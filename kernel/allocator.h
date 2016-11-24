@@ -13,14 +13,14 @@ class allocator final {
     class memory_block {
 
         struct _data {
-            unsigned char dummy[_memory_block_size];
+            unsigned char data[_memory_block_size];
             unsigned int block_ptr[0];
         } __packed;
 
     public:
 
         size_t size;
-        bool free;
+        bool free = false;
         yacppl::af_list<memory_block> blocks;
 
         explicit memory_block(size_t s)
@@ -61,9 +61,11 @@ public:
                     temp.free = false;
                 }
                 else {
-                    auto block = new(&temp) memory_block(size);
-                    new_block = reinterpret_cast<memory_block *>(pointer_offset(block->data(), size));
-                    new_block->size = old_size - _memory_block_size - temp.size;
+                    auto block = &temp;
+                    block->size = size;
+                    block->free = false;
+                    new_block = reinterpret_cast<memory_block *>(pointer_offset(block->data(), block->size));
+                    new_block->size = old_size - _memory_block_size - size;
                     new_block->free = true;
                     temp.blocks.add_front(&new_block->blocks);
                 }

@@ -29,10 +29,29 @@ char testMap[1024*1024];
 
 TEST(allocator, can_allocate) {
     kernel::allocator<kernel::heap_allocator, 32> testAllocator1(testMap);
-    auto result = testAllocator1.allocate(10);
-    REQUIRE(static_cast<void *>(result) == reinterpret_cast<void *>(static_cast<char *>(testMap) + 32));
-    auto result2 = testAllocator1.free(result);
-    REQUIRE_FALSE(result2);
+    for (auto i = 0; i < 1024; ++i) {
+        auto result = testAllocator1.allocate(10);
+        REQUIRE(static_cast<void *>(result) == reinterpret_cast<void *>(static_cast<char *>(testMap) + 32 + 64*i));
+    }
+}
+
+TEST(allocator, can_divide_blocks) {
+    kernel::allocator<kernel::heap_allocator, 32> testAllocator1(testMap);
+    auto data1 = testAllocator1.allocate(2);
+    auto expected = testMap + 32;
+    REQUIRE(static_cast<void *>(data1) == reinterpret_cast<void *>(expected));
+    data1 = testAllocator1.allocate(120);
+    expected += 32 + 32;
+    REQUIRE(static_cast<void *>(data1) == static_cast<void *>(expected));
+    testAllocator1.free(data1);
+    auto data2 = testAllocator1.allocate(2);
+    REQUIRE(static_cast<void *>(data2) == static_cast<void *>(expected));
+    auto data3 = testAllocator1.allocate(2);
+    expected += 32 + 32;
+    REQUIRE(static_cast<void *>(data3) == static_cast<void *>(expected));
+    auto data4 = testAllocator1.allocate(2);
+    expected += 32 + 32 + 32; // dead memory area
+    REQUIRE(static_cast<void *>(data4) == static_cast<void *>(expected));
 }
 
 TEST(kernel_allocator, can_allocate_and_free) {
@@ -60,6 +79,7 @@ TEST(kernel_allocator, can_allocate_and_free) {
 asmlinkage __noreturn void main() {
     serial_init();
     TEST_RUN(allocator, can_allocate);
+    TEST_RUN(allocator, can_divide_blocks);
     TEST_RUN(kernel_allocator, can_allocate_and_free);
     reboot();
     while (1);
