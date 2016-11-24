@@ -46,22 +46,22 @@ TEST(allocator, can_divide_blocks) {
     kernel::allocator<kernel::heap_allocator, memory_block_size> testAllocator1(testMap);
     auto data1 = testAllocator1.allocate(120);
     auto expected = testMap + memory_block_size;
-    REQUIRE(static_cast<void *>(data1) == static_cast<void *>(expected));
+    REQUIRE(data1 == expected);
     testAllocator1.free(data1);
     auto data2 = testAllocator1.allocate(2);
-    REQUIRE(static_cast<void *>(data2) == static_cast<void *>(expected));
+    REQUIRE(data2 == expected);
     auto data3 = testAllocator1.allocate(2);
     expected += memory_block_size * 2;
-    REQUIRE(static_cast<void *>(data3) == static_cast<void *>(expected));
+    REQUIRE(data3 == expected);
     auto data4 = testAllocator1.allocate(2);
     expected += memory_block_size * 3; // dead memory area
-    REQUIRE(static_cast<void *>(data4) == static_cast<void *>(expected));
+    REQUIRE(data4 == expected);
     auto data5 = testAllocator1.allocate(2);
     expected += memory_block_size * 2;
-    REQUIRE(static_cast<void *>(data5) == static_cast<void *>(expected));
+    REQUIRE(data5 == expected);
     auto data6 = testAllocator1.allocate(2);
     expected += memory_block_size * 2;
-    REQUIRE(static_cast<void *>(data6) == static_cast<void *>(expected));
+    REQUIRE(data6 == expected);
 }
 
 TEST(kernel_allocator, can_allocate_and_free) {
