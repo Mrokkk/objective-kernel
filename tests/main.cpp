@@ -8,8 +8,6 @@
 #include <kernel/heap_allocator.h>
 #include "tests.h"
 
-asmlinkage char _end[];
-
 int vsprintf(char *buf, const char *fmt, va_list args);
 
 namespace tests {
@@ -28,27 +26,32 @@ int printf(const char *fmt, ...) {
 char testMap[1024*1024];
 
 TEST(allocator, can_allocate) {
-    kernel::allocator<kernel::heap_allocator, 32> testAllocator1(testMap);
+    constexpr size_t memory_block_size = 32;
+    kernel::allocator<kernel::heap_allocator, memory_block_size> testAllocator1(testMap);
     for (auto i = 0; i < 1024; ++i) {
         auto result = testAllocator1.allocate(10);
-        REQUIRE(static_cast<void *>(result) == reinterpret_cast<void *>(static_cast<char *>(testMap) + 32 + 64*i));
+        REQUIRE(static_cast<void *>(result) == static_cast<void *>(static_cast<char *>(testMap) + memory_block_size + memory_block_size * 2 * i));
     }
 }
 
 TEST(allocator, can_divide_blocks) {
-    kernel::allocator<kernel::heap_allocator, 32> testAllocator1(testMap);
-    auto expected = testMap + 32;
+    constexpr size_t memory_block_size = 32;
+    kernel::allocator<kernel::heap_allocator, memory_block_size> testAllocator1(testMap);
     auto data1 = testAllocator1.allocate(120);
+    auto expected = testMap + memory_block_size;
     REQUIRE(static_cast<void *>(data1) == static_cast<void *>(expected));
     testAllocator1.free(data1);
     auto data2 = testAllocator1.allocate(2);
     REQUIRE(static_cast<void *>(data2) == static_cast<void *>(expected));
     auto data3 = testAllocator1.allocate(2);
-    expected += 32 + 32;
+    expected += memory_block_size * 2;
     REQUIRE(static_cast<void *>(data3) == static_cast<void *>(expected));
     auto data4 = testAllocator1.allocate(2);
-    expected += 32 + 32 + 32; // dead memory area
+    expected += memory_block_size * 3; // dead memory area
     REQUIRE(static_cast<void *>(data4) == static_cast<void *>(expected));
+    auto data5 = testAllocator1.allocate(2);
+    expected += memory_block_size * 2;
+    REQUIRE(static_cast<void *>(data5) == static_cast<void *>(expected));
 }
 
 TEST(kernel_allocator, can_allocate_and_free) {
