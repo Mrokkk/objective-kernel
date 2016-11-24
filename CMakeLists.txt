@@ -41,8 +41,8 @@ add_executable(${PROJECT_NAME}-tests
     tests/main.cpp
 )
 
-configure_file(${CMAKE_SOURCE_DIR}/CMake/runtests.in ${CMAKE_BINARY_DIR}/runtests)
-configure_file(${CMAKE_SOURCE_DIR}/CMake/runqemu.in ${CMAKE_BINARY_DIR}/runqemu)
+configure_file(${CMAKE_SOURCE_DIR}/CMake/runtests.in ${CMAKE_BINARY_DIR}/runtests @ONLY)
+configure_file(${CMAKE_SOURCE_DIR}/CMake/runqemu.in ${CMAKE_BINARY_DIR}/runqemu @ONLY)
 
 add_custom_target(
     runqemu

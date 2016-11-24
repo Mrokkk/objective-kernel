@@ -1,4 +1,4 @@
 #!/bin/bash
 
-qemu-system-i386 -kernel @CMAKE_BINARY_DIR@/@PROJECT_NAME@ -serial stdio -no-reboot -cpu core2duo $@
+$(which qemu-system-i386 || which qemu-system-x86_64) -kernel @CMAKE_BINARY_DIR@/@PROJECT_NAME@ -serial stdio -no-reboot -cpu core2duo $@
 
