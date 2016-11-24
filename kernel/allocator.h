@@ -1,9 +1,7 @@
 #pragma once
 
 #include <af_list.h>
-
-// TODO: move to something like <new.h>
-void *operator new(size_t, void *address);
+#include <basic/new.h>
 
 namespace kernel {
 
