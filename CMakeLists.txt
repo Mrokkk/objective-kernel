@@ -28,7 +28,7 @@ include_directories(yacppl/include)
 include_directories(${CMAKE_SOURCE_DIR})
 
 add_library(${PROJECT_NAME}-all OBJECT
-    arch/head.S cxx.cpp  kernel/allocator.cpp lib/cstring.cpp lib/printf.cpp drivers/vga.cpp drivers/serial.cpp
+    arch/head.S basic/cxx.cpp kernel/allocator.cpp lib/cstring.cpp lib/printf.cpp drivers/vga.cpp drivers/serial.cpp
 )
 
 add_executable(${PROJECT_NAME}
