@@ -1,23 +1,23 @@
 #!/usr/bin/env bash
 
-mkdir -p iso/boot/grub
+name=$1
+mkdir -p ${name}.d/boot/grub
 
-if [ ! -f iso/boot/grub/menu.lst ]; then
-    echo default 0 > iso/boot/grub/menu.lst
-    echo timeout 0 >> iso/boot/grub/menu.lst
-    echo title My kernel >> iso/boot/grub/menu.lst
-    echo kernel /kernel >> iso/boot/grub/menu.lst
-    # echo module /symbols >>  iso/boot/grub/menu.lst
-    echo boot >> iso/boot/grub/menu.lst
+if [ ! -f ${name}.d/boot/grub/menu.lst ]; then
+    echo default 0 > ${name}.d/boot/grub/menu.lst
+    echo timeout 0 >> ${name}.d/boot/grub/menu.lst
+    echo title My kernel >> ${name}.d/boot/grub/menu.lst
+    echo kernel /kernel >> ${name}.d/boot/grub/menu.lst
+    echo boot >> ${name}.d/boot/grub/menu.lst
 fi
 
-if [ ! -f iso/boot/grub/stage2_eltorito ]; then
+if [ ! -f stage2_eltorito ]; then
     echo Downloading bootloader stage2...
     wget -q ftp://ftp.free.org/mirrors/rsync.frugalware.org/frugalware-testing/boot/grub/stage2_eltorito
-    mv stage2_eltorito iso/boot/grub/stage2_eltorito
 fi
 
-cp os iso/kernel
-# cp bin/kernel.sym iso/symbols
-MKISO=$(which genisoimage || which mkisofs)
-$MKISO -R -b boot/grub/stage2_eltorito -no-emul-boot -boot-load-size 4 -boot-info-table -o os.iso iso 2> /dev/null
+cp stage2_eltorito ${name}.d/boot/grub/stage2_eltorito
+
+cp ${name} ${name}.d/kernel
+$(which genisoimage || which mkisofs) -R -b boot/grub/stage2_eltorito -no-emul-boot -boot-load-size 4 -boot-info-table -o ${name}.iso ${name}.d 2> /dev/null
+

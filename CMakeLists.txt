@@ -54,7 +54,7 @@ add_custom_target(
 
 add_custom_target(
     iso
-    COMMAND ${CMAKE_SOURCE_DIR}/CMake/isomaker.sh
+    COMMAND ${CMAKE_SOURCE_DIR}/CMake/isomaker.sh os
     DEPENDS ${PROJECT_NAME}
     COMMENT "Building bootable ISO"
 )
