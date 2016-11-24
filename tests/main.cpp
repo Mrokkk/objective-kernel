@@ -41,6 +41,19 @@ TEST(allocator, can_allocate) {
     }
 }
 
+TEST(allocator, cannot_free_invalid_ptr) {
+    constexpr size_t memory_block_size = 32;
+    kernel::allocator<kernel::heap_allocator, memory_block_size> testAllocator(testMap);
+    for (auto i = 0; i < 4096; ++i) {
+        REQUIRE(testAllocator.free(reinterpret_cast<void *>(i)));
+    }
+    for (auto i = 0; i < 100; ++i)
+        testAllocator.allocate(i);
+    for (auto i = 0; i < 4096; ++i) {
+        REQUIRE(testAllocator.free(reinterpret_cast<void *>(i)));
+    }
+}
+
 TEST(allocator, can_divide_blocks) {
     constexpr size_t memory_block_size = 32;
     kernel::allocator<kernel::heap_allocator, memory_block_size> testAllocator1(testMap);
@@ -90,6 +103,7 @@ asmlinkage __noreturn void main() {
     serial_init();
     printf("\n");
     TEST_RUN(allocator, can_allocate);
+    TEST_RUN(allocator, cannot_free_invalid_ptr);
     TEST_RUN(allocator, can_divide_blocks);
     TEST_RUN(kernel_allocator, can_allocate_and_free);
     reboot();
