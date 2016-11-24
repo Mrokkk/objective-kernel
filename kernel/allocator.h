@@ -83,13 +83,12 @@ public:
                 temp.free = true;
                 return 0;
             }
-            //if (temp.blocks.next != &_blocks) {
             auto next = temp.blocks.next_entry();
+            if (!next) continue;
             if (next->free && temp.free) {
                 temp.size = temp.size + next->size + _memory_block_size;
                 next->blocks.remove();
             }
-            //}
         }
         return -1;
     }

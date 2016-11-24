@@ -37,11 +37,8 @@ TEST(allocator, can_allocate) {
 
 TEST(allocator, can_divide_blocks) {
     kernel::allocator<kernel::heap_allocator, 32> testAllocator1(testMap);
-    auto data1 = testAllocator1.allocate(2);
     auto expected = testMap + 32;
-    REQUIRE(static_cast<void *>(data1) == reinterpret_cast<void *>(expected));
-    data1 = testAllocator1.allocate(120);
-    expected += 32 + 32;
+    auto data1 = testAllocator1.allocate(120);
     REQUIRE(static_cast<void *>(data1) == static_cast<void *>(expected));
     testAllocator1.free(data1);
     auto data2 = testAllocator1.allocate(2);
