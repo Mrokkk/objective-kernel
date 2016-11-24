@@ -17,6 +17,11 @@ class allocator final {
             unsigned int block_ptr[0];
         } __packed;
 
+        template <typename Ptr>
+        Ptr pointer_offset(Ptr ptr, int off) {
+            return reinterpret_cast<Ptr>(reinterpret_cast<char *>(ptr) + off);
+        }
+
     public:
 
         size_t size;
@@ -25,6 +30,16 @@ class allocator final {
 
         explicit memory_block(size_t s)
             : size(s), free(false), blocks(&memory_block::blocks) {
+        }
+
+        void divide(size_t pivot) {
+            auto old_size = size;
+            size = pivot;
+            free = false;
+            auto new_block = reinterpret_cast<memory_block *>(pointer_offset(data(), pivot));
+            new_block->size = old_size - _memory_block_size - size;
+            new_block->free = true;
+            blocks.add_front(&new_block->blocks);
         }
 
         void *data() {
@@ -36,13 +51,13 @@ class allocator final {
     yacppl::af_list<memory_block> _blocks;
     Heap_Allocator _heap_allocator;
 
-    memory_block *create_memory_block(size_t size) {
-        return new(_heap_allocator.grow_heap(_memory_block_size + size)) memory_block(size);
+    void adapt_size(size_t &size) {
+        if (size % _memory_block_size)
+            size = (size / _memory_block_size) * _memory_block_size + _memory_block_size;
     }
 
-    template <typename Ptr>
-    Ptr pointer_offset(Ptr ptr, int off) {
-        return reinterpret_cast<Ptr>(reinterpret_cast<char *>(ptr) + off);
+    memory_block *create_memory_block(size_t size) {
+        return new(_heap_allocator.grow_heap(_memory_block_size + size)) memory_block(size);
     }
 
 public:
@@ -51,28 +66,20 @@ public:
         : _blocks(&memory_block::blocks), _heap_allocator(heap_start) {}
 
     void *allocate(size_t size) {
-        if (size % _memory_block_size)
-            size = (size / _memory_block_size) * _memory_block_size + _memory_block_size;
-        memory_block *new_block = nullptr;
+        adapt_size(size);
         for (auto &temp : _blocks) {
             if (temp.free && temp.size >= size) {
-                auto old_size = temp.size;
-                if (old_size <= size + 2 * _memory_block_size) {
+                if (temp.size <= size + 2 * _memory_block_size) {
                     temp.free = false;
                 }
                 else {
-                    auto block = &temp;
-                    block->size = size;
-                    block->free = false;
-                    new_block = reinterpret_cast<memory_block *>(pointer_offset(block->data(), block->size));
-                    new_block->size = old_size - _memory_block_size - size;
-                    new_block->free = true;
-                    temp.blocks.add_front(&new_block->blocks);
+                    temp.divide(size);
                 }
                 return temp.data();
             }
         }
-        if (!(new_block = create_memory_block(size))) return 0;
+        auto new_block = create_memory_block(size);
+        if (new_block == nullptr) return 0;
         _blocks.add(&new_block->blocks);
         return new_block->data();
     }
