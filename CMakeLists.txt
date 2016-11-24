@@ -41,11 +41,13 @@ add_executable(${PROJECT_NAME}-tests
     tests/main.cpp
 )
 
+configure_file(${CMAKE_SOURCE_DIR}/CMake/runtests.in ${CMAKE_BINARY_DIR}/runtests)
+configure_file(${CMAKE_SOURCE_DIR}/CMake/runqemu.in ${CMAKE_BINARY_DIR}/runqemu)
+
 add_custom_target(
     runqemu
-    COMMAND echo exec qemu-system-i386 -kernel ${CMAKE_BINARY_DIR}/${PROJECT_NAME} -serial stdio -no-reboot -cpu core2duo \\$$@ > ${CMAKE_BINARY_DIR}/runqemu
-    COMMAND echo exec qemu-system-i386 -kernel ${CMAKE_BINARY_DIR}/${PROJECT_NAME} -display none -serial stdio -no-reboot -cpu core2duo \\$$@ > ${CMAKE_BINARY_DIR}/runqemu-nographic
-    COMMAND chmod +x runqemu*
+    COMMAND chmod +x ${CMAKE_BINARY_DIR}/runqemu
+    COMMAND ${CMAKE_BINARY_DIR}/runqemu
     DEPENDS ${PROJECT_NAME}
     COMMENT "Creating runqemu executables"
 )
@@ -58,25 +60,10 @@ add_custom_target(
 )
 
 add_custom_target(
-    runqemu-iso
-    COMMAND echo exec qemu-system-i386 -cdrom ${CMAKE_BINARY_DIR}/os.iso -serial stdio -no-reboot -cpu core2duo \\$$@ > ${CMAKE_BINARY_DIR}/runqemu-iso
-    COMMAND echo exec qemu-system-i386 -cdrom ${CMAKE_BINARY_DIR}/os.iso -display none -serial stdio -no-reboot -cpu core2duo \\$$@ > ${CMAKE_BINARY_DIR}/runqemu-iso-nographic
-    COMMAND chmod +x runqemu*
-    DEPENDS iso
-    COMMENT "Creating runqemu executables for ISO"
-)
-
-configure_file(${CMAKE_SOURCE_DIR}/CMake/runtests.in ${CMAKE_BINARY_DIR}/runtests)
-
-add_custom_target(
-    runtests-create
-    COMMAND chmod +x ${CMAKE_BINARY_DIR}/runtests
-)
-
-add_custom_target(
     runtests
+    COMMAND chmod +x ${CMAKE_BINARY_DIR}/runtests
     COMMAND ${CMAKE_BINARY_DIR}/runtests
-    DEPENDS ${PROJECT_NAME}-tests runtests-create
+    DEPENDS ${PROJECT_NAME}-tests
     COMMENT "Running tests"
 )
 
