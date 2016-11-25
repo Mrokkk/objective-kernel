@@ -30,7 +30,7 @@ menuentry "${name}" {
 }" > ${name}.d/boot/grub/grub.cfg
     fi
     cp ${name} ${name}.d/kernel
-    grub-mkrescue -o ${name}.iso ${name}.d
+    grub-mkrescue -o ${name}.iso ${name}.d 2> /dev/null
 else
     if [ ! -f ${name}.d/boot/grub/menu.lst ]; then
         echo "default 0
