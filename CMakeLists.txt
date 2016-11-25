@@ -1,8 +1,8 @@
 project(os C CXX)
 cmake_minimum_required(VERSION 3.0)
 
-option(GCC_CROSS_COMPILER "Use i686-elf cross-compiler" OFF)
-message(STATUS "Use i686-elf cross-compiler: ${GCC_CROSS_COMPILER}")
+option(CROSS_COMPILER_PREFIX "Use GNU cross-compiler" OFF)
+message(STATUS "Use GNU cross-compiler: ${CROSS_COMPILER_PREFIX}")
 
 option(OPTIMIZE "Use compile optimizer" OFF)
 message(STATUS "Use compile optimizer: ${OPTIMIZE}")
@@ -10,7 +10,7 @@ message(STATUS "Use compile optimizer: ${OPTIMIZE}")
 option(MULTIBOOT2 "Use Multiboot2" OFF)
 message(STATUS "Use Multiboot2: ${MULTIBOOT2}")
 
-if(GCC_CROSS_COMPILER)
+if(CROSS_COMPILER_PREFIX)
     set(CMAKE_C_COMPILER_WORKS 1)
     set(CMAKE_CXX_COMPILER_WORKS 1)
     set(CMAKE_C_COMPILER i686-elf-gcc)
@@ -18,6 +18,7 @@ if(GCC_CROSS_COMPILER)
     set(CMAKE_SHARED_LIBRARY_LINK_C_FLAGS)
     set(CMAKE_SHARED_LIBRARY_LINK_CXX_FLAGS)
 endif()
+
 
 if(OPTIMIZE)
     set(OPTIMIZE_LEVEL 2)
@@ -35,24 +36,33 @@ if(MULTIBOOT2)
     add_definitions("-DMULTIBOOT2")
 endif()
 
-set_property(SOURCE arch/head.S PROPERTY LANGUAGE C)
-
 include_directories(yacppl/include)
 include_directories(${CMAKE_SOURCE_DIR})
 
-add_library(${PROJECT_NAME}-all OBJECT
-    arch/head.S basic/cxx.cpp kernel/allocator.cpp lib/cstring.cpp lib/printf.cpp drivers/vga.cpp drivers/serial.cpp
+add_subdirectory(arch)
+add_subdirectory(basic)
+add_subdirectory(drivers)
+add_subdirectory(kernel)
+add_subdirectory(lib)
+
+add_library(${PROJECT_NAME}-lib
+    $<TARGET_OBJECTS:arch>
+    $<TARGET_OBJECTS:basic>
+    $<TARGET_OBJECTS:drivers>
+    $<TARGET_OBJECTS:kernel>
+    $<TARGET_OBJECTS:lib>
 )
 
 add_executable(${PROJECT_NAME}
-    $<TARGET_OBJECTS:${PROJECT_NAME}-all>
     kernel/main.cpp
 )
 
 add_executable(${PROJECT_NAME}-tests
-    $<TARGET_OBJECTS:${PROJECT_NAME}-all>
     tests/main.cpp
 )
+
+target_link_libraries(${PROJECT_NAME} ${PROJECT_NAME}-lib)
+target_link_libraries(${PROJECT_NAME}-tests ${PROJECT_NAME}-lib)
 
 configure_file(${CMAKE_SOURCE_DIR}/CMake/runtests.in ${CMAKE_BINARY_DIR}/runtests @ONLY)
 configure_file(${CMAKE_SOURCE_DIR}/CMake/runqemu.in ${CMAKE_BINARY_DIR}/runqemu @ONLY)
