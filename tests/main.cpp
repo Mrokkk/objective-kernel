@@ -108,7 +108,6 @@ void tests() {
 
 asmlinkage __noreturn void main() {
     serial_init();
-    printf("\n");
     tests();
     reboot();
     while (1);

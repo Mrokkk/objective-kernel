@@ -12,6 +12,8 @@ while [[ $# -gt 0 ]]; do
             shift ;;
         --multiboot2)
             multiboot2=1 ;;
+        --grub-use-serial)
+            serial=1 ;;
         *)
             break ;;
     esac
@@ -27,7 +29,13 @@ set default=0
 menuentry "${name}" {
     multiboot2 /kernel
     boot
-}" > ${name}.d/boot/grub/grub.cfg
+}
+" > ${name}.d/boot/grub/grub.cfg
+        if [ "$serial" ]; then
+            echo "serial --unit=0 --speed=9600
+terminal_input serial
+terminal_output serial" >> ${name}.d/boot/grub/grub.cfg
+        fi
     fi
     cp ${name} ${name}.d/kernel
     grub-mkrescue -o ${name}.iso ${name}.d 2> /dev/null
@@ -35,9 +43,13 @@ else
     if [ ! -f ${name}.d/boot/grub/menu.lst ]; then
         echo "default 0
 timeout 0
-title My kernel
-kernel /kernel
-boot" > ${name}.d/boot/grub/menu.lst
+title ${name}" > ${name}.d/boot/grub/menu.lst
+        if [ "$serial" ]; then
+            echo "serial --unit=0 --speed=9600
+terminal serial" >> ${name}.d/boot/grub/menu.lst
+        fi
+        echo "kernel /kernel
+boot" >> ${name}.d/boot/grub/menu.lst
     fi
     cp $base_dir/stage2_eltorito ${name}.d/boot/grub/stage2_eltorito
     cp ${name} ${name}.d/kernel

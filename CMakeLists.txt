@@ -19,7 +19,6 @@ if(CROSS_COMPILER_PREFIX)
     set(CMAKE_SHARED_LIBRARY_LINK_CXX_FLAGS)
 endif()
 
-
 if(OPTIMIZE)
     set(OPTIMIZE_LEVEL 2)
 else()
@@ -68,32 +67,22 @@ configure_file(${CMAKE_SOURCE_DIR}/CMake/runtests.in ${CMAKE_BINARY_DIR}/runtest
 configure_file(${CMAKE_SOURCE_DIR}/CMake/runqemu.in ${CMAKE_BINARY_DIR}/runqemu @ONLY)
 
 if(MULTIBOOT2)
-    add_custom_target(
-        iso
-        COMMAND ${CMAKE_SOURCE_DIR}/CMake/isomaker.sh -o os --multiboot2
-        DEPENDS ${PROJECT_NAME}
-        COMMENT "Building Multiboot2 bootable ISO"
-    )
-    add_custom_target(
-        tests-iso
-        COMMAND ${CMAKE_SOURCE_DIR}/CMake/isomaker.sh -o os-tests --multiboot2
-        DEPENDS ${PROJECT_NAME}-tests
-        COMMENT "Building Multiboot2 bootable ISO for tests"
-    )
-else()
-    add_custom_target(
-        iso
-        COMMAND ${CMAKE_SOURCE_DIR}/CMake/isomaker.sh -o os
-        DEPENDS ${PROJECT_NAME}
-        COMMENT "Building bootable ISO"
-    )
-    add_custom_target(
-        tests-iso
-        COMMAND ${CMAKE_SOURCE_DIR}/CMake/isomaker.sh -o os-tests
-        DEPENDS ${PROJECT_NAME}-tests
-        COMMENT "Building bootable ISO for tests"
-    )
+    set(MULTIBOOT_FLAG "--multiboot2")
 endif()
+
+add_custom_target(
+    iso
+    COMMAND ${CMAKE_SOURCE_DIR}/CMake/isomaker.sh -o os ${MULTIBOOT_FLAG}
+    DEPENDS ${PROJECT_NAME}
+    COMMENT "Building bootable ISO"
+)
+
+add_custom_target(
+    tests-iso
+    COMMAND ${CMAKE_SOURCE_DIR}/CMake/isomaker.sh -o os-tests ${MULTIBOOT_FLAG} --grub-use-serial
+    DEPENDS ${PROJECT_NAME}-tests
+    COMMENT "Building bootable ISO for tests"
+)
 
 add_custom_target(
     runqemu
