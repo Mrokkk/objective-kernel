@@ -47,28 +47,28 @@ configure_file(${CMAKE_SOURCE_DIR}/CMake/runqemu.in ${CMAKE_BINARY_DIR}/runqemu 
 if(MULTIBOOT2)
     add_custom_target(
         iso
-        COMMAND ${CMAKE_SOURCE_DIR}/CMake/isomaker.sh os --multiboot2
+        COMMAND ${CMAKE_SOURCE_DIR}/CMake/isomaker.sh -o os --multiboot2
         DEPENDS ${PROJECT_NAME}
-        COMMENT "Building bootable ISO"
+        COMMENT "Building Multiboot2 bootable ISO"
     )
     add_custom_target(
         tests-iso
-        COMMAND ${CMAKE_SOURCE_DIR}/CMake/isomaker.sh os-tests --multiboot2
+        COMMAND ${CMAKE_SOURCE_DIR}/CMake/isomaker.sh -o os-tests --multiboot2
         DEPENDS ${PROJECT_NAME}-tests
-        COMMENT "Building bootable ISO"
+        COMMENT "Building Multiboot2 bootable ISO for tests"
     )
 else()
     add_custom_target(
         iso
-        COMMAND ${CMAKE_SOURCE_DIR}/CMake/isomaker.sh os
+        COMMAND ${CMAKE_SOURCE_DIR}/CMake/isomaker.sh -o os
         DEPENDS ${PROJECT_NAME}
         COMMENT "Building bootable ISO"
     )
     add_custom_target(
         tests-iso
-        COMMAND ${CMAKE_SOURCE_DIR}/CMake/isomaker.sh os-tests
+        COMMAND ${CMAKE_SOURCE_DIR}/CMake/isomaker.sh -o os-tests
         DEPENDS ${PROJECT_NAME}-tests
-        COMMENT "Building bootable ISO"
+        COMMENT "Building bootable ISO for tests"
     )
 endif()
 
@@ -77,7 +77,7 @@ add_custom_target(
     COMMAND chmod +x ${CMAKE_BINARY_DIR}/runqemu
     COMMAND ${CMAKE_BINARY_DIR}/runqemu
     DEPENDS iso
-    COMMENT "Creating runqemu executables"
+    COMMENT "Booting kernel"
 )
 
 add_custom_target(

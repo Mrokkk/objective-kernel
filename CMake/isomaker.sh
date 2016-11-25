@@ -3,12 +3,24 @@
 set -e
 
 base_dir=$(dirname $0)
-name=$1
-multiboot2=$2
+
+while [[ $# -gt 0 ]]; do
+    arg="$1"
+    case $arg in
+        -o|--output)
+            name="$2"
+            shift ;;
+        --multiboot2)
+            multiboot2=1 ;;
+        *)
+            break ;;
+    esac
+    shift
+done
 
 mkdir -p ${name}.d/boot/grub
 
-if [ "$multiboot2" == "--multiboot2" ]; then
+if [ "$multiboot2" ]; then
     if [ ! -f ${name}.d/boot/grub/grub.cfg ]; then
         echo "set timeout=0
 set default=0
