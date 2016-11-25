@@ -5,6 +5,7 @@
 #define MAGIC         MULTIBOOT_HEADER_MAGIC
 #define CHECKSUM     -(MAGIC + FLAGS)
 
+.align 4
 .section .multiboot
 header_start:
 #ifdef MULTIBOOT2
@@ -16,9 +17,9 @@ header_start:
 .word 0
 .long 8
 #else
-.long MAGIC
-.long FLAGS
-.long CHECKSUM
+.long 0x1badb002
+.long 0x00000003
+.long -(0x1badb002 + 0x00000003)
 #endif
 header_end:
 
