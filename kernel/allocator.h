@@ -40,6 +40,15 @@ class allocator final {
             blocks.add_front(&new_block->blocks);
         }
 
+        void try_to_divide(size_t pivot) {
+            if (size <= pivot + 2 * _memory_block_size) {
+                free = false;
+            }
+            else {
+                divide(pivot);
+            }
+        }
+
         void *data() {
             return reinterpret_cast<_data *>(this)->block_ptr;
         }
@@ -67,12 +76,7 @@ public:
         adapt_size(size);
         for (auto &temp : _blocks) {
             if (temp.free && temp.size >= size) {
-                if (temp.size <= size + 2 * _memory_block_size) {
-                    temp.free = false;
-                }
-                else {
-                    temp.divide(size);
-                }
+                temp.try_to_divide(size);
                 return temp.data();
             }
         }
