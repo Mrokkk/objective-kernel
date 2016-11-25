@@ -10,9 +10,32 @@ matrix:
             - COMPILER=g++
           services:
             - docker
+
         - env:
             - IMAGE=mrokkk/kernel-devel
             - COMPILER=clang++
+          services:
+            - docker
+
+        - env:
+            - IMAGE=mrokkk/kernel-devel
+            - COMPILER=g++
+            - OPTIMIZE=ON
+          services:
+            - docker
+
+        - env:
+            - IMAGE=mrokkk/kernel-devel
+            - COMPILER=g++
+            - MULTIBOOT2=ON
+          services:
+            - docker
+
+        - env:
+            - IMAGE=mrokkk/kernel-devel
+            - COMPILER=g++
+            - OPTIMIZE=ON
+            - MULTIBOOT2=ON
           services:
             - docker
 

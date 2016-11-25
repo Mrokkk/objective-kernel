@@ -10,6 +10,6 @@ cd build
 
 cores=$(nproc)
 
-cmake -DCI_BUILD=ON ..
+cmake -DOPTIMIZE=${OPTIMIZE:-OFF} -DMULTIBOOT2=${MULTIBOOT2:-OFF} ..
 make runtests -j$cores
 
