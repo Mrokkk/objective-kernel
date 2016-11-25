@@ -1,6 +1,15 @@
 project(os C CXX)
 cmake_minimum_required(VERSION 3.0)
 
+option(MULTIBOOT2 "Use Multiboot2" OFF)
+message(STATUS "Use Multiboot2: ${MULTIBOOT2}")
+
+option(GCC_CROSS_COMPILER "Use i686-elf cross-compiler" OFF)
+message(STATUS "Use i686-elf cross-compiler: ${GCC_CROSS_COMPILER}")
+
+option(CI_BUILD "Use configuration for CI" OFF)
+message(STATUS "Use configuration for CI: ${CI_BUILD}")
+
 if(GCC_CROSS_COMPILER)
     set(CMAKE_C_COMPILER_WORKS 1)
     set(CMAKE_CXX_COMPILER_WORKS 1)
