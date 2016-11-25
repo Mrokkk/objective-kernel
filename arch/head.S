@@ -1,3 +1,4 @@
+#include <arch/asm.h>
 #include <arch/multiboot.h>
 
 #define FLAGS         MULTIBOOT_HEADER_FLAGS
@@ -22,19 +23,18 @@ header_start:
 header_end:
 
 .text
-.global _start
-_start:
-
-    movl $0x08, %eax
-    mov %ax, %ds
-    mov %ax, %es
-    mov %ax, %fs
-    mov %ax, %gs
+ENTRY(_start)
 
     mov $stack, %esp
 
     pushl $0
     popfl
+
+    movl $_sbss, %edi
+    movl $_ebss, %ecx
+    subl %edi, %ecx
+    cld
+    rep
 
     call _init
     call main
@@ -43,5 +43,5 @@ _start:
     jmp 1b
 
 .skip 1024
-    stack:
+stack:
 

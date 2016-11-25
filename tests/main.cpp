@@ -99,13 +99,17 @@ TEST(kernel_allocator, can_allocate_and_free) {
     }
 }
 
-asmlinkage __noreturn void main() {
-    serial_init();
-    printf("\n");
+void tests() {
     TEST_RUN(allocator, can_allocate);
     TEST_RUN(allocator, cannot_free_invalid_ptr);
     TEST_RUN(allocator, can_divide_blocks);
     TEST_RUN(kernel_allocator, can_allocate_and_free);
+}
+
+asmlinkage __noreturn void main() {
+    serial_init();
+    printf("\n");
+    tests();
     reboot();
     while (1);
 }
