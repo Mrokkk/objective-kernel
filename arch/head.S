@@ -1,8 +1,8 @@
 #include <arch/asm.h>
 #include <arch/multiboot.h>
 
-#define FLAGS         MULTIBOOT_HEADER_FLAGS
-#define MAGIC         MULTIBOOT_HEADER_MAGIC
+#define FLAGS        MULTIBOOT_HEADER_FLAGS
+#define MAGIC        MULTIBOOT_HEADER_MAGIC
 #define CHECKSUM     -(MAGIC + FLAGS)
 
 .align 4
@@ -17,9 +17,9 @@ header_start:
 .word 0
 .long 8
 #else
-.long 0x1badb002
-.long 0x00000003
-.long -(0x1badb002 + 0x00000003)
+.long MAGIC
+.long FLAGS
+.long CHECKSUM
 #endif
 header_end:
 
