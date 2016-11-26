@@ -1,6 +1,6 @@
 #pragma once
 
-#include <af_list.h>
+#include <kernel_list.h>
 #include <basic/new.h>
 
 namespace kernel {
@@ -24,7 +24,7 @@ class allocator final {
 
         size_t size;
         bool free = false;
-        yacppl::af_list<memory_block> blocks;
+        yacppl::kernel_list<memory_block> blocks;
 
         explicit memory_block(size_t s)
             : size(s), free(false), blocks(&memory_block::blocks) {
@@ -55,7 +55,7 @@ class allocator final {
 
     };
 
-    yacppl::af_list<memory_block> _blocks;
+    yacppl::kernel_list<memory_block> _blocks;
     Heap_Allocator _heap_allocator;
 
     void adapt_size(size_t &size) {
