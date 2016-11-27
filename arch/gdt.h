@@ -40,6 +40,8 @@ constexpr inline auto tss_selector(uint8_t num) {
     return (num + FIRST_TSS_ENTRY) << 3;
 }
 
+namespace detail {
+
 constexpr inline auto gdt_low_limit(uint32_t limit) {
     return limit & 0xffff;
 }
@@ -68,14 +70,16 @@ constexpr inline auto gdt_hi_flags(uint32_t flags) {
     return (flags >> 1) & 0xf0;
 }
 
+} // namespace detail
+
 #define descriptor_entry(flags, base, limit) \
     { \
-        gdt_low_limit(limit), \
-        gdt_low_base(base), \
-        gdt_mid_base(base), \
-        gdt_low_flags(flags) | (1 << 7), \
-        gdt_hi_limit(limit) | gdt_hi_flags(flags), \
-        gdt_hi_base(base) \
+        detail::gdt_low_limit(limit), \
+        detail::gdt_low_base(base), \
+        detail::gdt_mid_base(base), \
+        detail::gdt_low_flags(flags) | (1 << 7), \
+        detail::gdt_hi_limit(limit) | detail::gdt_hi_flags(flags), \
+        detail::gdt_hi_base(base) \
     }
 
 #define descriptor_set_base(gdt, num, base) \
