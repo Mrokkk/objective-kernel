@@ -7,7 +7,8 @@
     asm volatile("hlt" ::: "memory")
 
 inline void reboot() {
-    cpu::gdt_load(nullptr);
+    cpu::gdt::gdtr *gdt = nullptr;
+    gdt->load();
     while (1);
 }
 

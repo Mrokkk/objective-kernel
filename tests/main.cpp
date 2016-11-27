@@ -6,6 +6,7 @@
 #include <lib/cstring.h>
 #include <kernel/allocator.h>
 #include <kernel/heap_allocator.h>
+#include <arch/gdt.h>
 #include "tests.h"
 
 int vsprintf(char *buf, const char *fmt, va_list args);
@@ -107,6 +108,7 @@ void tests() {
 }
 
 asmlinkage __noreturn void main() {
+    cpu::gdt::initialize();
     serial_init();
     tests();
     reboot();
