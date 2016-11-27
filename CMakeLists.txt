@@ -13,8 +13,8 @@ message(STATUS "Use Multiboot2: ${MULTIBOOT2}")
 if(CROSS_COMPILER_PREFIX)
     set(CMAKE_C_COMPILER_WORKS 1)
     set(CMAKE_CXX_COMPILER_WORKS 1)
-    set(CMAKE_C_COMPILER i686-elf-gcc)
-    set(CMAKE_CXX_COMPILER i686-elf-g++)
+    set(CMAKE_C_COMPILER ${CROSS_COMPILER_PREFIX}-gcc)
+    set(CMAKE_CXX_COMPILER ${CROSS_COMPILER_PREFIX}-g++)
     set(CMAKE_SHARED_LIBRARY_LINK_C_FLAGS)
     set(CMAKE_SHARED_LIBRARY_LINK_CXX_FLAGS)
 endif()
@@ -72,14 +72,14 @@ endif()
 
 add_custom_target(
     iso
-    COMMAND ${CMAKE_SOURCE_DIR}/CMake/isomaker.sh -o os ${MULTIBOOT_FLAG}
+    COMMAND ${CMAKE_SOURCE_DIR}/CMake/isomaker.sh -o ${PROJECT_NAME} ${MULTIBOOT_FLAG}
     DEPENDS ${PROJECT_NAME}
     COMMENT "Building bootable ISO"
 )
 
 add_custom_target(
     tests-iso
-    COMMAND ${CMAKE_SOURCE_DIR}/CMake/isomaker.sh -o os-tests ${MULTIBOOT_FLAG} --grub-use-serial
+    COMMAND ${CMAKE_SOURCE_DIR}/CMake/isomaker.sh -o ${PROJECT_NAME}-tests ${MULTIBOOT_FLAG} --grub-use-serial
     DEPENDS ${PROJECT_NAME}-tests
     COMMENT "Building bootable ISO for tests"
 )
