@@ -10,20 +10,16 @@ gdt_entry gdt_entries[] = {
     descriptor_entry(0, 0, 0),
 
     /* Kernel code segment */
-    descriptor_entry(flags::dpl::ring0 | flags::type::code | GDT_FLAGS_4KB | \
-                     GDT_FLAGS_32BIT, 0x0, 0xffffffff),
+    descriptor_entry(flags::dpl::ring0 | flags::type::code | flags::granularity::u4kB | flags::size::u32bit, 0x0, 0xffffffff),
 
     /* Kernel data segment */
-    descriptor_entry(flags::dpl::ring0 | flags::type::data | GDT_FLAGS_4KB | \
-                     GDT_FLAGS_32BIT, 0x0, 0xffffffff),
+    descriptor_entry(flags::dpl::ring0 | flags::type::data | flags::granularity::u4kB | flags::size::u32bit, 0x0, 0xffffffff),
 
     /* User code segment */
-    descriptor_entry(flags::dpl::ring3 | flags::type::code | GDT_FLAGS_4KB | \
-                     GDT_FLAGS_32BIT, 0x0, 0xffffffff),
+    descriptor_entry(flags::dpl::ring3 | flags::type::code | flags::granularity::u4kB | flags::size::u32bit, 0x0, 0xffffffff),
 
     /* User data segment */
-    descriptor_entry(flags::dpl::ring3 | flags::type::data | GDT_FLAGS_4KB | \
-                     GDT_FLAGS_32BIT, 0x0, 0xffffffff),
+    descriptor_entry(flags::dpl::ring3 | flags::type::data | flags::granularity::u4kB | flags::size::u32bit, 0x0, 0xffffffff),
 
     /* TSS */
     descriptor_entry(flags::type::tss32, 0, 0)

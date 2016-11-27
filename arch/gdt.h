@@ -16,6 +16,7 @@ struct gdt_entry {
 struct gdtr {
     uint16_t limit;
     uint32_t base;
+
     void load() {
         asm volatile(R"(
                 lgdt (%%eax)
@@ -23,6 +24,7 @@ struct gdtr {
             1:
             )" :: "a" (this));
     }
+
 } __packed;
 
 #define FIRST_TSS_ENTRY 5
@@ -103,13 +105,15 @@ enum dpl {
     ring3 = 3 << 5
 };
 
-/* G in flags */
-#define GDT_FLAGS_4KB           (1 << 8)
-#define GDT_FLAGS_1B            (0 << 8)
+enum granularity {
+    u4kB = 1 << 8,
+    u1B = 0 << 8
+};
 
-/* D in flags */
-#define GDT_FLAGS_16BIT         (0 << 7)
-#define GDT_FLAGS_32BIT         (1 << 7)
+enum size {
+    u16bit = 0 << 7,
+    u32bit = 1 << 7
+};
 
 enum type {
     code = 0x1a,
