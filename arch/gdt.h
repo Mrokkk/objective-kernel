@@ -25,13 +25,6 @@ struct gdtr {
     }
 } __packed;
 
-inline void gdt_store(gdtr *gdt) {
-    asm volatile(R"(
-        sgdt (%%eax)
-        )" :: "a" (gdt)
-    );
-}
-
 #define FIRST_TSS_ENTRY 5
 #define FIRST_APM_ENTRY 6
 
@@ -101,11 +94,14 @@ constexpr inline auto gdt_hi_flags(uint32_t flags) {
 #define descriptor_get_type(gdt, num) \
     (gdt[num].access & 0x1e)
 
-/* DPL in flags */
-#define GDT_FLAGS_RING0         (0 << 5)
-#define GDT_FLAGS_RING1         (1 << 5)
-#define GDT_FLAGS_RING2         (2 << 5)
-#define GDT_FLAGS_RING3         (3 << 5)
+namespace flags {
+
+enum dpl {
+    ring0 = 0 << 5,
+    ring1 = 1 << 5,
+    ring2 = 2 << 5,
+    ring3 = 3 << 5
+};
 
 /* G in flags */
 #define GDT_FLAGS_4KB           (1 << 8)
@@ -115,16 +111,19 @@ constexpr inline auto gdt_hi_flags(uint32_t flags) {
 #define GDT_FLAGS_16BIT         (0 << 7)
 #define GDT_FLAGS_32BIT         (1 << 7)
 
-/* TYPE */
-#define GDT_FLAGS_TYPE_CODE         (0x1a)
-#define GDT_FLAGS_TYPE_DATA         (0x12)
-#define GDT_FLAGS_TYPE_16TSS        (0x1)
-#define GDT_FLAGS_TYPE_32TSS        (0x9)
-#define GDT_FLAGS_TYPE_16INT_GATE   (0x6)
-#define GDT_FLAGS_TYPE_32INT_GATE   (0xe)
-#define GDT_FLAGS_TYPE_16TRAP_GATE  (0x7)
-#define GDT_FLAGS_TYPE_32TRAP_GATE  (0xf)
-#define GDT_FLAGS_TYPE_TASK_GATE    (0x5)
+enum type {
+    code = 0x1a,
+    data = 0x12,
+    tss16 = 0x1,
+    tss32 = 0x9,
+    int_gate_16 = 0x6,
+    int_gate_32 = 0xe,
+    trap_gate_16 = 0x7,
+    trap_gate_32 = 0xf,
+    task_gate = 0x5
+};
+
+} // namespace flags
 
 } // namespace gdt
 

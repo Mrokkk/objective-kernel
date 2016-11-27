@@ -10,23 +10,23 @@ gdt_entry gdt_entries[] = {
     descriptor_entry(0, 0, 0),
 
     /* Kernel code segment */
-    descriptor_entry(GDT_FLAGS_RING0 | GDT_FLAGS_TYPE_CODE | GDT_FLAGS_4KB | \
+    descriptor_entry(flags::dpl::ring0 | flags::type::code | GDT_FLAGS_4KB | \
                      GDT_FLAGS_32BIT, 0x0, 0xffffffff),
 
     /* Kernel data segment */
-    descriptor_entry(GDT_FLAGS_RING0 | GDT_FLAGS_TYPE_DATA | GDT_FLAGS_4KB | \
+    descriptor_entry(flags::dpl::ring0 | flags::type::data | GDT_FLAGS_4KB | \
                      GDT_FLAGS_32BIT, 0x0, 0xffffffff),
 
     /* User code segment */
-    descriptor_entry(GDT_FLAGS_RING3 | GDT_FLAGS_TYPE_CODE | GDT_FLAGS_4KB | \
+    descriptor_entry(flags::dpl::ring3 | flags::type::code | GDT_FLAGS_4KB | \
                      GDT_FLAGS_32BIT, 0x0, 0xffffffff),
 
     /* User data segment */
-    descriptor_entry(GDT_FLAGS_RING3 | GDT_FLAGS_TYPE_DATA | GDT_FLAGS_4KB | \
+    descriptor_entry(flags::dpl::ring3 | flags::type::data | GDT_FLAGS_4KB | \
                      GDT_FLAGS_32BIT, 0x0, 0xffffffff),
 
     /* TSS */
-    descriptor_entry(GDT_FLAGS_TYPE_32TSS, 0, 0)
+    descriptor_entry(flags::type::tss32, 0, 0)
 
 };
 
