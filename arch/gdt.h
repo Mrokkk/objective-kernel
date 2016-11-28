@@ -6,21 +6,48 @@ enum segment {
     kernel_cs = 0x08,
     kernel_ds = 0x10,
     user_cs = 0x1b,
-    user_ds = 0x23
+    user_ds = 0x23,
+    tss = 0x28
 };
 
 namespace gdt {
 
 struct gdt_entry final {
+
     uint16_t limit_low;
     uint16_t base_low;
     uint8_t base_middle;
     uint8_t access;
     uint8_t granularity;
     uint8_t base_high;
+
+    uint32_t limit() const {
+        return limit_low | (granularity & 0xf) << 16;
+    }
+
+    void limit(uint32_t l) {
+        limit_low = l & 0xffff;
+        granularity = (l >> 16) & 0xf;
+    }
+
+    uint32_t base() const {
+        return base_low | (base_middle << 16) | (base_high << 24);
+    }
+
+    void base(uint32_t b) {
+        base_low = b & 0xffff;
+        base_middle = (b >> 16) & 0xff;
+        base_high = (b >> 24) & 0xff;
+    }
+
+    uint8_t type() const {
+        return access & 0x1e;
+    }
+
 } __packed;
 
 struct gdtr final {
+
     uint16_t limit;
     uint32_t base;
 
@@ -29,23 +56,43 @@ struct gdtr final {
                 lgdt (%%eax)
                 ljmp $0x08, $1f
             1:
-            )" :: "a" (this));
+        )" :: "a" (this));
     }
 
 } __packed;
 
-#define FIRST_TSS_ENTRY 5
-#define FIRST_APM_ENTRY 6
+struct tss final {
+    uint32_t prev_tss;
+    uint32_t esp0;
+    uint32_t ss0;
+    uint32_t esp1;
+    uint32_t ss1;
+    uint32_t esp2;
+    uint32_t ss2;
+    uint32_t cr3;
+    uint32_t eip;
+    uint32_t eflags;
+    uint32_t eax;
+    uint32_t ecx;
+    uint32_t edx;
+    uint32_t ebx;
+    uint32_t esp;
+    uint32_t ebp;
+    uint32_t esi;
+    uint32_t edi;
+    uint32_t es;
+    uint32_t cs;
+    uint32_t ss;
+    uint32_t ds;
+    uint32_t fs;
+    uint32_t gs;
+    uint32_t ldt;
+    uint16_t trap;
+    uint16_t iomap_offset;
+    uint8_t io_bitmap[128];
+} __packed;
 
 void initialize();
-
-constexpr inline auto descriptor_selector(uint8_t num, uint32_t ring) {
-    return (num << 3) | ring;
-}
-
-constexpr inline auto tss_selector(uint8_t num) {
-    return (num + FIRST_TSS_ENTRY) << 3;
-}
 
 namespace detail {
 
@@ -88,24 +135,6 @@ constexpr inline auto gdt_hi_flags(uint32_t flags) {
         detail::gdt_hi_limit(limit) | detail::gdt_hi_flags(flags), \
         detail::gdt_hi_base(base) \
     }
-
-#define descriptor_set_base(gdt, num, base) \
-    gdt[num].base_low = (base) & 0xffff; \
-    gdt[num].base_middle = (((base) >> 16)) & 0xff; \
-    gdt[num].base_high = ((base) >> 24) & 0xff;
-
-#define descriptor_set_limit(gdt, num, limit) \
-    gdt[num].limit_low = (limit) & 0xffff; \
-    gdt[num].granularity = (((limit) >> 16) & 0xf);
-
-#define descriptor_get_base(gdt, num) \
-    (gdt[num].base_low | (gdt[num].base_middle << 16) | (gdt[num].base_high << 24))
-
-#define descriptor_get_limit(gdt, num) \
-    (gdt[num].limit_low | (gdt[num].granularity & 0xf) << 16)
-
-#define descriptor_get_type(gdt, num) \
-    (gdt[num].access & 0x1e)
 
 namespace flags {
 
