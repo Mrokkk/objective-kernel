@@ -112,10 +112,10 @@ void move_csr(void) {
 
     unsigned short off = current_offset_get();
 
-    cpu::ports::outb(14, 0x3D4);
-    cpu::ports::outb((unsigned char) (off >> 8), 0x3D5);
-    cpu::ports::outb(15, 0x3D4);
-    cpu::ports::outb((unsigned char) off, 0x3D5);
+    cpu::io::outb(14, 0x3D4);
+    cpu::io::outb((unsigned char) (off >> 8), 0x3D5);
+    cpu::io::outb(15, 0x3D4);
+    cpu::io::outb((unsigned char) off, 0x3D5);
 
 }
 

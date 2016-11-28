@@ -2,7 +2,7 @@
 
 namespace cpu {
 
-namespace ports {
+namespace io {
 
 inline uint8_t inb(uint16_t port) {
     uint8_t rv;
@@ -22,7 +22,7 @@ inline void io_wait(void) {
     )");
 }
 
-} // namespace ports
+} // namespace io
 
 } // namespace cpu
 
