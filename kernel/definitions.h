@@ -19,6 +19,15 @@
 
 #define __packed __attribute__((packed))
 #define __noreturn __attribute__((noreturn))
+#define __naked __attribute__ ((naked))
+#define __section(x) __attribute__ ((section(#x)))
+#define __optimize(x) __attribute__ ((optimize(#x)))
+
+#define expand(x) x
+#define paste(a, b) a##b
+
+#define __stringify(x) #x
+#define stringify(x) __stringify(x)
 
 #endif
 
