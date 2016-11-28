@@ -28,8 +28,8 @@ endif()
 set(CMAKE_C_FLAGS "-m32 -fdiagnostics-color=always")
 set(CMAKE_CXX_FLAGS "${CMAKE_C_FLAGS} -std=c++14 -ffreestanding -nostdlib -Wall -Wextra -Werror \
                      -fno-builtin -fno-exceptions -fno-rtti -fno-stack-protector -mno-sse -mno-sse2 \
-                     -mno-sse3 -mno-sse4 -mno-avx -O${OPTIMIZE_LEVEL} -include ${CMAKE_SOURCE_DIR}/basic/definitions.h -include ${CMAKE_SOURCE_DIR}/arch/common.h")
-set(CMAKE_EXE_LINKER_FLAGS "-Wl,-T${CMAKE_SOURCE_DIR}/arch/linker.ld -Wl,-Map=kernel.map -Wl,--oformat -Wl,elf32-i386 -Wl,-m -Wl,elf_i386 -nostartfiles -nostdlib")
+                     -mno-sse3 -mno-sse4 -mno-avx -O${OPTIMIZE_LEVEL} -include ${CMAKE_SOURCE_DIR}/basic/definitions.h -include ${CMAKE_SOURCE_DIR}/kernel/common.h")
+set(CMAKE_EXE_LINKER_FLAGS "-Wl,-T${CMAKE_SOURCE_DIR}/linker.ld -Wl,-Map=kernel.map -Wl,--oformat -Wl,elf32-i386 -Wl,-m -Wl,elf_i386 -nostartfiles -nostdlib")
 
 if(MULTIBOOT2)
     add_definitions("-DMULTIBOOT2")
@@ -38,14 +38,12 @@ endif()
 include_directories(yacppl/include)
 include_directories(${CMAKE_SOURCE_DIR})
 
-add_subdirectory(arch)
 add_subdirectory(basic)
 add_subdirectory(drivers)
 add_subdirectory(kernel)
 add_subdirectory(lib)
 
 add_library(${PROJECT_NAME}-lib
-    $<TARGET_OBJECTS:arch>
     $<TARGET_OBJECTS:basic>
     $<TARGET_OBJECTS:drivers>
     $<TARGET_OBJECTS:kernel>

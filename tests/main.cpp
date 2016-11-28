@@ -1,12 +1,12 @@
 #include <drivers/serial.h>
-#include <arch/reboot.h>
+#include <kernel/reboot.h>
 #include <pointer.h>
 #include <lib/ctype.h>
 #include <stdarg.h>
 #include <lib/cstring.h>
-#include <kernel/allocator.h>
-#include <kernel/heap_allocator.h>
-#include <arch/gdt.h>
+#include <kernel/memory/allocator.h>
+#include <kernel/memory/heap_allocator.h>
+#include <kernel/cpu/gdt.h>
 #include "tests.h"
 
 int vsprintf(char *buf, const char *fmt, va_list args);

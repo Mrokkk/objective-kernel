@@ -1,5 +1,5 @@
-#include <arch/asm.h>
-#include <arch/multiboot.h>
+#include <kernel/asm.h>
+#include <kernel/multiboot.h>
 
 #define FLAGS        MULTIBOOT_HEADER_FLAGS
 #define MAGIC        MULTIBOOT_HEADER_MAGIC

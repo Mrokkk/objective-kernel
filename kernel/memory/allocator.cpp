@@ -1,6 +1,6 @@
-#include <kernel/allocator.h>
-#include <kernel/heap_allocator.h>
-#include <arch/sections.h>
+#include <kernel/memory/allocator.h>
+#include <kernel/memory/heap_allocator.h>
+#include <kernel/memory/sections.h>
 
 namespace kernel {
 

@@ -1,7 +1,7 @@
 #pragma once
 
-#include <arch/port.h>
-#include <arch/gdt.h>
+#include <kernel/cpu/port.h>
+#include <kernel/cpu/gdt.h>
 
 __noreturn inline void reboot() {
     auto lock = cpu::irq_save();
