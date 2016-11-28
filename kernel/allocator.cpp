@@ -1,11 +1,11 @@
 #include <kernel/allocator.h>
 #include <kernel/heap_allocator.h>
 
-asmlinkage char _end[];
+asmlinkage char __heap_start[];
 
 namespace kernel {
 
-static allocator<heap_allocator, 32> a(_end);
+static allocator<heap_allocator, 32> a(__heap_start);
 
 } // namespace kernel
 

@@ -31,8 +31,8 @@ ENTRY(_start)
     pushl $0
     popfl
 
-    movl $_sbss, %edi
-    movl $_ebss, %ecx
+    movl $__bss_start, %edi
+    movl $__bss_end, %ecx
     subl %edi, %ecx
     cld
     rep
