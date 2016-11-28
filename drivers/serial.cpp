@@ -11,7 +11,7 @@ enum ports {
     com4 = 0x2e8
 };
 
-int init() {
+int initialize() {
     constexpr const uint16_t port = ports::com1;
     outb(0x00, port + 1);    /* Disable all interrupts*/
     outb(0x80, port + 3);    /* Enable DLAB (set baud rate divisor) */

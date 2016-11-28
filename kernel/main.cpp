@@ -20,7 +20,7 @@ int printf(const char *fmt, ...) {
 
 asmlinkage __noreturn void main() {
     cpu::gdt::initialize();
-    drivers::vga::init();
+    drivers::vga::initialize();
     printf("Hello World!\n");
     while (1);
 }

@@ -176,14 +176,10 @@ int display_write(struct inode *, struct file *, const char *buffer, unsigned in
 
 }
 
-int init() {
-
+int initialize() {
     pointer[0] = (unsigned short*)VIDEO_SEGMENT;
-
     cls();
-
     return 0;
-
 }
 
 } // namespace vga

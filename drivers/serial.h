@@ -4,7 +4,7 @@ namespace drivers {
 
 namespace serial {
 
-int init();
+int initialize();
 void print(const char *string);
 
 } // namespace serial

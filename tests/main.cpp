@@ -112,7 +112,7 @@ void tests() {
 asmlinkage __noreturn void main() {
     cpu::gdt::initialize();
     auto lock = cpu::irq_save();
-    drivers::serial::init();
+    drivers::serial::initialize();
     tests::tests();
     reboot();
     while (1);

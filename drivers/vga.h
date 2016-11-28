@@ -4,7 +4,7 @@ namespace drivers {
 
 namespace vga {
 
-int init();
+int initialize();
 void print(const char *text);
 
 } // namespace vga
