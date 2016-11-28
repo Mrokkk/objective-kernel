@@ -4,8 +4,6 @@
 #include <pointer.h>
 #include <stdarg.h>
 
-asmlinkage char _end[];
-
 int vsprintf(char *buf, const char *fmt, va_list args);
 
 int printf(const char *fmt, ...) {
