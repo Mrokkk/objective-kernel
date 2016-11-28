@@ -23,6 +23,9 @@
     .long MULTIBOOT2_HEADER_ARCH; \
     .long header_end - header_start; \
     .long -(MULTIBOOT2_HEADER_MAGIC + MULTIBOOT2_HEADER_ARCH + header_end - header_start); \
+    .word 0; \
+    .word 0; \
+    .long 8; \
     header_end:
 
 /* Magic number passed from Multiboot 1 compliant bootloader */
