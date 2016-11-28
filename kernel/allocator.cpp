@@ -1,11 +1,10 @@
 #include <kernel/allocator.h>
 #include <kernel/heap_allocator.h>
-
-asmlinkage char __heap_start[];
+#include <arch/sections.h>
 
 namespace kernel {
 
-static allocator<heap_allocator, 32> a(__heap_start);
+static allocator<heap_allocator, 32> a(memory::sections::__heap_start);
 
 } // namespace kernel
 
