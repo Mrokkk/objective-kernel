@@ -25,11 +25,11 @@ else()
     set(OPTIMIZE_LEVEL 0)
 endif()
 
-set(CMAKE_C_FLAGS "-include ${CMAKE_SOURCE_DIR}/kernel/asm.h -m32 -fdiagnostics-color=always")
+set(CMAKE_C_FLAGS "-include ${CMAKE_SOURCE_DIR}/kernel/definitions.h -m32 -fdiagnostics-color=always")
 
 set(CMAKE_CXX_FLAGS "-m32 -fdiagnostics-color=always -std=c++14 -ffreestanding -nostdlib -Wall -Wextra -Werror \
 -fno-builtin -fno-exceptions -fno-rtti -fno-stack-protector -mno-sse -mno-sse2 \
--mno-sse3 -mno-sse4 -mno-avx -O${OPTIMIZE_LEVEL} -include ${CMAKE_SOURCE_DIR}/basic/definitions.h -include ${CMAKE_SOURCE_DIR}/kernel/common.h")
+-mno-sse3 -mno-sse4 -mno-avx -O${OPTIMIZE_LEVEL} -include ${CMAKE_SOURCE_DIR}/kernel/definitions.h -include ${CMAKE_SOURCE_DIR}/kernel/cpu/common.h")
 
 set(CMAKE_EXE_LINKER_FLAGS "-Wl,-T${CMAKE_SOURCE_DIR}/linker.ld -Wl,-Map=kernel.map -Wl,--oformat -Wl,elf32-i386 -Wl,-m -Wl,elf_i386 -nostartfiles -nostdlib")
 

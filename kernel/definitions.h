@@ -1,5 +1,13 @@
 #pragma once
 
+#ifdef __ASSEMBLER__
+
+#define ENTRY(name) \
+    .global name; \
+    name:
+
+#else
+
 #include <stddef.h>
 #include <stdint.h>
 
@@ -11,4 +19,6 @@
 
 #define __packed __attribute__((packed))
 #define __noreturn __attribute__((noreturn))
+
+#endif
 

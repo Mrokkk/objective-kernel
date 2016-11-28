@@ -1,4 +1,3 @@
-#include <kernel/asm.h>
 #include <kernel/multiboot.h>
 
 #define FLAGS        MULTIBOOT_HEADER_FLAGS
