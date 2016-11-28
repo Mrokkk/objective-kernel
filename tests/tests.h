@@ -1,42 +1,45 @@
 #pragma once
 
-struct test_case {
-    void (*func)(test_case *);
+struct test_case final {
+    void (*func)();
     int assertions = 0;
     int failed = 0;
-    test_case(void (*func)(test_case *))
+    test_case(void (*func)())
         : func(func) {
     }
     void call() {
-        func(this);
+        func();
     }
 };
 
+test_case *_current_test_case = nullptr;
+
 #define REQUIRE(cond) \
     { \
-        _test_case->assertions++; \
+        _current_test_case->assertions++; \
         if (!(cond)) { \
-            _test_case->failed++; \
+            _current_test_case->failed++; \
             printf("assertion failed: %s:%d: \'%s\' is false\n", __FILE__, __LINE__, #cond); \
         } \
     }
 
 #define REQUIRE_FALSE(cond) \
     { \
-        _test_case->assertions++; \
+        _current_test_case->assertions++; \
         if ((cond)) { \
-            _test_case->failed++; \
+            _current_test_case->failed++; \
             printf("assertion failed: %s:%d: \'%s\' is true\n", __FILE__, __LINE__, #cond); \
         } \
     }
 
 #define TEST(suite, name) \
-    static void suite##_##name(test_case *); \
+    static void suite##_##name(); \
     test_case __##suite##_##name{suite##_##name}; \
-    static void suite##_##name(test_case *_test_case)
+    static void suite##_##name()
 
 #define TEST_RUN(suite, name) \
     printf("\e[32m[  RUN   ]\e[0m %s.%s\n", #suite, #name); \
+    _current_test_case = &__##suite##_##name; \
     __##suite##_##name.call(); \
     if (__##suite##_##name.failed) printf("\e[31m[  FAIL  ]\e[0m "); \
     else printf("\e[32m[  PASS  ]\e[0m "); \
