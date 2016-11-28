@@ -7,6 +7,7 @@
 #include <kernel/memory/allocator.h>
 #include <kernel/memory/heap_allocator.h>
 #include <kernel/cpu/gdt.h>
+#define TEST_MAIN
 #include "tests.h"
 
 int vsprintf(char *buf, const char *fmt, va_list args);
