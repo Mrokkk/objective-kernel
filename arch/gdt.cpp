@@ -31,12 +31,12 @@ gdtr gdt = {4096 * 8 - 1, reinterpret_cast<uint32_t>(&gdt_entries)};
 void initialize() {
     gdt.load();
     asm volatile(R"(
-        mov $0x10, %eax
-        mov %ax, %ds
-        mov %ax, %es
-        mov %ax, %fs
-        mov %ax, %gs
-    )");
+        mov %0, %%eax
+        mov %%ax, %%ds
+        mov %%ax, %%es
+        mov %%ax, %%fs
+        mov %%ax, %%gs
+    )" :: "r" (cpu::segment::kernel_ds));
 }
 
 } // namespace gdt

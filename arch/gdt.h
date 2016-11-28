@@ -2,9 +2,16 @@
 
 namespace cpu {
 
+enum segment {
+    kernel_cs = 0x08,
+    kernel_ds = 0x10,
+    user_cs = 0x1b,
+    user_ds = 0x23
+};
+
 namespace gdt {
 
-struct gdt_entry {
+struct gdt_entry final {
     uint16_t limit_low;
     uint16_t base_low;
     uint8_t base_middle;
@@ -13,7 +20,7 @@ struct gdt_entry {
     uint8_t base_high;
 } __packed;
 
-struct gdtr {
+struct gdtr final {
     uint16_t limit;
     uint32_t base;
 

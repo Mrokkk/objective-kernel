@@ -109,6 +109,7 @@ void tests() {
 
 asmlinkage __noreturn void main() {
     cpu::gdt::initialize();
+    auto lock = cpu::irq_save();
     serial_init();
     tests();
     reboot();
