@@ -1,5 +1,13 @@
 #pragma once
 
-int video_init();
-void display_print(const char *text);
+namespace drivers {
+
+namespace vga {
+
+int init();
+void print(const char *text);
+
+} // namespace vga
+
+} // namespace drivers
 

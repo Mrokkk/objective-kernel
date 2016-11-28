@@ -27,6 +27,10 @@
 #define RESX 80
 #define RESY 25
 
+namespace drivers {
+
+namespace vga {
+
 static unsigned short *pointer[4] = {
         (unsigned short *)0xb8000,
         (unsigned short *)(0xb8000 + 1 * 4096),
@@ -156,7 +160,7 @@ void putch(unsigned char c) {
 
 }
 
-void display_print(const char *text) {
+void print(const char *text) {
 
     while (*text)
         putch(*text++);
@@ -172,7 +176,7 @@ int display_write(struct inode *, struct file *, const char *buffer, unsigned in
 
 }
 
-int video_init() {
+int init() {
 
     pointer[0] = (unsigned short*)VIDEO_SEGMENT;
 
@@ -181,4 +185,8 @@ int video_init() {
     return 0;
 
 }
+
+} // namespace vga
+
+} // namespace drivers
 

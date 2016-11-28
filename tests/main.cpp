@@ -20,7 +20,7 @@ int printf(const char *fmt, ...) {
     va_start(args, fmt);
     printed = vsprintf(printf_buf, fmt, args);
     va_end(args);
-    serial_print(printf_buf);
+    drivers::serial::print(printf_buf);
     return printed;
 }
 
@@ -107,14 +107,14 @@ void tests() {
     TEST_RUN(kernel_allocator, can_allocate_and_free);
 }
 
+} // namespace tests
+
 asmlinkage __noreturn void main() {
     cpu::gdt::initialize();
     auto lock = cpu::irq_save();
-    serial_init();
-    tests();
+    drivers::serial::init();
+    tests::tests();
     reboot();
     while (1);
 }
-
-} // namespace tests
 

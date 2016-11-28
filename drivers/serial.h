@@ -1,5 +1,13 @@
 #pragma once
 
-int serial_init();
-void serial_print(const char *string);
+namespace drivers {
+
+namespace serial {
+
+int init();
+void print(const char *string);
+
+} // namespace serial
+
+} // namespace drivers
 
