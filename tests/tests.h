@@ -34,7 +34,7 @@ struct test_session final {
         int failed = 0;
 
         test_case(const char *suite, const char *test, void (*func)())
-            : _suite_name(suite), _test_name(test), _func(func) {
+                : _suite_name(suite), _test_name(test), _func(func) {
             test_session::get().register_test(this);
         }
 

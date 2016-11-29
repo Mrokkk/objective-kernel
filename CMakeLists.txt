@@ -58,6 +58,7 @@ add_executable(${PROJECT_NAME}
 
 add_executable(${PROJECT_NAME}-tests
     tests/main.cpp
+    tests/allocator.cpp
 )
 
 target_link_libraries(${PROJECT_NAME} ${PROJECT_NAME}-lib)
