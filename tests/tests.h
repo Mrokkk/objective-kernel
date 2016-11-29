@@ -4,55 +4,76 @@
 
 int tprintf(const char *fmt, ...);
 
+namespace etf {
+
 namespace detail {
 
-class test_case;
-extern detail::test_case *_current_test_case;
+struct test_session final {
 
-class test_session {
+    class test_case final : public yacppl::inherited_list<test_case> {
+
+        const char *_suite_name;
+        const char *_test_name;
+        void (*_func)();
+
+        void print_test_start_message() {
+            tprintf("\e[32m[  RUN   ]\e[0m %s.%s\n", _suite_name, _test_name);
+        }
+
+        void print_test_result() {
+            if (failed)
+                tprintf("\e[31m[  FAIL  ]\e[0m ");
+            else
+                tprintf("\e[32m[  PASS  ]\e[0m ");
+            tprintf("%s.%s (%u assertions)\n\n", _suite_name, _test_name, assertions);
+        }
+
+    public:
+
+        int assertions = 0;
+        int failed = 0;
+
+        test_case(const char *suite, const char *test, void (*func)())
+            : _suite_name(suite), _test_name(test), _func(func) {
+            test_session::get().register_test(this);
+        }
+
+        void call() {
+            print_test_start_message();
+            _func();
+            print_test_result();
+        }
+
+    };
+
+private:
 
     yacppl::inherited_list<test_case> _test_cases;
-    static test_session singleton;
+    test_case *_current_test_case;
+    size_t _tests_number = 0;
+    static test_session _instance;
 
 public:
 
     static test_session &get() {
-        return singleton;
+        return _instance;
     }
 
     void register_test(test_case *t) {
+        _tests_number++;
         _test_cases.add(t);
     }
 
-    auto begin() {
-        return _test_cases.begin();
+    void run() {
+        tprintf("\e[32m[========]\e[0m Running %u test cases\n\n", _tests_number);
+        for (auto &test : _test_cases) {
+            _current_test_case = &test;
+            test.call();
+        }
     }
 
-    auto end() {
-        return _test_cases.end();
-    }
-
-};
-
-struct test_case final : public yacppl::inherited_list<test_case> {
-
-    const char *suite_name;
-    const char *test_name;
-    void (*func)();
-    int assertions = 0;
-    int failed = 0;
-
-    test_case(const char *suite, const char *test, void (*func)())
-        : suite_name(suite), test_name(test), func(func) {
-        test_session::get().register_test(this);
-    }
-    void call() {
-        tprintf("\e[32m[  RUN   ]\e[0m %s.%s\n", suite_name, test_name); \
-        _current_test_case = this;
-        func();
-        if (failed) tprintf("\e[31m[  FAIL  ]\e[0m ");
-        else tprintf("\e[32m[  PASS  ]\e[0m ");
-        tprintf("%s.%s (%u assertions)\n\n", suite_name, test_name, assertions);
+    test_case &current_test_case() {
+        return *_current_test_case;
     }
 
 };
@@ -61,35 +82,41 @@ struct test_case final : public yacppl::inherited_list<test_case> {
 
 #define REQUIRE(cond) \
     { \
-        detail::_current_test_case->assertions++; \
+        etf::detail::test_session::get().current_test_case().assertions++; \
         if (!(cond)) { \
-            detail::_current_test_case->failed++; \
+            etf::detail::test_session::get().current_test_case().failed++; \
             tprintf("assertion failed: %s:%d: \'%s\' is false\n", __FILE__, __LINE__, #cond); \
         } \
     }
 
 #define REQUIRE_FALSE(cond) \
     { \
-        detail::_current_test_case->assertions++; \
+        etf::detail::_current_test_case->assertions++; \
         if ((cond)) { \
-            detail::_current_test_case->failed++; \
+            etf::detail::_current_test_case->failed++; \
             tprintf("assertion failed: %s:%d: \'%s\' is true\n", __FILE__, __LINE__, #cond); \
         } \
     }
 
 #define TEST(suite, name) \
     static void suite##_##name(); \
-    detail::test_case __##suite##_##name{#suite, #name, suite##_##name}; \
+    etf::detail::test_session::test_case __##suite##_##name{#suite, #name, suite##_##name}; \
     static void suite##_##name()
 
 #ifdef TEST_MAIN
 
 namespace detail {
 
-detail::test_session detail::test_session::singleton;
-detail::test_case *_current_test_case = nullptr;
+test_session test_session::_instance;
 
+} // namespace detail
+
+void main() {
+    detail::test_session::get().run();
 }
 
 #endif
+
+} // namespace etf
+
 

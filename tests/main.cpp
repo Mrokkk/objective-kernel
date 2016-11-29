@@ -23,8 +23,6 @@ int tprintf(const char *fmt, ...) {
     return printed;
 }
 
-namespace tests {
-
 char allocator_test_map[1024*1024];
 
 TEST(allocator, can_allocate) {
@@ -101,15 +99,11 @@ TEST(kernel_allocator, can_allocate_and_free) {
     }
 }
 
-} // namespace tests
-
 asmlinkage __noreturn void main() {
     cpu::gdt::initialize();
     auto lock = cpu::irq_save();
     drivers::serial::initialize();
-    for (auto &test : detail::test_session::get()) {
-        test.call();
-    }
+    etf::main();
     reboot();
     while (1);
 }
