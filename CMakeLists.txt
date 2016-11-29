@@ -56,15 +56,8 @@ add_executable(${PROJECT_NAME}
     kernel/main.cpp
 )
 
-add_executable(${PROJECT_NAME}-tests
-    tests/main.cpp
-    tests/allocator.cpp
-)
-
 target_link_libraries(${PROJECT_NAME} ${PROJECT_NAME}-lib)
-target_link_libraries(${PROJECT_NAME}-tests ${PROJECT_NAME}-lib)
 
-configure_file(${CMAKE_SOURCE_DIR}/CMake/runtests.in ${CMAKE_BINARY_DIR}/runtests @ONLY)
 configure_file(${CMAKE_SOURCE_DIR}/CMake/runqemu.in ${CMAKE_BINARY_DIR}/runqemu @ONLY)
 
 if(MULTIBOOT2)
@@ -79,13 +72,6 @@ add_custom_target(
 )
 
 add_custom_target(
-    tests-iso
-    COMMAND ${CMAKE_SOURCE_DIR}/CMake/isomaker.sh -o ${PROJECT_NAME}-tests ${MULTIBOOT_FLAG} --grub-use-serial
-    DEPENDS ${PROJECT_NAME}-tests
-    COMMENT "Building bootable ISO for tests"
-)
-
-add_custom_target(
     runqemu
     COMMAND chmod +x ${CMAKE_BINARY_DIR}/runqemu
     COMMAND ${CMAKE_BINARY_DIR}/runqemu
@@ -93,11 +79,5 @@ add_custom_target(
     COMMENT "Booting kernel"
 )
 
-add_custom_target(
-    runtests
-    COMMAND chmod +x ${CMAKE_BINARY_DIR}/runtests
-    COMMAND ${CMAKE_BINARY_DIR}/runtests
-    DEPENDS tests-iso
-    COMMENT "Running tests"
-)
+add_subdirectory(tests)
 

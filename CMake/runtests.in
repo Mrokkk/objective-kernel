@@ -1,6 +1,6 @@
 #!/bin/bash
 
-$(which qemu-system-i386 || which qemu-system-x86_64) -cdrom @CMAKE_BINARY_DIR@/os-tests.iso -display none -serial stdio -no-reboot -cpu core2duo $@ | tee log
+$(which qemu-system-i386 || which qemu-system-x86_64) -cdrom @CMAKE_BINARY_DIR@/tests/os-tests.iso -display none -serial stdio -no-reboot -cpu core2duo $@ | tee log
 if grep -q "failed\|error" log; then
     exit 1
 fi
