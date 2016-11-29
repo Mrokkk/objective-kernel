@@ -12,9 +12,7 @@
 
 int vsprintf(char *buf, const char *fmt, va_list args);
 
-namespace tests {
-
-int printf(const char *fmt, ...) {
+int tprintf(const char *fmt, ...) {
     char printf_buf[512];
     va_list args;
     int printed;
@@ -24,6 +22,8 @@ int printf(const char *fmt, ...) {
     drivers::serial::print(printf_buf);
     return printed;
 }
+
+namespace tests {
 
 char allocator_test_map[1024*1024];
 
@@ -101,20 +101,15 @@ TEST(kernel_allocator, can_allocate_and_free) {
     }
 }
 
-void tests() {
-    TEST_RUN(allocator, can_allocate);
-    TEST_RUN(allocator, cannot_free_invalid_ptr);
-    TEST_RUN(allocator, can_divide_blocks);
-    TEST_RUN(kernel_allocator, can_allocate_and_free);
-}
-
 } // namespace tests
 
 asmlinkage __noreturn void main() {
     cpu::gdt::initialize();
     auto lock = cpu::irq_save();
     drivers::serial::initialize();
-    tests::tests();
+    for (auto &test : detail::test_session::get()) {
+        test.call();
+    }
     reboot();
     while (1);
 }
