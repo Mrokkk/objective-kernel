@@ -38,6 +38,11 @@ struct test_session final {
             test_session::get().register_test(this);
         }
 
+        void assert(bool cond) {
+            ++assertions;
+            if (!cond) ++failed;
+        }
+
         void call() {
             print_test_start_message();
             _func();
@@ -82,25 +87,24 @@ public:
 
 #define REQUIRE(cond) \
     { \
-        etf::detail::test_session::get().current_test_case().assertions++; \
-        if (!(cond)) { \
-            etf::detail::test_session::get().current_test_case().failed++; \
+        etf::detail::test_session::get().current_test_case().assert(cond); \
+        if (!(cond)) \
             tprintf("assertion failed: %s:%d: \'%s\' is false\n", __FILE__, __LINE__, #cond); \
-        } \
     }
 
 #define REQUIRE_FALSE(cond) \
     { \
-        etf::detail::_current_test_case->assertions++; \
-        if ((cond)) { \
-            etf::detail::_current_test_case->failed++; \
+        etf::detail::test_session::get().current_test_case().assert(!(cond)); \
+        if (cond) \
             tprintf("assertion failed: %s:%d: \'%s\' is true\n", __FILE__, __LINE__, #cond); \
-        } \
     }
+
+#define ETF_UNIQUE_NAME(name) \
+    name##__COUNTER__
 
 #define TEST(suite, name) \
     static void suite##_##name(); \
-    etf::detail::test_session::test_case __##suite##_##name{#suite, #name, suite##_##name}; \
+    etf::detail::test_session::test_case ETF_UNIQUE_NAME(suite##_##name){#suite, #name, suite##_##name}; \
     static void suite##_##name()
 
 #ifdef TEST_MAIN
