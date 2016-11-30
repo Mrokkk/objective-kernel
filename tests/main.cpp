@@ -1,26 +1,13 @@
 #include <drivers/serial.h>
 #include <kernel/reboot.h>
 #include <pointer.h>
-#include <stdarg.h>
 #include <lib/cstring.h>
 #include <kernel/cpu/gdt.h>
 #include <kernel/cpu/idt.h>
+#include <kernel/console.h>
 
 #define TEST_MAIN
 #include "tests.h"
-
-int vsprintf(char *buf, const char *fmt, va_list args);
-
-int tprintf(const char *fmt, ...) {
-    char printf_buf[512];
-    va_list args;
-    int printed;
-    va_start(args, fmt);
-    printed = vsprintf(printf_buf, fmt, args);
-    va_end(args);
-    drivers::serial::print(printf_buf);
-    return printed;
-}
 
 TEST(kernel_allocator, can_allocate_and_free) {
     for (int i = 0; i < 1024; i++) {
@@ -45,11 +32,12 @@ TEST(kernel_allocator, can_allocate_and_free) {
 }
 
 asmlinkage __noreturn void main() {
+    auto lock = cpu::irq_save();
     cpu::gdt::initialize();
     cpu::idt::initialize();
-    auto lock = cpu::irq_save();
     drivers::serial::initialize();
-    etf::main();
+    console::initialize(drivers::serial::print);
+    etf::main(console::print);
     reboot();
     while (1);
 }

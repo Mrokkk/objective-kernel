@@ -2,11 +2,13 @@
 
 #include <inherited_list.h>
 
-int tprintf(const char *fmt, ...);
+using tests_printer = void (*)(const char *, ...);
 
 namespace etf {
 
 namespace detail {
+
+extern tests_printer _print;
 
 struct test_session final {
 
@@ -17,15 +19,15 @@ struct test_session final {
         void (*_func)();
 
         void print_test_start_message() {
-            tprintf("\e[32m[  RUN   ]\e[0m %s.%s\n", _suite_name, _test_name);
+            etf::detail::_print("\e[32m[  RUN   ]\e[0m %s.%s\n", _suite_name, _test_name);
         }
 
         void print_test_result() {
             if (failed)
-                tprintf("\e[31m[  FAIL  ]\e[0m ");
+                etf::detail::_print("\e[31m[  FAIL  ]\e[0m ");
             else
-                tprintf("\e[32m[  PASS  ]\e[0m ");
-            tprintf("%s.%s (%u assertions)\n\n", _suite_name, _test_name, assertions);
+                etf::detail::_print("\e[32m[  PASS  ]\e[0m ");
+            etf::detail::_print("%s.%s (%u assertions)\n\n", _suite_name, _test_name, assertions);
         }
 
     public:
@@ -70,7 +72,7 @@ public:
     }
 
     void run() {
-        tprintf("\e[32m[========]\e[0m Running %u test cases\n\n", _tests_number);
+        etf::detail::_print("\e[32m[========]\e[0m Running %u test cases\n\n", _tests_number);
         for (auto &test : _test_cases) {
             _current_test_case = &test;
             test.call();
@@ -89,14 +91,14 @@ public:
     { \
         etf::detail::test_session::get().current_test_case().assert(cond); \
         if (!(cond)) \
-            tprintf("assertion failed: %s:%d: \'%s\' is false\n", __FILE__, __LINE__, #cond); \
+            etf::detail::_print("assertion failed: %s:%d: \'%s\' is false\n", __FILE__, __LINE__, #cond); \
     }
 
 #define REQUIRE_FALSE(cond) \
     { \
         etf::detail::test_session::get().current_test_case().assert(!(cond)); \
         if (cond) \
-            tprintf("assertion failed: %s:%d: \'%s\' is true\n", __FILE__, __LINE__, #cond); \
+            etf::detail::_print("assertion failed: %s:%d: \'%s\' is true\n", __FILE__, __LINE__, #cond); \
     }
 
 #define ETF_UNIQUE_NAME(name) \
@@ -112,10 +114,12 @@ public:
 namespace detail {
 
 test_session test_session::_instance;
+tests_printer _print;
 
 } // namespace detail
 
-void main() {
+void main(tests_printer printer) {
+    detail::_print = printer;
     detail::test_session::get().run();
 }
 
