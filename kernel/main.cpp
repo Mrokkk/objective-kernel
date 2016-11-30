@@ -1,6 +1,7 @@
 #include <drivers/vga.h>
 #include <kernel/reboot.h>
 #include <kernel/cpu/gdt.h>
+#include <kernel/cpu/idt.h>
 #include <pointer.h>
 #include <stdarg.h>
 
