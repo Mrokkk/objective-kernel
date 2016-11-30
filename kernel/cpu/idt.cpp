@@ -1,6 +1,7 @@
 #include <kernel/cpu/idt.h>
 #include <kernel/cpu/gdt.h>
 #include <kernel/cpu/exceptions.h>
+#include <kernel/console.h>
 
 namespace cpu {
 
@@ -10,7 +11,7 @@ idt_entry idt_entries[256];
 
 idtr idt = {
         sizeof(idt_entry) * 256 - 1,
-        reinterpret_cast<unsigned int>(&idt_entries)
+        idt_entries
 };
 
 declare_extern_exception(divide_error)
@@ -48,6 +49,7 @@ void initialize() {
     exception_initialize(stack_segment)
     exception_initialize(general_protection)
     exception_initialize(page_fault)
+    idt.load();
 }
 
 } // namespace idt

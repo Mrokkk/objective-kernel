@@ -11,7 +11,7 @@ MULTIBOOT_HEADER
 .section .text.boot
 ENTRY(_start)
 
-    mov $stack, %esp
+    mov $kernel_stack, %esp
 
     pushl $0
     popfl
@@ -29,5 +29,6 @@ ENTRY(_start)
     jmp 1b
 
 .skip 1024
-stack:
+
+ENTRY(kernel_stack)
 

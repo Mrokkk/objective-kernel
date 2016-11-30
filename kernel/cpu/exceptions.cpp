@@ -2,21 +2,21 @@
 #include <kernel/cpu/stack_frame.h>
 #include <kernel/console.h>
 
-const char *exception_names = {
-    exception_name(divide_error)
-    exception_name(debug)
-    exception_name(nmi)
-    exception_name(breakpoint)
-    exception_name(overflow)
-    exception_name(bound_range)
-    exception_name(invalid_opcode)
-    exception_name(device_na)
-    exception_name(double_fault)
-    exception_name(coprocessor)
-    exception_name(invalid_tss)
-    exception_name(segment_np)
-    exception_name(stack_segment)
-    exception_name(general_protection)
+const char *exception_names[] = {
+    exception_name(divide_error),
+    exception_name(debug),
+    exception_name(nmi),
+    exception_name(breakpoint),
+    exception_name(overflow),
+    exception_name(bound_range),
+    exception_name(invalid_opcode),
+    exception_name(device_na),
+    exception_name(double_fault),
+    exception_name(coprocessor),
+    exception_name(invalid_tss),
+    exception_name(segment_np),
+    exception_name(stack_segment),
+    exception_name(general_protection),
     exception_name(page_fault)
 };
 
