@@ -1,8 +1,13 @@
 ENTRY(_start)
 
+__kernel_phys = 0x00100000;
+__kernel_virt = 0xC0100000;
+
+__kernel_offset = __kernel_virt - __kernel_phys;
+
 SECTIONS {
 
-    . = 1M;
+    . = __kernel_phys;
 
     .unpagged BLOCK(4K) : ALIGN(4K) {
         __unpagged_start = .;
