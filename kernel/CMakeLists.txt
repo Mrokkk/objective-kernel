@@ -1,3 +1,4 @@
 set_property(SOURCE head.S PROPERTY LANGUAGE C)
-add_library(kernel OBJECT head.S cpu/gdt.cpp memory/allocator.cpp memory/paging.cpp)
+set_property(SOURCE cpu/exceptions.S PROPERTY LANGUAGE C)
+add_library(kernel OBJECT head.S cpu/gdt.cpp cpu/exceptions.cpp cpu/exceptions.S memory/allocator.cpp memory/paging.cpp)
 
