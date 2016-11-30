@@ -1,8 +1,16 @@
 #pragma once
 
-namespace kernel {
+#define PAGE_SIZE 0x1000
+#define PAGE_NUMBER 0x100000
+#define PAGE_TABLES_NUMBER 1024
+#define PAGE_INIT_FLAGS (0x7)
+#define KERNEL_PAGE_OFFSET (0xc0000000)
+
+#ifndef __ASSEMBLER__
 
 namespace memory {
+
+namespace paging {
 
 struct page_directory_entry final {
     uint32_t present : 1;
@@ -31,7 +39,9 @@ struct page_table_entry final {
     uint32_t address : 20;
 } __packed;
 
+} // namespace paging
+
 } // namespace memory
 
-} // namespace kernel
+#endif
 

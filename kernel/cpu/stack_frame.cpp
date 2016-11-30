@@ -12,7 +12,7 @@ void stack_frame::print() {
     console::print("EIP=0x%04x:0x%08x\n", cs, eip);
     console::print("DS=0x%04x; ES=0x%04x; FS=0x%04x; GS=0x%04x\n", ds, es, fs, gs);
     console::print("EFLAGS=0x%08x : ", eflags);
-    console::print("IOPL=%d ", (eflags >> 12) & 0x3);
+    console::print("IOPL=%d\n", (eflags >> 12) & 0x3);
 }
 
 } // namespace cpu
