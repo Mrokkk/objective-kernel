@@ -29,16 +29,8 @@ declare_extern_exception(stack_segment)
 declare_extern_exception(general_protection)
 declare_extern_exception(page_fault)
 
-static void idt_set_gate(uint8_t num, uint32_t base, uint16_t selector, uint32_t flags) {
-    idt_entries[num].base_lo = base & 0xFFFF;
-    idt_entries[num].base_hi = (base >> 16) & 0xFFFF;
-    idt_entries[num].sel = selector;
-    idt_entries[num].always0 = 0;
-    idt_entries[num].flags = flags | 0x80;
-}
-
 #define exception_initialize(x) \
-    idt_set_gate(__NR_##x, reinterpret_cast<uint32_t>(exc_##x##_handler), segment::kernel_cs, gdt::flags::type::trap_gate_32);
+    idt_entries[__NR_##x].set_gate(reinterpret_cast<uint32_t>(exc_##x##_handler), segment::kernel_cs, gdt::flags::type::trap_gate_32);
 
 void initialize() {
     exception_initialize(divide_error)
