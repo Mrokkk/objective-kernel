@@ -64,7 +64,7 @@
     __STRING_##x
 
 #define declare_extern_exception(x) \
-    asmlinkage void exc_##x##_handler(void);
+    asmlinkage void exc_##x##_handler(void)
 
 #endif
 
