@@ -1,6 +1,6 @@
 #pragma once
 
-namespace kernel {
+namespace memory {
 
 class heap_allocator final {
 

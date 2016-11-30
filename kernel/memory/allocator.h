@@ -3,7 +3,7 @@
 #include <inherited_list.h>
 #include <basic/new.h>
 
-namespace kernel {
+namespace memory {
 
 template <class Heap_Allocator, size_t _memory_block_size>
 class allocator final {
@@ -103,5 +103,5 @@ public:
 
 };
 
-} // namespace kernel
+} // namespace memory
 

@@ -7,7 +7,7 @@ char allocator_test_map[1024*1024];
 TEST(allocator, can_allocate) {
     constexpr size_t memory_block_size = 32;
     auto expected = allocator_test_map + memory_block_size;
-    kernel::allocator<kernel::heap_allocator, memory_block_size> test_allocator(allocator_test_map);
+    memory::allocator<memory::heap_allocator, memory_block_size> test_allocator(allocator_test_map);
     for (auto i = 1; i < 1025; ++i) {
         auto result = test_allocator.allocate(i);
         REQUIRE(result == expected);
@@ -22,7 +22,7 @@ TEST(allocator, can_allocate) {
 
 TEST(allocator, cannot_free_invalid_ptr) {
     constexpr size_t memory_block_size = 32;
-    kernel::allocator<kernel::heap_allocator, memory_block_size> test_allocator(allocator_test_map);
+    memory::allocator<memory::heap_allocator, memory_block_size> test_allocator(allocator_test_map);
     for (auto i = 0; i < 4096; ++i) {
         REQUIRE(test_allocator.free(reinterpret_cast<void *>(i)));
     }
@@ -35,7 +35,7 @@ TEST(allocator, cannot_free_invalid_ptr) {
 
 TEST(allocator, can_divide_blocks) {
     constexpr size_t memory_block_size = 32;
-    kernel::allocator<kernel::heap_allocator, memory_block_size> test_allocator(allocator_test_map);
+    memory::allocator<memory::heap_allocator, memory_block_size> test_allocator(allocator_test_map);
     auto data1 = test_allocator.allocate(120);
     auto expected = allocator_test_map + memory_block_size;
     REQUIRE(data1 == expected);
