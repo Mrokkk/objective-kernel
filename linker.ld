@@ -16,43 +16,49 @@ SECTIONS {
         __unpagged_end = .;
     }
 
-    .text BLOCK(4K) : ALIGN(4K) {
+    . += __kernel_offset;
+
+    . = ALIGN(4K);
+    .text BLOCK(4K) : AT(ADDR(.text) - __kernel_offset) {
         __text_start = .;
         *(.text)
         __text_end = .;
     }
 
-    .rodata BLOCK(4K) : ALIGN(4K) {
+    . = ALIGN(4K);
+    .rodata BLOCK(4K) : AT(ADDR(.rodata) - __kernel_offset) {
         *(.rodata)
     }
 
-    .preinit_array : {
+    .preinit_array : AT(ADDR(.preinit_array) - __kernel_offset) {
         PROVIDE_HIDDEN (__preinit_array_start = .);
         KEEP (*(.preinit_array))
         PROVIDE_HIDDEN (__preinit_array_end = .);
     }
 
-    .init_array : {
+    .init_array : AT(ADDR(.init_array) - __kernel_offset) {
         PROVIDE_HIDDEN (__init_array_start = .);
         KEEP (*(SORT_BY_INIT_PRIORITY(.init_array.*) SORT_BY_INIT_PRIORITY(.ctors.*)))
         KEEP (*(.init_array EXCLUDE_FILE (*crtbegin.o *crtbegin?.o *crtend.o *crtend?.o ) .ctors))
         PROVIDE_HIDDEN (__init_array_end = .);
     }
 
-    .fini_array : {
+    .fini_array : AT(ADDR(.fini_array) - __kernel_offset) {
         PROVIDE_HIDDEN (__fini_array_start = .);
         KEEP (*(SORT_BY_INIT_PRIORITY(.fini_array.*) SORT_BY_INIT_PRIORITY(.dtors.*)))
         KEEP (*(.fini_array EXCLUDE_FILE (*crtbegin.o *crtbegin?.o *crtend.o *crtend?.o ) .dtors))
         PROVIDE_HIDDEN (__fini_array_end = .);
     }
 
-    .data BLOCK(4K) : ALIGN(4K) {
+    . = ALIGN(4K);
+    .data BLOCK(4K) : AT(ADDR(.data) - __kernel_offset) {
         __data_start = .;
         *(.data)
         __data_end = .;
     }
 
-    .bss BLOCK(4K) : ALIGN(4K) {
+    . = ALIGN(4K);
+    .bss BLOCK(4K) : AT(ADDR(.bss) - __kernel_offset) {
         __bss_start = .;
         *(COMMON)
         *(.bss)
