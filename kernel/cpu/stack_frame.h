@@ -3,6 +3,7 @@
 namespace cpu {
 
 struct stack_frame {
+
     uint32_t ebx;
     uint32_t ecx;
     uint32_t edx;
@@ -19,6 +20,9 @@ struct stack_frame {
     uint32_t eflags;
     uint32_t esp;
     uint16_t ss, __ss;
+
+    void print();
+
 };
 
 } // namespace cpu

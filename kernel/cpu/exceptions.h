@@ -60,6 +60,9 @@
 
 #else
 
+#define exception_name(x) \
+    __STRING_##x
+
 #define declare_extern_exception(x) \
     asmlinkage void exc_##x##_handler(void);
 
