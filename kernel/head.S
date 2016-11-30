@@ -8,7 +8,7 @@ MULTIBOOT2_HEADER
 MULTIBOOT_HEADER
 #endif
 
-.text
+.section .text.boot
 ENTRY(_start)
 
     mov $stack, %esp

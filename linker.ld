@@ -4,9 +4,15 @@ SECTIONS {
 
     . = 1M;
 
+    .unpagged BLOCK(4K) : ALIGN(4K) {
+        __unpagged_start = .;
+        KEEP(*(.multiboot))
+        KEEP(*(.text.boot))
+        __unpagged_end = .;
+    }
+
     .text BLOCK(4K) : ALIGN(4K) {
         __text_start = .;
-        KEEP(*(.multiboot))
         *(.text)
         __text_end = .;
     }
