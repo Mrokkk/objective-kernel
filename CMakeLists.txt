@@ -27,7 +27,7 @@ endif()
 
 set(CMAKE_C_FLAGS "-include ${CMAKE_SOURCE_DIR}/kernel/definitions.h -m32 -fdiagnostics-color=always")
 
-set(CMAKE_CXX_FLAGS "-m32 -fdiagnostics-color=always -std=c++14 -ffreestanding -nostdlib -Wall -Wextra -Werror \
+set(CMAKE_CXX_FLAGS "-m32 -fdiagnostics-color=always -std=c++1z -ffreestanding -nostdlib -Wall -Wextra -Werror \
 -fno-builtin -fno-exceptions -fno-rtti -fno-stack-protector -mno-sse -mno-sse2 \
 -mno-sse3 -mno-sse4 -mno-avx -O${OPTIMIZE_LEVEL} -include ${CMAKE_SOURCE_DIR}/kernel/definitions.h -include ${CMAKE_SOURCE_DIR}/kernel/cpu/common.h")
 

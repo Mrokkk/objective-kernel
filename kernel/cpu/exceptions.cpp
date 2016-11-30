@@ -21,7 +21,7 @@ const char *exception_names[] = {
 };
 
 asmlinkage __noreturn void exception_handler(uint32_t nr, uint32_t error_code, cpu::stack_frame frame) {
-    console::print("Exception: %s #%u\n", exception_names[nr], error_code);
+    console::print("Exception: ", exception_names[nr], " #", static_cast<int>(error_code), "\n");
     frame.print();
     while (1);
 }

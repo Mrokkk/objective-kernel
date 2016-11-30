@@ -16,7 +16,6 @@ ENTRY(_start)
     pushl $0
     popfl
 
-    /* Set segment registers */
     mov $KERNEL_DS, %eax
     mov %ax, %ds
     mov %ax, %es
@@ -70,7 +69,7 @@ page_table0:
 
 .section .bss
 
-.skip 2048
+.skip 4096
 ENTRY(kernel_stack)
 
 
