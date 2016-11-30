@@ -1,5 +1,12 @@
 #pragma once
 
+#ifdef __ASSEMBLER__
+
+#define KERNEL_CS 0x08
+#define KERNEL_DS 0x10
+
+#else
+
 namespace cpu {
 
 enum segment {
@@ -172,4 +179,6 @@ enum type {
 } // namespace gdt
 
 } // namespace cpu
+
+#endif
 

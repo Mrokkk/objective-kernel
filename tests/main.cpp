@@ -4,6 +4,7 @@
 #include <stdarg.h>
 #include <lib/cstring.h>
 #include <kernel/cpu/gdt.h>
+#include <kernel/cpu/idt.h>
 
 #define TEST_MAIN
 #include "tests.h"
@@ -45,6 +46,7 @@ TEST(kernel_allocator, can_allocate_and_free) {
 
 asmlinkage __noreturn void main() {
     cpu::gdt::initialize();
+    cpu::idt::initialize();
     auto lock = cpu::irq_save();
     drivers::serial::initialize();
     etf::main();

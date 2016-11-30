@@ -58,5 +58,10 @@
         RESTORE_ALL; \
         iret;
 
+#else
+
+#define declare_extern_exception(x) \
+    asmlinkage void exc_##x##_handler(void);
+
 #endif
 

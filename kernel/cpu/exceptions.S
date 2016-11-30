@@ -1,4 +1,5 @@
 #include <kernel/cpu/exceptions.h>
+#include <kernel/cpu/gdt.h>
 
 define_exception_noerrno(divide_error)
 define_exception_noerrno(debug)
