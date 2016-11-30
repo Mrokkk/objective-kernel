@@ -1,6 +1,6 @@
 #pragma once
 
-#include <kernel/cpu/port.h>
+#include <kernel/cpu/io.h>
 #include <kernel/cpu/gdt.h>
 
 __noreturn inline void reboot() {
