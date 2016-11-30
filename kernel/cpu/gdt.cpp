@@ -29,7 +29,9 @@ gdt_entry gdt_entries[] = {
 
 gdtr gdt = {4096 * 8 - 1, reinterpret_cast<uint32_t>(&gdt_entries)};
 
-tss _tss;
+asmlinkage char *kernel_stack;
+
+tss _tss(&kernel_stack);
 
 void tss_load(unsigned short sel) {
     asm volatile(
@@ -37,8 +39,6 @@ void tss_load(unsigned short sel) {
         :: "a" (sel)
     );
 }
-
-asmlinkage char *kernel_stack;
 
 void initialize() {
     gdt.load();
@@ -48,10 +48,6 @@ void initialize() {
         mov %0, %%fs
         mov %0, %%gs
     )" :: "r" (cpu::segment::kernel_ds));
-    memset(&_tss, 0, sizeof(_tss));
-    _tss.ss0 = segment::kernel_ds;
-    _tss.esp0 = reinterpret_cast<uint32_t>(&kernel_stack);
-    _tss.iomap_offset = 104;
     gdt_entries[5].base(reinterpret_cast<uint32_t>(&_tss));
     gdt_entries[5].limit(sizeof(tss) - 128);
     tss_load(segment::tss);

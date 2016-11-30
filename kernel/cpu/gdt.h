@@ -9,6 +9,8 @@
 
 #else
 
+#include <lib/cstring.h>
+
 namespace cpu {
 
 enum segment {
@@ -71,6 +73,7 @@ struct gdtr final {
 } __packed;
 
 struct tss final {
+
     uint32_t prev_tss;
     uint32_t esp0;
     uint32_t ss0;
@@ -99,6 +102,14 @@ struct tss final {
     uint16_t trap;
     uint16_t iomap_offset;
     uint8_t io_bitmap[128];
+
+    explicit tss(void *kernel_stack) {
+        memset(&io_bitmap, 0, 128);
+        iomap_offset = 104;
+        ss0 = segment::kernel_ds;
+        esp0 = reinterpret_cast<uint32_t>(kernel_stack);
+    }
+
 } __packed;
 
 void initialize();
