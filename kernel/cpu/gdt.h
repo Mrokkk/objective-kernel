@@ -103,7 +103,9 @@ struct tss final {
     uint16_t iomap_offset;
     uint8_t io_bitmap[128];
 
-    explicit tss(void *kernel_stack) {
+    tss() = default;
+
+    tss(void *kernel_stack) {
         memset(&io_bitmap, 0, 128);
         iomap_offset = 104;
         ss0 = segment::kernel_ds;
