@@ -12,7 +12,7 @@ extern tests_printer _print;
 
 struct test_session final {
 
-    class test_case final : public yacppl::inherited_list<test_case> {
+    class test_case final : public utils::inherited_list<test_case> {
 
         const char *_suite_name;
         const char *_test_name;
@@ -55,7 +55,7 @@ struct test_session final {
 
 private:
 
-    yacppl::inherited_list<test_case> _test_cases;
+    utils::inherited_list<test_case> _test_cases;
     test_case *_current_test_case;
     size_t _tests_number = 0;
     static test_session _instance;
@@ -126,5 +126,4 @@ void main(tests_printer printer) {
 #endif
 
 } // namespace etf
-
 

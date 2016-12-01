@@ -3,10 +3,10 @@
 
 namespace scheduler {
 
-yacppl::list<yacppl::shared_ptr<process>> processes;
+utils::list<utils::shared_ptr<process>> processes;
 
 void initialize() {
-    auto init_process = yacppl::make_shared<process>();
+    auto init_process = utils::make_shared<process>();
     processes.push_front(init_process);
 }
 

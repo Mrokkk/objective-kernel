@@ -35,5 +35,9 @@
 #define __stringify(x) #x
 #define stringify(x) __stringify(x)
 
+namespace yacppl {}
+
+namespace utils = yacppl;
+
 #endif
 

@@ -8,7 +8,7 @@ namespace memory {
 template <class Heap_Allocator, size_t _memory_block_size>
 class allocator final {
 
-    class memory_block : public yacppl::inherited_list<memory_block> {
+    class memory_block : public utils::inherited_list<memory_block> {
 
         struct _data {
             unsigned char data[_memory_block_size];
@@ -36,7 +36,7 @@ class allocator final {
             auto new_block = reinterpret_cast<memory_block *>(pointer_offset(data(), pivot));
             new_block->size = old_size - _memory_block_size - size;
             new_block->free = true;
-            yacppl::inherited_list<memory_block>::add_front(new_block);
+            utils::inherited_list<memory_block>::add_front(new_block);
         }
 
         void try_to_divide(size_t pivot) {
@@ -54,7 +54,7 @@ class allocator final {
 
     };
 
-    yacppl::inherited_list<memory_block> _blocks;
+    utils::inherited_list<memory_block> _blocks;
     Heap_Allocator _heap_allocator;
 
     void adapt_size(size_t &size) {
