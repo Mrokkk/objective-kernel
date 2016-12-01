@@ -6,6 +6,12 @@
     .global name; \
     name:
 
+#define ALIGN(x) \
+    .align x
+
+#define SECTION(sec) \
+    .section sec
+
 #else
 
 #include <stddef.h>

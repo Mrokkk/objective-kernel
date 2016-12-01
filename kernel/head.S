@@ -2,15 +2,17 @@
 #include <kernel/cpu/gdt.h>
 #include <kernel/memory/paging.h>
 
-.align 4
-.section .multiboot
+ALIGN(4)
+SECTION(.multiboot)
+
 #ifdef MULTIBOOT2
 MULTIBOOT2_HEADER
 #else
 MULTIBOOT_HEADER
 #endif
 
-.section .text.boot
+SECTION(.text.boot)
+
 ENTRY(_start)
 
     pushl $0
@@ -55,19 +57,19 @@ ENTRY(_start)
     jmp 1b
 
 
-.align 0x1000
+ALIGN(0x1000)
 ENTRY(page_dir)
     .long page_table0
     .fill KERNEL_PAGE_OFFSET / 0x400000 - 1, 4, 0
     .long page_table0
 
-.align 0x1000
+ALIGN(0x1000)
 ENTRY(page0)
     .skip PAGE_INIT_FLAGS
 page_table0:
     .skip 0x1000 - PAGE_INIT_FLAGS
 
-.section .bss
+SECTION(.bss)
 
 .skip 4096
 ENTRY(kernel_stack)
