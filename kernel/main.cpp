@@ -4,14 +4,14 @@
 #include <kernel/cpu/idt.h>
 #include <kernel/console.h>
 #include <kernel/scheduler/process.h>
+#include <array.h>
 
-char user_stack[2048];
+utils::array<char, 2048> user_stack;
 
 #define switch_to_user() \
     asm volatile(                           \
         "pushl %0;"                         \
-        "mov %2, %%eax;"                    \
-        "pushl %%eax;"                      \
+        "pushl %2;"                         \
         "pushl $0x0;"                       \
         "pushl %1;"                         \
         "push $1f;"                         \
@@ -24,7 +24,7 @@ char user_stack[2048];
         "mov %%ax, %%gs;"                   \
         :: "i" (cpu::segment::user_ds),     \
            "i" (cpu::segment::user_cs),     \
-           "i" (&user_stack[2048])          \
+           "r" (&user_stack[2048])          \
     )
 
 asmlinkage __noreturn void main() {
