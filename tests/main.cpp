@@ -1,10 +1,11 @@
 #include <drivers/serial.h>
 #include <kernel/reboot.h>
-#include <pointer.h>
 #include <lib/cstring.h>
 #include <kernel/cpu/gdt.h>
 #include <kernel/cpu/idt.h>
 #include <kernel/console.h>
+#include <shared_ptr.h>
+#include <unique_ptr.h>
 
 #define TEST_MAIN
 #include "tests.h"

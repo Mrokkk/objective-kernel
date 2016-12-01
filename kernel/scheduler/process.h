@@ -2,7 +2,7 @@
 
 #include <initializer_list.h>
 #include <list.h>
-#include <pointer.h>
+#include <shared_ptr.h>
 #include <kernel/cpu/gdt.h>
 
 namespace scheduler {

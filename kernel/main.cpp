@@ -4,7 +4,6 @@
 #include <kernel/cpu/idt.h>
 #include <kernel/console.h>
 #include <kernel/scheduler/process.h>
-#include <pointer.h>
 
 char user_stack[2048];
 
