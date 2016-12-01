@@ -17,16 +17,19 @@ struct test_session final {
         const char *_suite_name;
         const char *_test_name;
         void (*_func)();
+        const char *_run_message = "\e[32m[  RUN   ]\e[0m";
+        const char *_pass_message = "\e[32m[  PASS  ]\e[0m";
+        const char *_fail_message = "\e[31m[  FAIL  ]\e[0m";
 
         void print_test_start_message() {
-            etf::detail::_print("\e[32m[  RUN   ]\e[0m %s.%s\n", _suite_name, _test_name);
+            etf::detail::_print("%s %s.%s\n", _run_message, _suite_name, _test_name);
         }
 
         void print_test_result() {
             if (failed)
-                etf::detail::_print("\e[31m[  FAIL  ]\e[0m ");
+                etf::detail::_print("%s ", _fail_message);
             else
-                etf::detail::_print("\e[32m[  PASS  ]\e[0m ");
+                etf::detail::_print("%s ", _pass_message);
             etf::detail::_print("%s.%s (%u assertions)\n\n", _suite_name, _test_name, assertions);
         }
 
