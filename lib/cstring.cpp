@@ -1,7 +1,5 @@
 #include <lib/cstring.h>
 
-asmlinkage {
-
 int strcmp(const char *string1, const char *string2) {
     if (string1 == 0 || string2 == 0) return 1;
     while (1) {
@@ -109,7 +107,5 @@ void *memsetw(unsigned short *dest, unsigned short val, size_t count) {
          count--, *temp++ = val
     );
     return dest;
-}
-
 }
 
