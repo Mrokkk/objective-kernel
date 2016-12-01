@@ -27,7 +27,7 @@ gdt_entry gdt_entries[] = {
 
 };
 
-gdtr gdt = {4096 * 8 - 1, reinterpret_cast<uint32_t>(&gdt_entries)};
+gdtr gdt = {4096 * 8 - 1, gdt_entries};
 
 asmlinkage char *kernel_stack;
 

@@ -60,7 +60,7 @@ struct gdt_entry final {
 struct gdtr final {
 
     uint16_t limit;
-    uint32_t base;
+    gdt_entry *base;
 
     void load() {
         asm volatile(R"(
