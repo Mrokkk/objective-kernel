@@ -10,7 +10,7 @@ using printer_function = void (*)(const char *);
 extern printer_function _printer;
 
 void initialize(printer_function);
-void print(const char *fmt, ...);
+int print(const char *fmt, ...);
 void print(int a);
 void print(uint32_t a);
 void print(uint16_t a);

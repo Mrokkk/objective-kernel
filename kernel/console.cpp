@@ -9,7 +9,7 @@ void initialize(printer_function func) {
     _printer = func;
 }
 
-void print(const char *fmt, ...) {
+int print(const char *fmt, ...) {
     char buf[1024];
     va_list args;
     va_start(args, fmt);
@@ -17,6 +17,7 @@ void print(const char *fmt, ...) {
     va_end(args);
     if (_printer)
         _printer(buf);
+    return 0;
 }
 
 void print(int a) {

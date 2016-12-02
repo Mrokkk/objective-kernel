@@ -7,8 +7,8 @@
 #include <shared_ptr.h>
 #include <unique_ptr.h>
 
-#define TEST_MAIN
-#include "tests.h"
+#define YATF_MAIN
+#include "yatf/include/yatf.h"
 
 TEST(kernel_allocator, can_allocate_and_free) {
     for (int i = 0; i < 1024; i++) {

@@ -1,6 +1,6 @@
 #include <kernel/memory/allocator.h>
 #include <kernel/memory/heap_allocator.h>
-#include "tests.h"
+#include "yatf/include/yatf.h"
 
 char allocator_test_map[1024*1024];
 

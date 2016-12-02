@@ -1,3 +1,6 @@
 [submodule "yacppl"]
     path = yacppl
     url = https://github.com/Mrokkk/yacppl.git
+[submodule "tests/yatf"]
+    path = tests/yatf
+    url = https://github.com/Mrokkk/yatf.git
