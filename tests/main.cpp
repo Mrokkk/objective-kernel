@@ -38,7 +38,7 @@ asmlinkage __noreturn void main() {
     cpu::idt::initialize();
     drivers::serial::initialize();
     console::initialize(drivers::serial::print);
-    etf::main(console::print);
+    yatf::main(console::print);
     reboot();
     while (1);
 }

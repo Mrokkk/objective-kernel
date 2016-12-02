@@ -1,18 +1,84 @@
 #pragma once
 
-#include <inherited_list.h>
+#include <stddef.h>
+
+namespace yatf {
 
 using tests_printer = void (*)(const char *, ...);
 
-namespace etf {
-
 namespace detail {
+
+// Minimal version of inherited_list
+template <typename Type>
+class tests_list {
+
+    Type *_prev, *_next;
+
+    void add_element(Type &new_element, Type &prev, Type &next) {
+        next._prev = &new_element;
+        prev._next = &new_element;
+        new_element._next = &next;
+        new_element._prev = &prev;
+    }
+
+    operator Type &() {
+        return *reinterpret_cast<Type *>(this);
+    }
+
+public:
+
+    class iterator {
+
+        Type *_ptr = nullptr;
+
+    public:
+
+        iterator(Type *t)
+            : _ptr(t) {}
+
+        iterator &operator++() {
+            _ptr = _ptr->next();
+            return *this;
+        }
+
+        Type &operator*() {
+            return *_ptr;
+        }
+
+        bool operator!=(const iterator &comp) {
+            return _ptr != comp._ptr;
+        }
+
+    };
+
+    tests_list() {
+        _next = _prev = reinterpret_cast<Type *>(this);
+    }
+
+    Type &add(Type *new_element) {
+        add_element(*new_element, *_prev, *this);
+        return *this;
+    }
+
+    Type *next() {
+        return _next == this ? nullptr : _next;
+    }
+
+    auto begin() {
+        return iterator(_next);
+    }
+
+    auto end() {
+        return iterator(reinterpret_cast<Type *>(this));
+    }
+
+};
 
 extern tests_printer _print;
 
 struct test_session final {
 
-    class test_case final : public utils::inherited_list<test_case> {
+    class test_case final : public tests_list<test_case> {
 
         const char *_suite_name;
         const char *_test_name;
@@ -22,15 +88,15 @@ struct test_session final {
         const char *_fail_message = "\e[31m[  FAIL  ]\e[0m";
 
         void print_test_start_message() {
-            etf::detail::_print("%s %s.%s\n", _run_message, _suite_name, _test_name);
+            yatf::detail::_print("%s %s.%s\n", _run_message, _suite_name, _test_name);
         }
 
         void print_test_result() {
             if (failed)
-                etf::detail::_print("%s ", _fail_message);
+                yatf::detail::_print("%s ", _fail_message);
             else
-                etf::detail::_print("%s ", _pass_message);
-            etf::detail::_print("%s.%s (%u assertions)\n\n", _suite_name, _test_name, assertions);
+                yatf::detail::_print("%s ", _pass_message);
+            yatf::detail::_print("%s.%s (%u assertions)\n\n", _suite_name, _test_name, assertions);
         }
 
     public:
@@ -58,7 +124,7 @@ struct test_session final {
 
 private:
 
-    utils::inherited_list<test_case> _test_cases;
+    tests_list<test_case> _test_cases;
     test_case *_current_test_case;
     size_t _tests_number = 0;
     static test_session _instance;
@@ -75,7 +141,7 @@ public:
     }
 
     void run() {
-        etf::detail::_print("\e[32m[========]\e[0m Running %u test cases\n\n", _tests_number);
+        yatf::detail::_print("\e[32m[========]\e[0m Running %u test cases\n\n", _tests_number);
         for (auto &test : _test_cases) {
             _current_test_case = &test;
             test.call();
@@ -92,24 +158,24 @@ public:
 
 #define REQUIRE(cond) \
     { \
-        etf::detail::test_session::get().current_test_case().assert(cond); \
+        yatf::detail::test_session::get().current_test_case().assert(cond); \
         if (!(cond)) \
-            etf::detail::_print("assertion failed: %s:%d: \'%s\' is false\n", __FILE__, __LINE__, #cond); \
+            yatf::detail::_print("assertion failed: %s:%d: \'%s\' is false\n", __FILE__, __LINE__, #cond); \
     }
 
 #define REQUIRE_FALSE(cond) \
     { \
-        etf::detail::test_session::get().current_test_case().assert(!(cond)); \
+        yatf::detail::test_session::get().current_test_case().assert(!(cond)); \
         if (cond) \
-            etf::detail::_print("assertion failed: %s:%d: \'%s\' is true\n", __FILE__, __LINE__, #cond); \
+            yatf::detail::_print("assertion failed: %s:%d: \'%s\' is true\n", __FILE__, __LINE__, #cond); \
     }
 
-#define ETF_UNIQUE_NAME(name) \
+#define YATF_UNIQUE_NAME(name) \
     name##__COUNTER__
 
 #define TEST(suite, name) \
     static void suite##_##name(); \
-    etf::detail::test_session::test_case ETF_UNIQUE_NAME(suite##_##name){#suite, #name, suite##_##name}; \
+    yatf::detail::test_session::test_case YATF_UNIQUE_NAME(suite##_##name){#suite, #name, suite##_##name}; \
     static void suite##_##name()
 
 #ifdef TEST_MAIN
@@ -128,5 +194,5 @@ void main(tests_printer printer) {
 
 #endif
 
-} // namespace etf
+} // namespace yatf
 
