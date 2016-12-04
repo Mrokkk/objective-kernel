@@ -9,7 +9,7 @@
  * ----------------------------------------------------------------------- */
 
 #include <lib/ctype.h>
-#include <stdarg.h>
+#include <cstdarg>
 #include <lib/cstring.h>
 
 static int skip_atoi(const char **s)

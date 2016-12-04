@@ -14,8 +14,8 @@
 
 #else
 
-#include <stddef.h>
-#include <stdint.h>
+#include <cstddef>
+#include <cstdint>
 
 #ifdef __cplusplus
 #define asmlinkage extern "C"

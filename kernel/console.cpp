@@ -1,5 +1,4 @@
 #include <kernel/console.h>
-#include <stdarg.h>
 
 namespace console {
 
