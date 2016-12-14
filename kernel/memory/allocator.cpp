@@ -1,10 +1,10 @@
-#include <kernel/memory/allocator.h>
+#include <allocator.h>
 #include <kernel/memory/heap_allocator.h>
 #include <kernel/memory/sections.h>
 
 namespace memory {
 
-static allocator<heap_allocator, 32> a(memory::sections::__heap_start);
+static utils::allocator<heap_allocator, 32> a(memory::sections::__heap_start);
 
 } // namespace memory
 
