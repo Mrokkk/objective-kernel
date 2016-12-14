@@ -1,7 +1,6 @@
 #pragma once
 
 #include <inherited_list.h>
-#include <basic/new.h>
 
 namespace memory {
 
@@ -50,6 +49,10 @@ class allocator final {
 
         void *data() {
             return reinterpret_cast<_data *>(this)->block_ptr;
+        }
+
+        void *operator new(size_t, void *address) {
+            return address;
         }
 
     };
