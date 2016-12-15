@@ -40,13 +40,11 @@ endif()
 include_directories(yacppl/include)
 include_directories(${CMAKE_SOURCE_DIR})
 
-add_subdirectory(basic)
 add_subdirectory(drivers)
 add_subdirectory(kernel)
 add_subdirectory(lib)
 
 add_library(${PROJECT_NAME}-lib
-    $<TARGET_OBJECTS:basic>
     $<TARGET_OBJECTS:drivers>
     $<TARGET_OBJECTS:kernel>
     $<TARGET_OBJECTS:lib>
