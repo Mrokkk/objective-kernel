@@ -58,7 +58,7 @@ add_executable(${PROJECT_NAME}
 
 target_link_libraries(${PROJECT_NAME} ${PROJECT_NAME}-lib)
 
-configure_file(${CMAKE_SOURCE_DIR}/CMake/runqemu.in ${CMAKE_BINARY_DIR}/runqemu @ONLY)
+configure_file(${CMAKE_SOURCE_DIR}/scripts/runqemu.in ${CMAKE_BINARY_DIR}/runqemu @ONLY)
 
 if(MULTIBOOT2)
     set(MULTIBOOT_FLAG "--multiboot2")
@@ -66,7 +66,7 @@ endif()
 
 add_custom_target(
     iso
-    COMMAND ${CMAKE_SOURCE_DIR}/CMake/isomaker.sh -o ${PROJECT_NAME} ${MULTIBOOT_FLAG}
+    COMMAND ${CMAKE_SOURCE_DIR}/scripts/isomaker.sh -o ${PROJECT_NAME} ${MULTIBOOT_FLAG}
     DEPENDS ${PROJECT_NAME}
     COMMENT "Building bootable ISO"
 )
