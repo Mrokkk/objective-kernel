@@ -33,7 +33,7 @@ TEST(kernel_allocator, can_allocate_and_free) {
 }
 
 asmlinkage __noreturn void main() {
-    auto lock = cpu::irq_save();
+    auto lock = cpu::make_irq_lock();
     cpu::gdt::initialize();
     cpu::idt::initialize();
     drivers::serial::initialize();

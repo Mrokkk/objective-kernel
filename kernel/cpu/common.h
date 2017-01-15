@@ -2,16 +2,6 @@
 
 namespace cpu {
 
-inline void mb() {
-    asm volatile("" ::: "memory");
-}
-
-inline void halt() {
-    asm volatile("hlt" ::: "memory");
-}
-
-namespace detail {
-
 class irq_lock {
 
     uint32_t _flags;
@@ -28,9 +18,7 @@ public:
 
 };
 
-} // namespace detail
-
-inline detail::irq_lock irq_save() {
+inline irq_lock make_irq_lock() {
     return {};
 }
 

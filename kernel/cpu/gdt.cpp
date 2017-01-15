@@ -7,22 +7,22 @@ namespace gdt {
 
 gdt_entry gdt_entries[] = {
 
-    /* Null segment */
+    // Null segment
     descriptor_entry(0, 0, 0),
 
-    /* Kernel code segment */
+    // Kernel code segment
     descriptor_entry(flags::dpl::ring0 | flags::type::code | flags::granularity::u4kB | flags::size::u32bit, 0x0, 0xffffffff),
 
-    /* Kernel data segment */
+    // Kernel data segment
     descriptor_entry(flags::dpl::ring0 | flags::type::data | flags::granularity::u4kB | flags::size::u32bit, 0x0, 0xffffffff),
 
-    /* User code segment */
+    // User code segment
     descriptor_entry(flags::dpl::ring3 | flags::type::code | flags::granularity::u4kB | flags::size::u32bit, 0x0, 0xffffffff),
 
-    /* User data segment */
+    // User data segment
     descriptor_entry(flags::dpl::ring3 | flags::type::data | flags::granularity::u4kB | flags::size::u32bit, 0x0, 0xffffffff),
 
-    /* TSS */
+    // TSS
     descriptor_entry(flags::type::tss32, 0, 0)
 
 };
