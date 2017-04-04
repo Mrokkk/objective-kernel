@@ -8,6 +8,8 @@
 
 namespace scheduler {
 
+using pid_t = unsigned int;
+
 class process {
 
 public:
@@ -18,8 +20,6 @@ public:
         stopped,
         zombie
     };
-
-    using pid_t = unsigned int;
 
     pid_t pid, ppid;
     cpu::gdt::tss context;
