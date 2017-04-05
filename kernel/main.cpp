@@ -34,6 +34,7 @@ asmlinkage __noreturn void main() {
     scheduler::initialize();
     drivers::vga::initialize();
     console::initialize(drivers::vga::print);
+    vfs::initialize();
     console::print("Hello World!\n");
     switch_to_user();
     while (1);

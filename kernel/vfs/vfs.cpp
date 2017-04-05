@@ -25,5 +25,9 @@ void initialize() {
 void register_device(IBlockDevice &) {
 }
 
+void mount_fs(const char *, IFileSystem &) {
+    // TODO
+}
+
 } // namespace vfs
 
