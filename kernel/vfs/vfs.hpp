@@ -1,44 +1,20 @@
 #pragma once
 
+#include "block_device.hpp"
+
 namespace vfs {
 
-// interface fo block devices
-struct IBlock_device {
-
-    // interface for block device iterator
-    struct IIterator {
-    };
-
+struct SuperBlock {
+    // TODO
 };
 
-class fs {
-
-    IBlock_device device_;
-
-public:
-
-    fs(IBlock_device &device)
-            : device_(device) {
-    }
-
+struct IFileSystem {
+    virtual const char *name() = 0;
+    virtual SuperBlock *read_super_block() = 0;
 };
 
-// file interface
-struct IFile {
-    virtual void close() = 0;
-    virtual void read() = 0;
-    virtual void write() = 0;
-};
-
-struct file : public IFile {
-};
-
-// fs node
-struct IVnode {
-};
-
-struct vnode : public IVnode {
-};
+void initialize();
+void register_device(IBlockDevice &dev);
 
 } // namespace vfs
 

@@ -5,7 +5,7 @@
 #include <kernel/console.h>
 #include <kernel/scheduler/process.h>
 #include <array.h>
-#include <vfs/vfs.hpp>
+#include <kernel/vfs/vfs.hpp>
 
 utils::array<char, 2048> user_stack;
 
