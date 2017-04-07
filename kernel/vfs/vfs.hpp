@@ -1,5 +1,6 @@
 #pragma once
 
+#include <path.h>
 #include "block_device.hpp"
 
 namespace vfs {
@@ -15,7 +16,7 @@ struct IFileSystem {
 
 struct MountPoint {
     // TODO
-    const char *path;
+    utils::path path;
     IFileSystem &fs;
     SuperBlock &sb;
 
