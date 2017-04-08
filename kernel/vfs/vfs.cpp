@@ -2,19 +2,6 @@
 
 namespace vfs {
 
-class DummyFs : public file_system {
-
-    //super_block sb_;
-    const char *name_ = "dummy";
-
-public:
-
-    const char *name() override {
-        return name_;
-    }
-
-};
-
 void initialize() {
 }
 

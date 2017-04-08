@@ -5,7 +5,16 @@
 
 namespace vfs {
 
+struct file;
+
 struct vnode final {
+
+    unsigned ref_cout_ = 0;
+
+    int open() {
+        return 0;
+    }
+
 };
 
 struct file final {
@@ -14,27 +23,21 @@ struct file final {
         read, write, read_write
     };
 
-    struct operations {
-        virtual int read() = 0;
-        virtual int write() = 0;
-    };
-
 private:
 
-    operations &ops_;
+    vnode &vnode_;
     mode mode_;
     off_t position_;
 
 public:
 
-    explicit file(operations &ops, mode m) : ops_(ops), mode_(m) {
+    explicit file(vnode &vnode, mode m) : vnode_(vnode), mode_(m) {
     }
 
     int read(char *, size_t) {
         if (mode_ == mode::write) {
             return 1;
         }
-        ops_.read();
         return 0;
     }
 
@@ -42,7 +45,6 @@ public:
         if (mode_ == mode::read) {
             return 1;
         }
-        ops_.write();
         return 0;
     }
 
@@ -53,18 +55,33 @@ public:
 
 };
 
-struct super_block final {
-};
+struct file_system final {
 
-struct file_system {
-    virtual const char *name() = 0;
+    struct low_interface {
+        virtual int lookup() = 0;
+        virtual int read() = 0;
+        virtual int write() = 0;
+    };
+
+private:
+
+    low_interface &interface_;
+
+public:
+
+    file_system(low_interface &interface) : interface_(interface) {
+    }
+
+    int mount(const utils::path &) {
+        return 0;
+    }
+
 };
 
 struct mount_point {
 
     utils::path path;
     file_system &fs;
-    //super_block &sb;
 
     ~mount_point() {
     }
