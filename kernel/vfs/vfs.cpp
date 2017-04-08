@@ -2,9 +2,9 @@
 
 namespace vfs {
 
-class DummyFs : public IFileSystem {
+class DummyFs : public file_system {
 
-    SuperBlock sb_;
+    super_block sb_;
     const char *name_ = "dummy";
 
 public:
@@ -13,19 +13,15 @@ public:
         return name_;
     }
 
-    SuperBlock *read_super_block() override {
-        return &sb_;
-    }
-
 };
 
 void initialize() {
 }
 
-void register_device(IBlockDevice &) {
+void register_device(block_device &) {
 }
 
-void mount_fs(const char *, IFileSystem &) {
+void mount_fs(const char *, file_system &) {
     // TODO
 }
 

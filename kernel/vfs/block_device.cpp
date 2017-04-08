@@ -2,13 +2,13 @@
 
 namespace vfs {
 
-struct NullBlockDevice : public IBlockDevice {
+struct NullBlockDevice : public block_device {
 
     const char *name() override {
         return "name";
     }
 
-    void handle_request(IBlockDevice::Request *) override {
+    void handle_request(block_device::request *) override {
     }
 
 };

@@ -2,12 +2,12 @@
 
 namespace vfs {
 
-struct IBlockDevice {
+struct block_device {
 
-    struct Request {
-        enum class Operation {
-            Read,
-            Write
+    struct request {
+        enum class operation {
+            read,
+            write
         };
         unsigned block;
         unsigned size;
@@ -16,7 +16,7 @@ struct IBlockDevice {
     };
 
     virtual const char *name() = 0;
-    virtual void handle_request(Request *request) = 0;
+    virtual void handle_request(request *req) = 0;
 
 };
 

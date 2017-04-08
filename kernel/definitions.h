@@ -39,5 +39,7 @@ namespace yacppl {}
 
 namespace utils = yacppl;
 
+using off_t = size_t;
+
 #endif
 
