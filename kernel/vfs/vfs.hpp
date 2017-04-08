@@ -21,19 +21,20 @@ struct file final {
 
 private:
 
-    const operations &ops_;
+    operations &ops_;
     mode mode_;
     off_t position_;
 
 public:
 
-    explicit file(const operations &ops, mode m) : ops_(ops), mode_(m) {
+    explicit file(operations &ops, mode m) : ops_(ops), mode_(m) {
     }
 
     int read(char *, size_t) {
         if (mode_ == mode::write) {
             return 1;
         }
+        ops_.read();
         return 0;
     }
 
@@ -41,6 +42,7 @@ public:
         if (mode_ == mode::read) {
             return 1;
         }
+        ops_.write();
         return 0;
     }
 
@@ -62,7 +64,7 @@ struct mount_point {
 
     utils::path path;
     file_system &fs;
-    super_block &sb;
+    //super_block &sb;
 
     ~mount_point() {
     }

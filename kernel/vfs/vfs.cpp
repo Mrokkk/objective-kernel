@@ -4,7 +4,7 @@ namespace vfs {
 
 class DummyFs : public file_system {
 
-    super_block sb_;
+    //super_block sb_;
     const char *name_ = "dummy";
 
 public:
