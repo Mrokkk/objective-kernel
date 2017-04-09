@@ -6,6 +6,7 @@
 #include <kernel/scheduler/process.h>
 #include <array.h>
 #include <kernel/vfs/vfs.hpp>
+#include <kernel/vfs/dummyfs.hpp>
 
 utils::array<char, 2048> user_stack;
 
@@ -35,7 +36,14 @@ asmlinkage __noreturn void main() {
     drivers::vga::initialize();
     console::initialize(drivers::vga::print);
     vfs::initialize();
-    console::print("Hello World!\n");
+    dummyfs::dummyfs dfs;
+    auto node = dfs.lookup("dir/dummy");
+    if (node.size == 0u) {
+        console::print("No such file\n");
+    }
+    else {
+        console::print(reinterpret_cast<const char *>(node.data));
+    }
     switch_to_user();
     while (1);
 }

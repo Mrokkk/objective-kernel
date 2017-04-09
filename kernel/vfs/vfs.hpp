@@ -9,10 +9,13 @@ struct file;
 
 struct vnode final {
 
-    unsigned ref_cout_ = 0;
+    size_t size = 0;
+    size_t blocks = 0;
+    uint32_t data = 0;
 
-    int open() {
-        return 0;
+    vnode() = default;
+
+    vnode(size_t s, size_t b, uint32_t d) : size(s), blocks(b), data(d) {
     }
 
 };
