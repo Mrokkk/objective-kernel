@@ -43,9 +43,9 @@ public:
     dummyfs() {
         auto dummy_content = new char[32];
         utils::copy("hello world\n", dummy_content);
-        root_.push_back(new dir_entry("file1", dir_entry::type::file, dummy_content, utils::length(dummy_content)));
-        root_.push_back(new dir_entry("file2", dir_entry::type::file, dummy_content, utils::length(dummy_content)));
-        root_.push_back(new dir_entry("dummy", dir_entry::type::file, dummy_content, utils::length(dummy_content)));
+        root_.push_back(new dir_entry("file1", dir_entry::type::file, dummy_content, utils::length(dummy_content) + 1));
+        root_.push_back(new dir_entry("file2", dir_entry::type::file, dummy_content, utils::length(dummy_content) + 1));
+        root_.push_back(new dir_entry("dummy", dir_entry::type::file, dummy_content, utils::length(dummy_content) + 1));
         auto dir = create_dir("dir");
         auto content = new char[32];
         utils::copy("This is kernel\n", content);
@@ -53,7 +53,7 @@ public:
         root_.push_back(dir);
     }
 
-    vfs::vnode lookup(const utils::path path) {
+    vfs::vnode lookup(const utils::path &path) {
         console::print("Looking for ");
         console::print((const char *)(path));
         console::print("\n");
@@ -76,6 +76,28 @@ public:
             }
         }
         return {};
+    }
+
+    vfs::vnode create(const utils::path &path) {
+        auto basename = path.dirname();
+        if (basename == "") {
+            root_.push_back(new dir_entry(path.get(), dir_entry::type::file));
+        }
+        else {
+            // TODO
+        }
+        return {};
+    }
+
+    int read(vfs::vnode &vnode, char *buffer, size_t size = 0) {
+        if (size == 0) size = vnode.size;
+        utils::memcopy(reinterpret_cast<char *>(vnode.data), buffer, size);
+        return size;
+    }
+
+    int write(vfs::vnode &vnode, const char *buffer, size_t size) {
+        utils::memcopy(buffer, reinterpret_cast<char *>(vnode.data), size);
+        return size;
     }
 
 };

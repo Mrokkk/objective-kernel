@@ -42,7 +42,9 @@ asmlinkage __noreturn void main() {
         console::print("No such file\n");
     }
     else {
-        console::print(reinterpret_cast<const char *>(node.data));
+        char buffer[64];
+        dfs.read(node, buffer);
+        console::print(reinterpret_cast<const char *>(buffer));
     }
     switch_to_user();
     while (1);
