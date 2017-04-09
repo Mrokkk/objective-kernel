@@ -8,6 +8,8 @@ namespace vfs {
 struct file;
 struct vnode;
 
+using dev_t = short;
+
 struct file_system {
     virtual vnode lookup(const utils::path &path) = 0;
     virtual vfs::vnode create(const utils::path &path) = 0;
@@ -21,6 +23,7 @@ struct vnode final {
         file, dir
     };
 
+    unsigned id = 0;
     size_t size = 0;
     size_t blocks = 0;
     uint32_t data = 0;
@@ -28,7 +31,8 @@ struct vnode final {
 
     vnode() = default;
 
-    vnode(size_t s, size_t b, uint32_t d, file_system *f) : size(s), blocks(b), data(d), fs(f) {
+    vnode(unsigned i, size_t s, size_t b, uint32_t d, file_system *f)
+            : id(i), size(s), blocks(b), data(d), fs(f) {
     }
 
 };
@@ -82,8 +86,11 @@ struct mount_point {
 
     utils::path path;
     file_system *fs;
+    dev_t dev;
 
-    mount_point() = default;
+    mount_point(const utils::path &path, file_system &fs, dev_t dev)
+            : path(path), fs(&fs), dev(dev) {
+    }
 
     ~mount_point() {
     }
@@ -94,7 +101,7 @@ extern null_block_device null;
 
 void initialize(file_system &, block_device & = null);
 file open(const utils::path &path, file::mode mode = file::mode::read);
-void register_device(block_device &dev);
+int register_device(block_device &dev);
 void mount_fs(const char *path, file_system &fs);
 
 } // namespace vfs

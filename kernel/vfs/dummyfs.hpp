@@ -8,16 +8,19 @@ namespace dummyfs {
 
 class dummyfs : public vfs::file_system {
 
+    unsigned node_nr = 1;
+
     struct dir_entry {
 
+        unsigned id = 0;
         utils::string file_name;
         vfs::vnode::type file_type;
         char *content = nullptr;
         size_t size;
         utils::list<dir_entry *> dir_entries;
 
-        dir_entry(const utils::string &name, vfs::vnode::type t, char *c = nullptr, size_t s = 0)
-                : file_name(name), file_type(t), content(c), size(s) {
+        dir_entry(unsigned id, const utils::string &name, vfs::vnode::type t, char *c = nullptr, size_t s = 0)
+                : id(id), file_name(name), file_type(t), content(c), size(s) {
         }
 
         ~dir_entry() {
@@ -29,10 +32,6 @@ class dummyfs : public vfs::file_system {
     };
 
     utils::list<dir_entry *> root_;
-
-    dir_entry *create_dir(const utils::string &name) {
-        return new dir_entry(name, vfs::vnode::type::dir);
-    }
 
     dir_entry *lookup_in_dir(utils::list<dir_entry *> &dir, const utils::string &name) {
         for (const auto &entry : dir) {
@@ -68,7 +67,7 @@ public:
     vfs::vnode lookup(const utils::path &path) override {
         auto entry = dir_entry_lookup(path);
         if (entry) {
-            return vfs::vnode(entry->size, 1u, reinterpret_cast<uint32_t>(entry), this);
+            return vfs::vnode(entry->id, entry->size, 1u, reinterpret_cast<uint32_t>(entry), this);
         }
         return {};
     }
@@ -78,9 +77,9 @@ public:
         auto filename = path.basename();
         if (dirname == "") {
             auto content = new char[32];
-            auto entry = new dir_entry(filename, vfs::vnode::type::file, content);
+            auto entry = new dir_entry(node_nr++, filename, vfs::vnode::type::file, content);
             root_.push_back(entry);
-            return vfs::vnode(0u, 1u, reinterpret_cast<uint32_t>(entry), this);
+            return vfs::vnode(entry->id, 0u, 1u, reinterpret_cast<uint32_t>(entry), this);
         }
         else {
             auto dir_node = dir_entry_lookup((const char *)dirname);
@@ -88,9 +87,9 @@ public:
                 return {};
             }
             auto content = new char[32];
-            auto entry = new dir_entry(filename, vfs::vnode::type::file, content, 32);
+            auto entry = new dir_entry(node_nr++, filename, vfs::vnode::type::file, content, 32);
             dir_node->dir_entries.push_back(entry);
-            return vfs::vnode(0u, 1u, reinterpret_cast<uint32_t>(entry), this);
+            return vfs::vnode(entry->id, 0u, 1u, reinterpret_cast<uint32_t>(entry), this);
         }
         return {};
     }

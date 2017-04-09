@@ -29,13 +29,14 @@ utils::array<char, 2048> user_stack;
            "r" (&user_stack[2048])          \
     )
 
-void write_to_file(dummyfs::dummyfs &dfs, const utils::path &path, const char *data) {
-    auto node = dfs.lookup(path);
-    if (node.data == 0) {
-        console::print("Cannot lookup for file\n");
-        return;
+void write_to_file(const utils::path &path, const char *data) {
+    auto file = vfs::open(path, vfs::file::mode::write);
+    if (file) {
+        file.write(data, utils::length(data) + 1);
     }
-    dfs.write(node, data, utils::length(data) + 1);
+    else {
+        console::print("Cannot open file\n");
+    }
 }
 
 void read_from_file(const utils::path &path, char *data) {
@@ -61,7 +62,7 @@ asmlinkage __noreturn void main() {
         console::print("Cannot create vnode\n");
     }
     else {
-        write_to_file(dfs, "some_file", "hello kernel!");
+        write_to_file("/some_file", "hello kernel!");
         char buffer[32];
         read_from_file("/some_file", buffer);
         console::print("File content: ");
