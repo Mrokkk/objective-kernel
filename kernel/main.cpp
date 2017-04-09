@@ -29,6 +29,24 @@ utils::array<char, 2048> user_stack;
            "r" (&user_stack[2048])          \
     )
 
+void write_to_file(dummyfs::dummyfs &dfs, const utils::path &path, const char *data) {
+    auto node = dfs.lookup(path);
+    if (node.data == 0) {
+        console::print("Cannot lookup for file\n");
+        return;
+    }
+    dfs.write(node, data, utils::length(data) + 1);
+}
+
+void read_from_file(dummyfs::dummyfs &dfs, const utils::path &path, char *data) {
+    auto node = dfs.lookup(path);
+    if (node.data == 0) {
+        console::print("Cannot lookup for file\n");
+        return;
+    }
+    dfs.read(node, data);
+}
+
 asmlinkage __noreturn void main() {
     cpu::gdt::initialize();
     cpu::idt::initialize();
@@ -37,15 +55,18 @@ asmlinkage __noreturn void main() {
     console::initialize(drivers::vga::print);
     vfs::initialize();
     dummyfs::dummyfs dfs;
-    auto node = dfs.lookup("dir/dummy");
-    if (node.size == 0u) {
-        console::print("No such file\n");
+    auto node = dfs.create("/some_file");
+    if (node.data == 0) {
+        console::print("Cannot create vnode\n");
     }
     else {
-        char buffer[64];
-        dfs.read(node, buffer);
-        console::print(reinterpret_cast<const char *>(buffer));
+        write_to_file(dfs, "some_file", "hello kernel!");
+        char buffer[32];
+        read_from_file(dfs, "/some_file", buffer);
+        console::print("File content: ");
+        console::print(buffer);
     }
+    console::print("\nHello World!\n");
     switch_to_user();
     while (1);
 }

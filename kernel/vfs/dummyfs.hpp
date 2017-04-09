@@ -3,7 +3,6 @@
 #include <list.h>
 #include <string.h>
 #include "vfs.hpp"
-#include <kernel/console.h>
 
 namespace dummyfs {
 
@@ -38,65 +37,73 @@ class dummyfs {
         return new dir_entry(name, dir_entry::type::dir);
     }
 
-public:
-
-    dummyfs() {
-        auto dummy_content = new char[32];
-        utils::copy("hello world\n", dummy_content);
-        root_.push_back(new dir_entry("file1", dir_entry::type::file, dummy_content, utils::length(dummy_content) + 1));
-        root_.push_back(new dir_entry("file2", dir_entry::type::file, dummy_content, utils::length(dummy_content) + 1));
-        root_.push_back(new dir_entry("dummy", dir_entry::type::file, dummy_content, utils::length(dummy_content) + 1));
-        auto dir = create_dir("dir");
-        auto content = new char[32];
-        utils::copy("This is kernel\n", content);
-        dir->dir_entries.push_back(new dir_entry("dummy", dir_entry::type::file, content, utils::length(content)));
-        root_.push_back(dir);
-    }
-
-    vfs::vnode lookup(const utils::path &path) {
-        console::print("Looking for ");
-        console::print((const char *)(path));
-        console::print("\n");
+    dir_entry *dir_entry_lookup(const utils::path &path) {
         auto list = &root_;
         auto path_it = path.cbegin();
+        if (root_.size() == 0) return nullptr;
         while (true) {
             for (const auto &entry : *list) {
-                console::print("Looking at ");
-                console::print((const char *)entry->file_name);
-                console::print("\n");
                 if (entry->file_name == *path_it) {
                     if (++path_it) {
                         list = &entry->dir_entries;
                         break;
                     }
                     else {
-                        return vfs::vnode(entry->size, 1u, reinterpret_cast<uint32_t>(entry->content));
+                        return entry;
                     }
                 }
             }
+        }
+        return nullptr;
+    }
+
+public:
+
+    dummyfs() {
+    }
+
+    vfs::vnode lookup(const utils::path &path) {
+        auto entry = dir_entry_lookup(path);
+        if (entry) {
+            return vfs::vnode(entry->size, 1u, reinterpret_cast<uint32_t>(entry));
         }
         return {};
     }
 
     vfs::vnode create(const utils::path &path) {
-        auto basename = path.dirname();
-        if (basename == "") {
-            root_.push_back(new dir_entry(path.get(), dir_entry::type::file));
+        auto dirname = path.dirname();
+        auto filename = path.basename();
+        console::print((const char *)dirname);
+        if (dirname == "") {
+            auto content = new char[32];
+            auto entry = new dir_entry(filename, dir_entry::type::file, content);
+            root_.push_back(entry);
+            return vfs::vnode(0u, 1u, reinterpret_cast<uint32_t>(entry));
         }
         else {
-            // TODO
+            auto dir_node = dir_entry_lookup((const char *)dirname);
+            if (dir_node == nullptr) {
+                return {};
+            }
+            auto content = new char[32];
+            auto entry = new dir_entry(filename, dir_entry::type::file, content, 32);
+            dir_node->dir_entries.push_back(entry);
+            return vfs::vnode(0u, 1u, reinterpret_cast<uint32_t>(entry));
         }
         return {};
     }
 
     int read(vfs::vnode &vnode, char *buffer, size_t size = 0) {
         if (size == 0) size = vnode.size;
-        utils::memcopy(reinterpret_cast<char *>(vnode.data), buffer, size);
+        utils::memcopy(reinterpret_cast<dir_entry *>(vnode.data)->content, buffer, size);
         return size;
     }
 
     int write(vfs::vnode &vnode, const char *buffer, size_t size) {
-        utils::memcopy(buffer, reinterpret_cast<char *>(vnode.data), size);
+        auto node = reinterpret_cast<dir_entry *>(vnode.data);
+        utils::memcopy(buffer, node->content, size);
+        vnode.size = size;
+        node->size = size;
         return size;
     }
 
