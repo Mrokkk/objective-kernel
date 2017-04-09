@@ -34,7 +34,7 @@ utils::shared_ptr<vnode> lookup(const path_t &path) {
 
 file open(const path_t &path, file::mode mode) {
     auto node = lookup(path);
-    if (node->fs == nullptr) {
+    if (!node) {
         return {};
     }
     vnodes.push_back(node);

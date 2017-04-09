@@ -15,6 +15,7 @@ using vnode_t = utils::shared_ptr<vnode>;
 using path_t = utils::path;
 
 struct file_system {
+    virtual utils::string name() = 0;
     virtual vnode_t lookup(const path_t &path) = 0;
     virtual vnode_t create(const path_t &path) = 0;
     virtual int read(vnode &vnode, char *buffer, size_t size = 0) = 0;

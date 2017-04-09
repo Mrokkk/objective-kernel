@@ -4,9 +4,9 @@
 #include <string.h>
 #include "vfs.hpp"
 
-namespace dummyfs {
+namespace ramfs {
 
-class dummyfs : public vfs::file_system {
+class ramfs final : public vfs::file_system {
 
     unsigned node_nr = 1;
 
@@ -61,10 +61,14 @@ class dummyfs : public vfs::file_system {
 
 public:
 
-    dummyfs() {
+    ramfs() {
     }
 
-    utils::shared_ptr<vfs::vnode> lookup(const vfs::path_t &path) override {
+    utils::string name() override {
+        return "ramfs";
+    }
+
+    vfs::vnode_t lookup(const vfs::path_t &path) override {
         auto entry = dir_entry_lookup(path);
         if (entry) {
             return new vfs::vnode(entry->id, entry->size, 1u, reinterpret_cast<uint32_t>(entry), this);
@@ -72,7 +76,7 @@ public:
         return {};
     }
 
-    utils::shared_ptr<vfs::vnode> create(const vfs::path_t &path) override {
+    vfs::vnode_t create(const vfs::path_t &path) override {
         auto dirname = path.dirname();
         auto filename = path.basename();
         if (dirname == "") {
@@ -113,5 +117,5 @@ public:
 
 };
 
-} // namespace dummyfs
+} // namespace ramfs
 

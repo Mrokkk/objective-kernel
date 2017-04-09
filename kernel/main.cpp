@@ -6,7 +6,7 @@
 #include <kernel/scheduler/process.h>
 #include <array.h>
 #include <kernel/vfs/vfs.hpp>
-#include <kernel/vfs/dummyfs.hpp>
+#include <kernel/vfs/ramfs.hpp>
 
 utils::array<char, 2048> user_stack;
 
@@ -55,9 +55,10 @@ asmlinkage __noreturn void main() {
     scheduler::initialize();
     drivers::vga::initialize();
     console::initialize(drivers::vga::print);
-    dummyfs::dummyfs dfs;
-    vfs::initialize(dfs);
-    auto node = dfs.create("/some_file");
+    ramfs::ramfs ramfs;
+    vfs::initialize(ramfs);
+
+    auto node = ramfs.create("/some_file");
     if (node->data == 0) {
         console::print("Cannot create vnode\n");
     }
@@ -67,6 +68,7 @@ asmlinkage __noreturn void main() {
         read_from_file("/some_file", buffer);
         console::print("File content: ", buffer, "\n");
     }
+
     console::print("\nHello World!\n");
     switch_to_user();
     while (1);
