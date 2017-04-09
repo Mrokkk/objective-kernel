@@ -65,8 +65,7 @@ asmlinkage __noreturn void main() {
         write_to_file("/some_file", "hello kernel!");
         char buffer[32];
         read_from_file("/some_file", buffer);
-        console::print("File content: ");
-        console::print(buffer);
+        console::print("File content: ", buffer, "\n");
     }
     console::print("\nHello World!\n");
     switch_to_user();

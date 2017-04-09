@@ -8,7 +8,7 @@ namespace vfs {
 
 utils::list<mount_point *> mount_points;
 null_block_device null;
-utils::list<utils::shared_ptr<vnode>> vnodes;
+utils::list<vnode_t> vnodes;
 utils::array<block_device *, 32> block_devices;
 unsigned bd_index = 0;
 
@@ -28,11 +28,11 @@ void initialize(file_system &rootfs, block_device &bd) {
     mount_points.push_back(new mount_point("/", rootfs, dev));
 }
 
-utils::shared_ptr<vnode> lookup(const utils::path &path) {
+utils::shared_ptr<vnode> lookup(const path_t &path) {
     return mount_points.front()->fs->lookup(path);
 }
 
-file open(const utils::path &path, file::mode mode) {
+file open(const path_t &path, file::mode mode) {
     auto node = lookup(path);
     if (node->fs == nullptr) {
         return {};
@@ -46,7 +46,7 @@ int register_device(block_device &bd) {
     return bd_index - 1;
 }
 
-void mount_fs(const utils::path &, file_system &) {
+void mount_fs(const path_t &, file_system &) {
     // TODO
 }
 

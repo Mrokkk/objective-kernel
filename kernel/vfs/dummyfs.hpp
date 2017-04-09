@@ -42,7 +42,7 @@ class dummyfs : public vfs::file_system {
         return nullptr;
     }
 
-    dir_entry *dir_entry_lookup(const utils::path &path) {
+    dir_entry *dir_entry_lookup(const vfs::path_t &path) {
         auto list = &root_;
         auto path_it = path.cbegin();
         if (root_.size() == 0) return nullptr;
@@ -64,7 +64,7 @@ public:
     dummyfs() {
     }
 
-    utils::shared_ptr<vfs::vnode> lookup(const utils::path &path) override {
+    utils::shared_ptr<vfs::vnode> lookup(const vfs::path_t &path) override {
         auto entry = dir_entry_lookup(path);
         if (entry) {
             return new vfs::vnode(entry->id, entry->size, 1u, reinterpret_cast<uint32_t>(entry), this);
@@ -72,7 +72,7 @@ public:
         return {};
     }
 
-    utils::shared_ptr<vfs::vnode> create(const utils::path &path) override {
+    utils::shared_ptr<vfs::vnode> create(const vfs::path_t &path) override {
         auto dirname = path.dirname();
         auto filename = path.basename();
         if (dirname == "") {
