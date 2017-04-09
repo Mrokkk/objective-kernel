@@ -1,5 +1,6 @@
 #include <list.h>
 #include <array.h>
+#include <shared_ptr.h>
 
 #include "vfs.hpp"
 
@@ -7,7 +8,7 @@ namespace vfs {
 
 utils::list<mount_point *> mount_points;
 null_block_device null;
-utils::list<vnode> vnodes;
+utils::list<utils::shared_ptr<vnode>> vnodes;
 utils::array<block_device *, 32> block_devices;
 unsigned bd_index = 0;
 
@@ -27,17 +28,17 @@ void initialize(file_system &rootfs, block_device &bd) {
     mount_points.push_back(new mount_point("/", rootfs, dev));
 }
 
-vnode lookup(const utils::path &path) {
+utils::shared_ptr<vnode> lookup(const utils::path &path) {
     return mount_points.front()->fs->lookup(path);
 }
 
 file open(const utils::path &path, file::mode mode) {
     auto node = lookup(path);
-    if (node.fs == nullptr) {
+    if (node->fs == nullptr) {
         return {};
     }
     vnodes.push_back(node);
-    return file(const_cast<vnode *>(&vnodes.back()), mode);
+    return file(vnodes.back().get(), mode);
 }
 
 int register_device(block_device &bd) {

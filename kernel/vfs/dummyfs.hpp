@@ -64,22 +64,22 @@ public:
     dummyfs() {
     }
 
-    vfs::vnode lookup(const utils::path &path) override {
+    utils::shared_ptr<vfs::vnode> lookup(const utils::path &path) override {
         auto entry = dir_entry_lookup(path);
         if (entry) {
-            return vfs::vnode(entry->id, entry->size, 1u, reinterpret_cast<uint32_t>(entry), this);
+            return new vfs::vnode(entry->id, entry->size, 1u, reinterpret_cast<uint32_t>(entry), this);
         }
         return {};
     }
 
-    vfs::vnode create(const utils::path &path) override {
+    utils::shared_ptr<vfs::vnode> create(const utils::path &path) override {
         auto dirname = path.dirname();
         auto filename = path.basename();
         if (dirname == "") {
             auto content = new char[32];
             auto entry = new dir_entry(node_nr++, filename, vfs::vnode::type::file, content);
             root_.push_back(entry);
-            return vfs::vnode(entry->id, 0u, 1u, reinterpret_cast<uint32_t>(entry), this);
+            return new vfs::vnode(entry->id, 0u, 1u, reinterpret_cast<uint32_t>(entry), this);
         }
         else {
             auto dir_node = dir_entry_lookup((const char *)dirname);
@@ -89,7 +89,7 @@ public:
             auto content = new char[32];
             auto entry = new dir_entry(node_nr++, filename, vfs::vnode::type::file, content, 32);
             dir_node->dir_entries.push_back(entry);
-            return vfs::vnode(entry->id, 0u, 1u, reinterpret_cast<uint32_t>(entry), this);
+            return new vfs::vnode(entry->id, 0u, 1u, reinterpret_cast<uint32_t>(entry), this);
         }
         return {};
     }

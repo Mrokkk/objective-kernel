@@ -58,7 +58,7 @@ asmlinkage __noreturn void main() {
     dummyfs::dummyfs dfs;
     vfs::initialize(dfs);
     auto node = dfs.create("/some_file");
-    if (node.data == 0) {
+    if (node->data == 0) {
         console::print("Cannot create vnode\n");
     }
     else {

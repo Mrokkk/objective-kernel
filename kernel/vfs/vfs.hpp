@@ -1,6 +1,8 @@
 #pragma once
 
 #include <path.h>
+#include <shared_ptr.h>
+
 #include "block_device.hpp"
 
 namespace vfs {
@@ -11,8 +13,8 @@ struct vnode;
 using dev_t = short;
 
 struct file_system {
-    virtual vnode lookup(const utils::path &path) = 0;
-    virtual vfs::vnode create(const utils::path &path) = 0;
+    virtual utils::shared_ptr<vnode> lookup(const utils::path &path) = 0;
+    virtual utils::shared_ptr<vnode> create(const utils::path &path) = 0;
     virtual int read(vnode &vnode, char *buffer, size_t size = 0) = 0;
     virtual int write(vfs::vnode &vnode, const char *buffer, size_t size) = 0;
 };
@@ -103,6 +105,7 @@ void initialize(file_system &, block_device & = null);
 file open(const utils::path &path, file::mode mode = file::mode::read);
 int register_device(block_device &dev);
 void mount_fs(const char *path, file_system &fs);
+utils::shared_ptr<vnode> lookup(const utils::path &path);
 
 } // namespace vfs
 
