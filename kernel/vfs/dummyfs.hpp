@@ -6,7 +6,7 @@
 
 namespace dummyfs {
 
-class dummyfs {
+class dummyfs : public vfs::file_system {
 
     struct dir_entry {
 
@@ -65,22 +65,22 @@ public:
     dummyfs() {
     }
 
-    vfs::vnode lookup(const utils::path &path) {
+    vfs::vnode lookup(const utils::path &path) override {
         auto entry = dir_entry_lookup(path);
         if (entry) {
-            return vfs::vnode(entry->size, 1u, reinterpret_cast<uint32_t>(entry));
+            return vfs::vnode(entry->size, 1u, reinterpret_cast<uint32_t>(entry), this);
         }
         return {};
     }
 
-    vfs::vnode create(const utils::path &path, vfs::vnode::type = vfs::vnode::type::file) {
+    vfs::vnode create(const utils::path &path) override {
         auto dirname = path.dirname();
         auto filename = path.basename();
         if (dirname == "") {
             auto content = new char[32];
             auto entry = new dir_entry(filename, vfs::vnode::type::file, content);
             root_.push_back(entry);
-            return vfs::vnode(0u, 1u, reinterpret_cast<uint32_t>(entry));
+            return vfs::vnode(0u, 1u, reinterpret_cast<uint32_t>(entry), this);
         }
         else {
             auto dir_node = dir_entry_lookup((const char *)dirname);
@@ -90,12 +90,12 @@ public:
             auto content = new char[32];
             auto entry = new dir_entry(filename, vfs::vnode::type::file, content, 32);
             dir_node->dir_entries.push_back(entry);
-            return vfs::vnode(0u, 1u, reinterpret_cast<uint32_t>(entry));
+            return vfs::vnode(0u, 1u, reinterpret_cast<uint32_t>(entry), this);
         }
         return {};
     }
 
-    int read(vfs::vnode &vnode, char *buffer, size_t size = 0) {
+    int read(vfs::vnode &vnode, char *buffer, size_t size = 0) override {
         if (size == 0) size = vnode.size;
         auto node = reinterpret_cast<dir_entry *>(vnode.data);
         if (node->file_type != vfs::vnode::type::file) return 0;
@@ -103,7 +103,7 @@ public:
         return size;
     }
 
-    int write(vfs::vnode &vnode, const char *buffer, size_t size) {
+    int write(vfs::vnode &vnode, const char *buffer, size_t size) override {
         auto node = reinterpret_cast<dir_entry *>(vnode.data);
         if (node->file_type != vfs::vnode::type::file) return 0;
         utils::memcopy(buffer, node->content, size);

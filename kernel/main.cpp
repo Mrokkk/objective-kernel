@@ -38,13 +38,14 @@ void write_to_file(dummyfs::dummyfs &dfs, const utils::path &path, const char *d
     dfs.write(node, data, utils::length(data) + 1);
 }
 
-void read_from_file(dummyfs::dummyfs &dfs, const utils::path &path, char *data) {
-    auto node = dfs.lookup(path);
-    if (node.data == 0) {
-        console::print("Cannot lookup for file\n");
-        return;
+void read_from_file(const utils::path &path, char *data) {
+    auto file = vfs::open(path);
+    if (file) {
+        file.read(data, 0u);
     }
-    dfs.read(node, data);
+    else {
+        console::print("Cannot open file\n");
+    }
 }
 
 asmlinkage __noreturn void main() {
@@ -53,8 +54,8 @@ asmlinkage __noreturn void main() {
     scheduler::initialize();
     drivers::vga::initialize();
     console::initialize(drivers::vga::print);
-    vfs::initialize();
     dummyfs::dummyfs dfs;
+    vfs::initialize(dfs);
     auto node = dfs.create("/some_file");
     if (node.data == 0) {
         console::print("Cannot create vnode\n");
@@ -62,7 +63,7 @@ asmlinkage __noreturn void main() {
     else {
         write_to_file(dfs, "some_file", "hello kernel!");
         char buffer[32];
-        read_from_file(dfs, "/some_file", buffer);
+        read_from_file("/some_file", buffer);
         console::print("File content: ");
         console::print(buffer);
     }
