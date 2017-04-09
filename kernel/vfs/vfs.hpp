@@ -7,11 +7,43 @@ namespace vfs {
 
 struct file;
 
+struct file_system final {
+
+    struct low_interface {
+        virtual int lookup() = 0;
+        virtual int read() = 0;
+        virtual int write() = 0;
+    };
+
+private:
+
+    low_interface &interface_;
+
+public:
+
+    file_system(low_interface &interface) : interface_(interface) {
+    }
+
+    auto read() {
+        return interface_.read();
+    }
+
+    int mount(const utils::path &) {
+        return 0;
+    }
+
+};
+
 struct vnode final {
+
+    enum class type {
+        file, dir
+    };
 
     size_t size = 0;
     size_t blocks = 0;
     uint32_t data = 0;
+    file_system *fs = nullptr;
 
     vnode() = default;
 
@@ -41,6 +73,7 @@ public:
         if (mode_ == mode::write) {
             return 1;
         }
+        vnode_.fs->read();
         return 0;
     }
 
@@ -53,29 +86,6 @@ public:
 
     int seek(int pos) {
         position_ = pos;
-        return 0;
-    }
-
-};
-
-struct file_system final {
-
-    struct low_interface {
-        virtual int lookup() = 0;
-        virtual int read() = 0;
-        virtual int write() = 0;
-    };
-
-private:
-
-    low_interface &interface_;
-
-public:
-
-    file_system(low_interface &interface) : interface_(interface) {
-    }
-
-    int mount(const utils::path &) {
         return 0;
     }
 

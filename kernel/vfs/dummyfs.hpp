@@ -10,17 +10,14 @@ class dummyfs {
 
     struct dir_entry {
 
-        enum class type {
-            file, dir
-        };
-
         utils::string file_name;
-        type file_type;
+        vfs::vnode::type file_type;
         char *content = nullptr;
         size_t size;
         utils::list<dir_entry *> dir_entries;
 
-        dir_entry(const utils::string &name, type t, char *c = nullptr, size_t s = 0) : file_name(name), file_type(t), content(c), size(s) {
+        dir_entry(const utils::string &name, vfs::vnode::type t, char *c = nullptr, size_t s = 0)
+                : file_name(name), file_type(t), content(c), size(s) {
         }
 
         ~dir_entry() {
@@ -34,7 +31,16 @@ class dummyfs {
     utils::list<dir_entry *> root_;
 
     dir_entry *create_dir(const utils::string &name) {
-        return new dir_entry(name, dir_entry::type::dir);
+        return new dir_entry(name, vfs::vnode::type::dir);
+    }
+
+    dir_entry *lookup_in_dir(utils::list<dir_entry *> &dir, const utils::string &name) {
+        for (const auto &entry : dir) {
+            if (entry->file_name == name) {
+                return entry;
+            }
+        }
+        return nullptr;
     }
 
     dir_entry *dir_entry_lookup(const utils::path &path) {
@@ -42,16 +48,13 @@ class dummyfs {
         auto path_it = path.cbegin();
         if (root_.size() == 0) return nullptr;
         while (true) {
-            for (const auto &entry : *list) {
-                if (entry->file_name == *path_it) {
-                    if (++path_it) {
-                        list = &entry->dir_entries;
-                        break;
-                    }
-                    else {
-                        return entry;
-                    }
-                }
+            auto node = lookup_in_dir(*list, *path_it);
+            if (node == nullptr) return nullptr;
+            if (++path_it) {
+                break;
+            }
+            else {
+                return node;
             }
         }
         return nullptr;
@@ -70,13 +73,12 @@ public:
         return {};
     }
 
-    vfs::vnode create(const utils::path &path) {
+    vfs::vnode create(const utils::path &path, vfs::vnode::type = vfs::vnode::type::file) {
         auto dirname = path.dirname();
         auto filename = path.basename();
-        console::print((const char *)dirname);
         if (dirname == "") {
             auto content = new char[32];
-            auto entry = new dir_entry(filename, dir_entry::type::file, content);
+            auto entry = new dir_entry(filename, vfs::vnode::type::file, content);
             root_.push_back(entry);
             return vfs::vnode(0u, 1u, reinterpret_cast<uint32_t>(entry));
         }
@@ -86,7 +88,7 @@ public:
                 return {};
             }
             auto content = new char[32];
-            auto entry = new dir_entry(filename, dir_entry::type::file, content, 32);
+            auto entry = new dir_entry(filename, vfs::vnode::type::file, content, 32);
             dir_node->dir_entries.push_back(entry);
             return vfs::vnode(0u, 1u, reinterpret_cast<uint32_t>(entry));
         }
@@ -95,12 +97,15 @@ public:
 
     int read(vfs::vnode &vnode, char *buffer, size_t size = 0) {
         if (size == 0) size = vnode.size;
-        utils::memcopy(reinterpret_cast<dir_entry *>(vnode.data)->content, buffer, size);
+        auto node = reinterpret_cast<dir_entry *>(vnode.data);
+        if (node->file_type != vfs::vnode::type::file) return 0;
+        utils::memcopy(node->content, buffer, size);
         return size;
     }
 
     int write(vfs::vnode &vnode, const char *buffer, size_t size) {
         auto node = reinterpret_cast<dir_entry *>(vnode.data);
+        if (node->file_type != vfs::vnode::type::file) return 0;
         utils::memcopy(buffer, node->content, size);
         vnode.size = size;
         node->size = size;
