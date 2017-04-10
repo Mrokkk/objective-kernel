@@ -63,6 +63,13 @@ vfs::vnode_t ramfs::create_file(const vfs::path_t &path) {
     return {};
 }
 
+vfs::vnode_t ramfs::create_dir(const vfs::path_t &) {
+    return {};
+}
+
+void ramfs::sync(vfs::vnode &) {
+}
+
 int ramfs::read(vfs::vnode &vnode, char *buffer, size_t size) {
     if (size == 0) size = vnode.size;
     auto node = reinterpret_cast<dir_entry *>(vnode.data);
