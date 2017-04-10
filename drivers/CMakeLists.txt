@@ -1,2 +1,1 @@
-add_library(drivers OBJECT serial.cpp vga.cpp)
-
+add_library(drivers serial.cpp vga.cpp)

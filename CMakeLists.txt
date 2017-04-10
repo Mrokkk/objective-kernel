@@ -44,9 +44,9 @@ add_subdirectory(drivers)
 add_subdirectory(kernel)
 
 add_library(${PROJECT_NAME}-lib
-    $<TARGET_OBJECTS:drivers>
-    $<TARGET_OBJECTS:kernel>
 )
+
+target_link_libraries(${PROJECT_NAME}-lib kernel drivers)
 
 add_executable(${PROJECT_NAME}
     kernel/main.cpp
