@@ -8,9 +8,9 @@
  *
  * ----------------------------------------------------------------------- */
 
-#include <lib/ctype.h>
 #include <cstdarg>
-#include <lib/cstring.h>
+#include <string.h>
+#include <lib/ctype.h>
 
 static int skip_atoi(const char **s)
 {
@@ -220,7 +220,7 @@ int vsprintf(char *buf, const char *fmt, va_list args)
 
             case 's':
                 s = va_arg(args, char *);
-                len = strnlen(s, precision);
+                len = utils::length(s); // TODO: len(... , precision)
 
                 if (!(flags & LEFT))
                     while (len < field_width--)

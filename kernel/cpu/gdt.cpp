@@ -1,5 +1,4 @@
 #include <kernel/cpu/gdt.h>
-#include <lib/cstring.h>
 
 namespace cpu {
 
