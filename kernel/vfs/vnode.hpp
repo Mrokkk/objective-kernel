@@ -13,13 +13,14 @@ struct vnode final {
     };
 
     unsigned id = 0;
+    type node_type;
     size_t size = 0;
     size_t blocks = 0;
     uint32_t data = 0;
     file_system *fs = nullptr;
 
-    vnode(unsigned i, size_t s, size_t b, uint32_t d, file_system *f)
-            : id(i), size(s), blocks(b), data(d), fs(f) {
+    vnode(unsigned i, size_t s, size_t b, uint32_t d, file_system *f, type t = type::file)
+            : id(i), node_type(t), size(s), blocks(b), data(d), fs(f) {
     }
 
 };

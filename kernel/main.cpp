@@ -61,16 +61,32 @@ asmlinkage __noreturn void main() {
     vfs::initialize(ramfs);
 
     auto node = vfs::create("/some_file");
-    if (node->data == 0) {
+    if (node == nullptr) {
         console::print("Cannot create vnode\n");
     }
     else {
         write_to_file("/some_file", "hello kernel!");
         char buffer[32];
+        utils::fill(buffer, 32, 0);
         read_from_file("/some_file", buffer);
         console::print("File content: ", buffer, "\n");
     }
 
+    auto dir_node = vfs::create("/some_dir", vfs::vnode::type::dir);
+    if (dir_node == nullptr) {
+        console::print("Cannot create dir vnode\n");
+    }
+    auto node2 = vfs::create("/some_dir/file");
+    if (node2 == nullptr) {
+        console::print("Cannot create file vnode\n");
+    }
+    else {
+        write_to_file("/some_dir/file", "hello world from file in dir!");
+        char buffer[32];
+        utils::fill(buffer, 32, 0);
+        read_from_file("/some_dir/file", buffer);
+        console::print("File content: ", buffer, "\n");
+    }
     vfs::mount_fs("/dev", ramfs);
     console::print("\nHello World!\n");
     switch_to_user();

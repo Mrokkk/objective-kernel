@@ -20,6 +20,7 @@ class ramfs final : public vfs::file_system {
         char *content = nullptr;
         size_t size;
         utils::list<dir_entry *> dir_entries;
+        vfs::file_system *fs = nullptr;
 
         dir_entry(unsigned id, const utils::string &name, vfs::vnode::type t,
             char *c = nullptr, size_t s = 0)

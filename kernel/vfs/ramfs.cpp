@@ -1,5 +1,6 @@
 #include "file.hpp"
 #include "ramfs.hpp"
+#include <kernel/console/console.hpp>
 
 namespace ramfs {
 
@@ -19,11 +20,16 @@ ramfs::dir_entry *ramfs::dir_entry_lookup(const vfs::path_t &path) {
     while (true) {
         auto node = lookup_in_dir(*list, *path_it);
         if (node == nullptr) return nullptr;
-        if (++path_it) {
-            break;
+        if (!++path_it) {
+            return node;
         }
         else {
-            return node;
+            if (node->file_type == vfs::vnode::type::dir) {
+                list = &node->dir_entries;
+            }
+            else {
+                return nullptr;
+            }
         }
     }
     return nullptr;
@@ -36,6 +42,7 @@ utils::string ramfs::name() {
 vfs::vnode_t ramfs::lookup(const vfs::path_t &path) {
     auto entry = dir_entry_lookup(path);
     if (entry) {
+        //console::print("  found!!!!\n");
         return new vfs::vnode(entry->id, entry->size, 1u, reinterpret_cast<uint32_t>(entry), this);
     }
     return {};
@@ -63,7 +70,23 @@ vfs::vnode_t ramfs::create_file(const vfs::path_t &path) {
     return {};
 }
 
-vfs::vnode_t ramfs::create_dir(const vfs::path_t &) {
+vfs::vnode_t ramfs::create_dir(const vfs::path_t &path) {
+    auto dirname = path.dirname();
+    auto filename = path.basename();
+    if (dirname == "") {
+        auto entry = new dir_entry(node_nr++, filename, vfs::vnode::type::dir, nullptr);
+        root_.push_back(entry);
+        return new vfs::vnode(entry->id, 0u, 1u, reinterpret_cast<uint32_t>(entry), this, vfs::vnode::type::dir);
+    }
+    else {
+        auto dir_node = dir_entry_lookup((const char *)dirname);
+        if (dir_node == nullptr) {
+            return {};
+        }
+        auto entry = new dir_entry(node_nr++, filename, vfs::vnode::type::dir, nullptr);
+        dir_node->dir_entries.push_back(entry);
+        return new vfs::vnode(entry->id, 0u, 1u, reinterpret_cast<uint32_t>(entry), this, vfs::vnode::type::dir);
+    }
     return {};
 }
 

@@ -16,7 +16,6 @@ vnode_t lookup(const path_t &path) {
     vnode_t node;
     while (path_it) {
         temp_path.append(*path_it);
-        console::print("Looking at ", (const char *)temp_path, "\n");
         node = fs->lookup(temp_path);
         if (!node) {
             return {};
@@ -34,6 +33,8 @@ vnode_t create(const path_t &path, vnode::type type) {
     switch (type) {
         case vnode::type::file:
             return mount_points.front()->fs->create_file(path);
+        case vnode::type::dir:
+            return mount_points.front()->fs->create_dir(path);
         default:
             return {};
     }
