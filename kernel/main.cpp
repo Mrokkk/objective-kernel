@@ -1,5 +1,5 @@
 #include <drivers/vga.h>
-#include <kernel/reboot.h>
+#include <kernel/cpu/reboot.h>
 #include <kernel/cpu/gdt.h>
 #include <kernel/cpu/idt.h>
 #include <kernel/console.h>
