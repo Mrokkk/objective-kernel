@@ -2,9 +2,9 @@
 #include <kernel/cpu/reboot.h>
 #include <kernel/cpu/gdt.h>
 #include <kernel/cpu/idt.h>
-#include <kernel/console.h>
 #include <shared_ptr.h>
 #include <unique_ptr.h>
+#include <kernel/console/console.hpp>
 
 #define YATF_MAIN
 #include "yatf/include/yatf.h"

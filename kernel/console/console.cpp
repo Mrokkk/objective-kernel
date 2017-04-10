@@ -1,4 +1,4 @@
-#include <kernel/console.h>
+#include "console.hpp"
 
 namespace console {
 

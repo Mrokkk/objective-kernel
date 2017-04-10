@@ -1,7 +1,6 @@
 #include <kernel/cpu/idt.h>
 #include <kernel/cpu/gdt.h>
 #include <kernel/cpu/exceptions.h>
-#include <kernel/console.h>
 
 namespace cpu {
 

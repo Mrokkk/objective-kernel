@@ -2,7 +2,7 @@
 #include <kernel/cpu/reboot.h>
 #include <kernel/cpu/gdt.h>
 #include <kernel/cpu/idt.h>
-#include <kernel/console.h>
+#include <kernel/console/console.hpp>
 #include <kernel/scheduler/process.h>
 #include <array.h>
 #include <kernel/vfs/vfs.hpp>

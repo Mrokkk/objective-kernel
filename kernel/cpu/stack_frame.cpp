@@ -1,5 +1,5 @@
 #include <kernel/cpu/stack_frame.h>
-#include <kernel/console.h>
+#include <kernel/console/console.hpp>
 
 namespace cpu {
 
