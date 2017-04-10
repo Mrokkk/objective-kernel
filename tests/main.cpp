@@ -1,6 +1,5 @@
 #include <drivers/serial.h>
 #include <kernel/reboot.h>
-#include <lib/cstring.h>
 #include <kernel/cpu/gdt.h>
 #include <kernel/cpu/idt.h>
 #include <kernel/console.h>
