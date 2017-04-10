@@ -1,7 +1,6 @@
 #pragma once
 
 #include <cstdarg>
-#include <lib/cstdio.h>
 
 namespace console {
 
