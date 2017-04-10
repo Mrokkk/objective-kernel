@@ -53,8 +53,10 @@ int register_device(block_device &bd) {
     return bd_index - 1;
 }
 
-void mount_fs(const path_t &, file_system &) {
+void mount_fs(const path_t &path, file_system &fs, block_device &bd) {
     // TODO
+    auto dev = get_device_id(bd);
+    mount_points.push_back(new mount_point(path, fs, dev));
 }
 
 } // namespace vfs

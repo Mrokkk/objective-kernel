@@ -19,7 +19,7 @@ struct file_system {
     virtual vnode_t lookup(const path_t &path) = 0;
     virtual vnode_t create(const path_t &path) = 0;
     virtual int read(vnode &vnode, char *buffer, size_t size = 0) = 0;
-    virtual int write(vfs::vnode &vnode, const char *buffer, size_t size) = 0;
+    virtual int write(vnode &vnode, const char *buffer, size_t size) = 0;
 };
 
 struct mount_point final {
@@ -41,7 +41,7 @@ extern null_block_device null;
 
 void initialize(file_system &fs, block_device &bd = null);
 int register_device(block_device &dev);
-void mount_fs(const path_t path, file_system &fs);
+void mount_fs(const path_t path, file_system &fs, block_device &bd);
 
 } // namespace vfs
 
