@@ -2,7 +2,9 @@
 
 #include <list.h>
 #include <string.h>
+
 #include "vfs.hpp"
+#include "file.hpp"
 
 namespace ramfs {
 

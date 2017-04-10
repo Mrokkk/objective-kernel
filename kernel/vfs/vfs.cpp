@@ -3,6 +3,7 @@
 #include <shared_ptr.h>
 
 #include "vfs.hpp"
+#include "file.hpp"
 
 namespace vfs {
 
