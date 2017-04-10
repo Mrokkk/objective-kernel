@@ -1,4 +1,4 @@
-#include <kernel/cpu/stack_frame.h>
+#include <kernel/cpu/stack_frame.hpp>
 #include <kernel/console/console.hpp>
 
 namespace cpu {

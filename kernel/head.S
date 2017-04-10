@@ -1,6 +1,6 @@
-#include <kernel/multiboot.h>
-#include <kernel/cpu/gdt.h>
-#include <kernel/memory/paging.h>
+#include <kernel/cpu/gdt.hpp>
+#include <kernel/multiboot.hpp>
+#include <kernel/memory/paging.hpp>
 
 ALIGN(4)
 SECTION(.multiboot)

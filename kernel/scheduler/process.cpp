@@ -1,4 +1,4 @@
-#include <kernel/scheduler/process.h>
+#include <kernel/scheduler/process.hpp>
 #include <shared_ptr.h>
 
 namespace scheduler {

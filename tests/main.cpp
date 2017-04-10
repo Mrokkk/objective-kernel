@@ -1,9 +1,10 @@
-#include <drivers/serial.h>
-#include <kernel/cpu/reboot.h>
-#include <kernel/cpu/gdt.h>
-#include <kernel/cpu/idt.h>
 #include <shared_ptr.h>
 #include <unique_ptr.h>
+
+#include <drivers/serial.hpp>
+#include <kernel/cpu/gdt.hpp>
+#include <kernel/cpu/idt.hpp>
+#include <kernel/cpu/reboot.hpp>
 #include <kernel/console/console.hpp>
 
 #define YATF_MAIN

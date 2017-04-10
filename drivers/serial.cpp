@@ -1,4 +1,6 @@
-#include <kernel/cpu/io.h>
+#include <kernel/cpu/io.hpp>
+
+#include "serial.hpp"
 
 namespace drivers {
 

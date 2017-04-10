@@ -1,6 +1,6 @@
 #include <string.h>
 #include <algorithm.h>
-#include <kernel/cpu/io.h>
+#include <kernel/cpu/io.hpp>
 
 #define VIDEO_SEGMENT (0xb8000)
 

@@ -1,13 +1,14 @@
-#include <drivers/vga.h>
-#include <kernel/cpu/reboot.h>
-#include <kernel/cpu/gdt.h>
-#include <kernel/cpu/idt.h>
-#include <kernel/console/console.hpp>
-#include <kernel/scheduler/process.h>
 #include <array.h>
+
+#include <drivers/vga.hpp>
+#include <kernel/cpu/gdt.hpp>
+#include <kernel/cpu/idt.hpp>
 #include <kernel/vfs/vfs.hpp>
 #include <kernel/vfs/file.hpp>
 #include <kernel/vfs/ramfs.hpp>
+#include <kernel/cpu/reboot.hpp>
+#include <kernel/console/console.hpp>
+#include <kernel/scheduler/process.hpp>
 
 utils::array<char, 2048> user_stack;
 

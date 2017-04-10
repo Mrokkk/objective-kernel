@@ -1,7 +1,7 @@
 #pragma once
 
-#include <kernel/cpu/io.h>
-#include <kernel/cpu/gdt.h>
+#include <kernel/cpu/io.hpp>
+#include <kernel/cpu/gdt.hpp>
 
 __noreturn inline void reboot() {
     auto lock = cpu::make_irq_lock();

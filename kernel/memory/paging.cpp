@@ -1,2 +1,2 @@
-#include <kernel/memory/paging.h>
+#include <kernel/memory/paging.hpp>
 

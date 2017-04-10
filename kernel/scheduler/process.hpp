@@ -4,7 +4,7 @@
 #include <list.h>
 #include <kernel_list.h>
 #include <shared_ptr.h>
-#include <kernel/cpu/gdt.h>
+#include <kernel/cpu/gdt.hpp>
 
 namespace scheduler {
 

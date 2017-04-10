@@ -1,6 +1,6 @@
 #include <allocator.h>
-#include <kernel/memory/heap_allocator.h>
-#include <kernel/memory/sections.h>
+#include <kernel/memory/sections.hpp>
+#include <kernel/memory/heap_allocator.hpp>
 
 namespace memory {
 

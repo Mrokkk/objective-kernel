@@ -1,5 +1,5 @@
-#include <kernel/cpu/idt.h>
-#include <kernel/cpu/gdt.h>
+#include <kernel/cpu/idt.hpp>
+#include <kernel/cpu/gdt.hpp>
 #include <kernel/cpu/exceptions.h>
 
 namespace cpu {
