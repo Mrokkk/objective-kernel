@@ -1,4 +1,5 @@
-#include <lib/cstring.h>
+#include <string.h>
+#include <algorithm.h>
 #include <kernel/cpu/io.h>
 
 #define VIDEO_SEGMENT (0xb8000)
@@ -68,13 +69,6 @@ static inline void cursor_x_dec() {
     csr_x[current_page]--;
 }
 
-// for clang compilation
-#if 0
-static inline void cursor_y_dec() {
-    csr_y[current_page]--;
-}
-#endif
-
 static inline int cursor_x_get() {
     return csr_x[current_page];
 }
@@ -101,8 +95,9 @@ void scroll(void) {
 
     if(cursor_y_get() >= RESY) {
         temp = (unsigned short) (cursor_y_get() - RESY + 1);
-        memcpy(pointer[current_page], pointer[current_page] + temp * RESX, (size_t) ((RESY - temp) * RESX * 2));
-        memsetw(pointer[current_page] + (RESY - temp) * RESX, blank, RESX);
+        utils::memcopy(reinterpret_cast<const char *>(pointer[current_page] + temp * RESX),
+            reinterpret_cast<char *>(pointer[current_page]), (RESY - temp) * RESX * 2);
+        utils::fill(pointer[current_page] + (RESY - temp) * RESX, RESX, blank);
         cursor_y_set(RESY - 1);
     }
 
@@ -123,7 +118,7 @@ void cls() {
 
     unsigned short blank = (unsigned short) (0x20 | (default_attribute << 8));
 
-    memsetw(pointer[current_page], blank, RESX * RESY);
+    utils::fill(pointer[current_page], RESX * RESY, blank);
     cursor_x_set(0);
     cursor_y_set(0);
     move_csr();
