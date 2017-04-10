@@ -29,8 +29,14 @@ void initialize(file_system &rootfs, block_device &bd) {
     mount_points.push_back(new mount_point("/", rootfs, dev));
 }
 
-utils::shared_ptr<vnode> lookup(const path_t &path) {
+vnode_t lookup(const path_t &path) {
+    // TODO
     return mount_points.front()->fs->lookup(path);
+}
+
+vnode_t create(const path_t &path) {
+    // TODO
+    return mount_points.front()->fs->create(path);
 }
 
 file open(const path_t &path, file::mode mode) {

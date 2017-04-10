@@ -24,7 +24,8 @@ struct vnode final {
 
 };
 
-utils::shared_ptr<vnode> lookup(const path_t &path);
+vnode_t lookup(const path_t &path);
+vnode_t create(const path_t &path);
 
 } // namespace vfs
 

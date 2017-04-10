@@ -58,7 +58,7 @@ asmlinkage __noreturn void main() {
     ramfs::ramfs ramfs;
     vfs::initialize(ramfs);
 
-    auto node = ramfs.create("/some_file");
+    auto node = vfs::create("/some_file");
     if (node->data == 0) {
         console::print("Cannot create vnode\n");
     }
