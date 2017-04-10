@@ -6,6 +6,7 @@
 #include <kernel/scheduler/process.h>
 #include <array.h>
 #include <kernel/vfs/vfs.hpp>
+#include <kernel/vfs/file.hpp>
 #include <kernel/vfs/ramfs.hpp>
 
 utils::array<char, 2048> user_stack;

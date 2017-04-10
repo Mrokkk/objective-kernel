@@ -4,7 +4,7 @@
 #include <string.h>
 
 #include "vfs.hpp"
-#include "file.hpp"
+#include "vnode.hpp"
 
 namespace ramfs {
 

@@ -1,3 +1,4 @@
+#include "file.hpp"
 #include "ramfs.hpp"
 
 namespace ramfs {
