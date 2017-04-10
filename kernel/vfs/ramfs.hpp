@@ -49,7 +49,7 @@ public:
 
     vfs::vnode_t lookup(const vfs::path_t &path) override;
 
-    vfs::vnode_t create(const vfs::path_t &path) override;
+    vfs::vnode_t create_file(const vfs::path_t &path) override;
 
     int read(vfs::vnode &vnode, char *buffer, size_t size = 0) override;
 

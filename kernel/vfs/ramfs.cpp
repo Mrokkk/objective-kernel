@@ -41,7 +41,7 @@ vfs::vnode_t ramfs::lookup(const vfs::path_t &path) {
     return {};
 }
 
-vfs::vnode_t ramfs::create(const vfs::path_t &path) {
+vfs::vnode_t ramfs::create_file(const vfs::path_t &path) {
     auto dirname = path.dirname();
     auto filename = path.basename();
     if (dirname == "") {
