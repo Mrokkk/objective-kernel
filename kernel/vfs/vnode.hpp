@@ -25,7 +25,7 @@ struct vnode final {
 };
 
 vnode_t lookup(const path_t &path);
-vnode_t create(const path_t &path);
+vnode_t create(const path_t &path, vnode::type type = vnode::type::file);
 
 } // namespace vfs
 

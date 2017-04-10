@@ -71,6 +71,7 @@ asmlinkage __noreturn void main() {
         console::print("File content: ", buffer, "\n");
     }
 
+    vfs::mount_fs("/dev", ramfs);
     console::print("\nHello World!\n");
     switch_to_user();
     while (1);

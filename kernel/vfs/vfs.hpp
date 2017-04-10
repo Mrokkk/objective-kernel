@@ -41,7 +41,7 @@ extern null_block_device null;
 
 void initialize(file_system &fs, block_device &bd = null);
 int register_device(block_device &dev);
-void mount_fs(const path_t path, file_system &fs, block_device &bd);
+void mount_fs(const path_t &path, file_system &fs, block_device &bd = null);
 
 } // namespace vfs
 
