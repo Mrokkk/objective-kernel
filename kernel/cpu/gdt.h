@@ -9,7 +9,7 @@
 
 #else
 
-#include <lib/cstring.h>
+#include <algorithm.h>
 
 namespace cpu {
 
@@ -106,7 +106,7 @@ struct tss final {
     tss() = default;
 
     tss(void *kernel_stack) {
-        memset(&io_bitmap, 0, 128);
+        utils::fill(io_bitmap, io_bitmap + 128, static_cast<uint8_t>(0));
         iomap_offset = 104;
         ss0 = segment::kernel_ds;
         esp0 = reinterpret_cast<uint32_t>(kernel_stack);

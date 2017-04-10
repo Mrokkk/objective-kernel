@@ -1,2 +1,2 @@
-add_library(lib OBJECT cxx.cpp cstring.cpp printf.cpp)
+add_library(lib OBJECT cstring.cpp printf.cpp)
 
