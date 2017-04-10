@@ -26,5 +26,13 @@ void _init() {
     }
 }
 
+// for clang
+void *memset(void *ptr, int value, unsigned n) {
+    for (auto i = 0u; i < n; ++i) {
+        *reinterpret_cast<char *>(ptr) = value;
+    }
+    return ptr;
+}
+
 }
 
