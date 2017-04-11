@@ -18,7 +18,6 @@ void initialize(file_system &rootfs, block_device &bd) {
 }
 
 vnode_t mount_fs(const path_t &path, file_system &fs, block_device &bd) {
-    // TODO
     auto dev = get_device_id(bd);
     auto dir_node = lookup(path);
     if (!dir_node) {

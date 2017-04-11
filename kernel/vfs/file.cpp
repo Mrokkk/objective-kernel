@@ -24,19 +24,18 @@ int file::seek(int pos) {
     return 0;
 }
 
-file::operator bool() {
-    if (vnode_) return true;
-    return false;
+file::operator bool() const {
+    return vnode_ ? true : false;
 }
 
 file open(const path_t &path, file::mode mode) {
+    // TODO: creating file
     auto node = lookup(path);
     if (!node) {
         return {};
     }
     return file(node.get(), mode);
 }
-
 
 } // namespace vfs
 

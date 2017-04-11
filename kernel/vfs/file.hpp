@@ -28,7 +28,7 @@ public:
     int read(char *buffer, size_t n);
     int write(const char *buffer, size_t n);
     int seek(int pos);
-    operator bool();
+    operator bool() const;
 
 };
 
