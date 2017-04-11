@@ -38,22 +38,14 @@ namespace {
 
 void write_to_file(const utils::path &path, const char *data) {
     auto file = vfs::open(path, vfs::file::mode::write);
-    if (file) {
-        file.write(data, utils::length(data) + 1);
-    }
-    else {
-        console::print("Cannot open file\n");
-    }
+    REQUIRE(file);
+    file.write(data, utils::length(data) + 1);
 }
 
 void read_from_file(const utils::path &path, char *data) {
     auto file = vfs::open(path);
-    if (file) {
-        file.read(data, 0u);
-    }
-    else {
-        console::print("Cannot open file\n");
-    }
+    REQUIRE(file);
+    file.read(data, 0u);
 }
 
 } // namespace
@@ -85,10 +77,10 @@ TEST(vfs, can_do_things) {
     dev_node = vfs::lookup("/dev");
     REQUIRE(dev_node);
     REQUIRE_EQ(dev_node->fs, &ramfs2);
-    // FIXME
     auto node3 = vfs::create("/dev/file");
     REQUIRE(node3);
     REQUIRE_EQ(node3->fs, &ramfs2);
+    REQUIRE_EQ((const char *)node3->fs->name(), "ramfs");
     write_to_file("/dev/file", "asdfg\n");
     utils::fill(buffer, 32, 0);
     read_from_file("/dev/file", buffer);

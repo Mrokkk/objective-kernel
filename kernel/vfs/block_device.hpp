@@ -25,7 +25,7 @@ struct block_device {
 struct null_block_device : public block_device {
 
     const char *name() override {
-        return "name";
+        return "null";
     }
 
     void handle_request(block_device::request *) override {
