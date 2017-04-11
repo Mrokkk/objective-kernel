@@ -11,6 +11,9 @@ extern utils::list<vnode_t> vnodes;
 
 vnode_t lookup(const path_t &path) {
     auto fs = mount_points.front()->fs;
+    if (path == "") {
+        return fs->lookup("");
+    }
     auto path_it = path.begin();
     utils::path temp_path;
     vnode_t node;
@@ -21,6 +24,9 @@ vnode_t lookup(const path_t &path) {
             return {};
         }
         if (node->fs != fs) {
+            if (node->fs == nullptr) {
+                return {};
+            }
             fs = node->fs;
             temp_path = utils::path();
         }
@@ -30,11 +36,14 @@ vnode_t lookup(const path_t &path) {
 }
 
 vnode_t create(const path_t &path, vnode::type type) {
+    // FIXME
+    auto dir_node = lookup(utils::path(path.dirname()));
+    utils::path filename(path.basename());
     switch (type) {
         case vnode::type::file:
-            return mount_points.front()->fs->create_file(path);
+            return dir_node->fs->create_file(path);
         case vnode::type::dir:
-            return mount_points.front()->fs->create_dir(path);
+            return dir_node->fs->create_dir(path);
         default:
             return {};
     }

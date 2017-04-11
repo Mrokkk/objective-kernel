@@ -4,6 +4,9 @@
 #include <drivers/serial.hpp>
 #include <kernel/cpu/gdt.hpp>
 #include <kernel/cpu/idt.hpp>
+#include <kernel/vfs/vfs.hpp>
+#include <kernel/vfs/ramfs.hpp>
+#include <kernel/vfs/file.hpp>
 #include <kernel/cpu/reboot.hpp>
 #include <kernel/console/console.hpp>
 
@@ -30,6 +33,64 @@ TEST(kernel_allocator, can_allocate_and_free) {
         REQUIRE(reinterpret_cast<unsigned int>(c) > reinterpret_cast<unsigned int>(b.get()));
         REQUIRE(reinterpret_cast<unsigned int>(b.get()) > reinterpret_cast<unsigned int>(a.get()));
     }
+}
+namespace {
+
+void write_to_file(const utils::path &path, const char *data) {
+    auto file = vfs::open(path, vfs::file::mode::write);
+    if (file) {
+        file.write(data, utils::length(data) + 1);
+    }
+    else {
+        console::print("Cannot open file\n");
+    }
+}
+
+void read_from_file(const utils::path &path, char *data) {
+    auto file = vfs::open(path);
+    if (file) {
+        file.read(data, 0u);
+    }
+    else {
+        console::print("Cannot open file\n");
+    }
+}
+
+} // namespace
+
+TEST(vfs, can_do_things) {
+    ramfs::ramfs ramfs;
+    vfs::initialize(ramfs);
+    auto node = vfs::create("/some_file");
+    REQUIRE(node);
+    REQUIRE_EQ(node->fs, &ramfs);
+    write_to_file("/some_file", "hello kernel!");
+    char buffer[32];
+    utils::fill(buffer, 32, 0);
+    read_from_file("/some_file", buffer);
+    REQUIRE_EQ((const char *)buffer, "hello kernel!");
+    auto dir_node = vfs::create("/some_dir", vfs::vnode::type::dir);
+    REQUIRE(dir_node);
+    auto node2 = vfs::create("/some_dir/file");
+    REQUIRE(node2);
+    write_to_file("/some_dir/file", "hello world from file in dir!");
+    utils::fill(buffer, 32, 0);
+    read_from_file("/some_dir/file", buffer);
+    REQUIRE_EQ((const char *)buffer, "hello world from file in dir!");
+    ramfs::ramfs ramfs2;
+    auto dev_node = vfs::create("/dev", vfs::vnode::type::dir);
+    auto mounted_node = vfs::mount_fs("/dev", ramfs2);
+    REQUIRE(mounted_node);
+    REQUIRE_EQ(mounted_node->fs, &ramfs2);
+    dev_node = vfs::lookup("/dev");
+    REQUIRE(dev_node);
+    REQUIRE_EQ(dev_node->fs, &ramfs2);
+    // FIXME
+    //auto node3 = vfs::create("/dev/file");
+    //if (!node3) {
+        //console::print("Cannot mount fs vnode\n");
+    //}
+    //write_to_file("/dev/file", "asdfg\n");
 }
 
 asmlinkage __noreturn void main() {

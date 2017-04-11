@@ -44,16 +44,18 @@ int register_device(block_device &bd) {
     return bd_index - 1;
 }
 
-void mount_fs(const path_t &path, file_system &fs, block_device &bd) {
+vnode_t mount_fs(const path_t &path, file_system &fs, block_device &bd) {
     // TODO
     auto dev = get_device_id(bd);
-    auto dirname = path.dirname();
-    auto dir_node = lookup(utils::path(dirname));
+    auto dir_node = lookup(path);
     if (!dir_node) {
-        return;
+        return {};
     }
+    auto old_fs = dir_node->fs;
     dir_node->fs = &fs;
+    old_fs->sync(*dir_node);
     mount_points.push_back(new mount_point(path, fs, dev));
+    return dir_node;
 }
 
 } // namespace vfs
