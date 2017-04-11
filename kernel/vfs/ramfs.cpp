@@ -1,6 +1,5 @@
 #include "file.hpp"
 #include "ramfs.hpp"
-#include <kernel/console/console.hpp>
 
 namespace ramfs {
 
@@ -94,7 +93,7 @@ vfs::vnode_t ramfs::create_dir(const vfs::path_t &path) {
 
 void ramfs::sync(vfs::vnode &vnode) {
     if (static_cast<dir_entry *>(vnode.data)->fs != this) {
-        console::print("Not this fs\n");
+        // TODO
     }
     static_cast<dir_entry *>(vnode.data)->fs = vnode.fs;
 }

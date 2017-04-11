@@ -5,6 +5,7 @@
 
 #include "vfs.hpp"
 #include "vnode.hpp"
+#include "file_system.hpp"
 
 namespace ramfs {
 

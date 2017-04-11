@@ -5,6 +5,7 @@
 #include "vfs.hpp"
 #include "file.hpp"
 #include "vnode.hpp"
+#include "file_system.hpp"
 
 namespace vfs {
 
@@ -28,15 +29,6 @@ void initialize(file_system &rootfs, block_device &bd) {
     auto dev = get_device_id(bd);
     if (mount_points.size()) return;
     mount_points.push_back(new mount_point("/", rootfs, dev));
-}
-
-file open(const path_t &path, file::mode mode) {
-    auto node = lookup(path);
-    if (!node) {
-        return {};
-    }
-    vnodes.push_back(node);
-    return file(vnodes.back().get(), mode);
 }
 
 int register_device(block_device &bd) {

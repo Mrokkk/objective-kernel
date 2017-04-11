@@ -2,6 +2,7 @@
 
 #include "vfs.hpp"
 #include "vnode.hpp"
+#include "file_system.hpp"
 
 namespace vfs {
 
@@ -24,29 +25,10 @@ public:
     file(const vnode_t &vnode, mode m) : vnode_(vnode), mode_(m) {
     }
 
-    int read(char *buffer, size_t n) {
-        if (mode_ == mode::write) {
-            return -1;
-        }
-        return vnode_->fs->read(*vnode_, buffer, n);
-    }
-
-    int write(const char *buffer, size_t n) {
-        if (mode_ == mode::read) {
-            return -1;
-        }
-        return vnode_->fs->write(*vnode_, buffer, n);
-    }
-
-    int seek(int pos) {
-        position_ = pos;
-        return 0;
-    }
-
-    operator bool() {
-        if (vnode_) return true;
-        return false;
-    }
+    int read(char *buffer, size_t n);
+    int write(const char *buffer, size_t n);
+    int seek(int pos);
+    operator bool();
 
 };
 

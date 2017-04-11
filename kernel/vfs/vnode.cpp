@@ -1,8 +1,8 @@
+#include <list.h>
+
 #include "vfs.hpp"
 #include "vnode.hpp"
-#include <kernel/console/console.hpp>
-
-#include <list.h>
+#include "file_system.hpp"
 
 namespace vfs {
 
