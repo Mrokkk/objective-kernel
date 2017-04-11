@@ -4,6 +4,7 @@
 
 #include "vfs.hpp"
 #include "file.hpp"
+#include "vnode.hpp"
 
 namespace vfs {
 
@@ -46,6 +47,12 @@ int register_device(block_device &bd) {
 void mount_fs(const path_t &path, file_system &fs, block_device &bd) {
     // TODO
     auto dev = get_device_id(bd);
+    auto dirname = path.dirname();
+    auto dir_node = lookup(utils::path(dirname));
+    if (!dir_node) {
+        return;
+    }
+    dir_node->fs = &fs;
     mount_points.push_back(new mount_point(path, fs, dev));
 }
 
