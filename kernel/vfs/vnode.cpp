@@ -38,14 +38,7 @@ vnode_t create(const path_t &path, vnode::type type) {
         return {};
     }
     utils::path filename(path.basename());
-    switch (type) {
-        case vnode::type::file:
-            return dir_node->fs->create_file(filename, dir_node);
-        case vnode::type::dir:
-            return dir_node->fs->create_dir(filename, dir_node);
-        default:
-            return {};
-    }
+    return dir_node->fs->create(filename, dir_node, type);
 }
 
 } // namespace vfs

@@ -11,7 +11,6 @@ struct file;
 struct vnode;
 struct file_system;
 
-using dev_t = short;
 using vnode_t = utils::shared_ptr<vnode>;
 using path_t = utils::path;
 
@@ -30,11 +29,8 @@ struct mount_point final {
 
 };
 
-extern null_block_device null;
-
-void initialize(file_system &fs, block_device &bd = null);
-int register_device(block_device &dev);
-vnode_t mount_fs(const path_t &path, file_system &fs, block_device &bd = null);
+void initialize(file_system &fs, block_device &bd = null_bd);
+vnode_t mount_fs(const path_t &path, file_system &fs, block_device &bd = null_bd);
 
 } // namespace vfs
 
