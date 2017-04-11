@@ -41,52 +41,42 @@ utils::string ramfs::name() {
     return "ramfs";
 }
 
-vfs::vnode_t ramfs::lookup(const vfs::path_t &path) {
-    auto entry = dir_entry_lookup(path);
-    if (entry) {
-        return new vfs::vnode(entry->id, entry->size, 1u, static_cast<void *>(entry), entry->fs);
+vfs::vnode_t ramfs::lookup(const vfs::path_t &path, vfs::vnode_t parent) {
+    if (!parent) {
+        auto entry = dir_entry_lookup(path);
+        if (entry) {
+            return new vfs::vnode(entry->id, entry->size, 1u, static_cast<void *>(entry), entry->fs);
+        }
+    }
+    else {
+        auto dir_node = static_cast<dir_entry *>(parent->data);
+        auto entry = lookup_in_dir(dir_node->dir_entries, path.get());
+        if (entry) {
+            return new vfs::vnode(entry->id, entry->size, 1u, static_cast<void *>(entry), entry->fs);
+        }
     }
     return {};
 }
 
-vfs::vnode_t ramfs::create_file(const vfs::path_t &path) {
-    auto dirname = path.dirname();
-    auto filename = path.basename();
-    if (dirname == "") {
+vfs::vnode_t ramfs::create_file(const vfs::path_t &path, vfs::vnode_t parent) {
+    auto filename = path.get();
+    if (parent) {
+        auto entry = static_cast<dir_entry *>(parent->data);
         auto content = new char[32];
-        auto entry = new dir_entry(node_nr++, filename, vfs::vnode::type::file, this, content);
-        root_.dir_entries.push_back(entry);
-        return new vfs::vnode(entry->id, 0u, 1u, static_cast<void *>(entry), this);
-    }
-    else {
-        auto dir_node = dir_entry_lookup((const char *)dirname);
-        if (dir_node == nullptr) {
-            return {};
-        }
-        auto content = new char[32];
-        auto entry = new dir_entry(node_nr++, filename, vfs::vnode::type::file, this, content, 32);
-        dir_node->dir_entries.push_back(entry);
-        return new vfs::vnode(entry->id, 0u, 1u, static_cast<void *>(entry), this);
+        auto new_entry = new dir_entry(node_nr++, filename, vfs::vnode::type::file, this, content);
+        entry->dir_entries.push_back(new_entry);
+        return new vfs::vnode(new_entry->id, 0u, 1u, static_cast<void *>(new_entry), this, vfs::vnode::type::file);
     }
     return {};
 }
 
-vfs::vnode_t ramfs::create_dir(const vfs::path_t &path) {
-    auto dirname = path.dirname();
-    auto filename = path.basename();
-    if (dirname == "") {
-        auto entry = new dir_entry(node_nr++, filename, vfs::vnode::type::dir, this);
-        root_.dir_entries.push_back(entry);
-        return new vfs::vnode(entry->id, 0u, 1u, static_cast<void *>(entry), this, vfs::vnode::type::dir);
-    }
-    else {
-        auto dir_node = dir_entry_lookup((const char *)dirname);
-        if (dir_node == nullptr) {
-            return {};
-        }
-        auto entry = new dir_entry(node_nr++, filename, vfs::vnode::type::dir, this);
-        dir_node->dir_entries.push_back(entry);
-        return new vfs::vnode(entry->id, 0u, 1u, static_cast<void *>(entry), this, vfs::vnode::type::dir);
+vfs::vnode_t ramfs::create_dir(const vfs::path_t &path, vfs::vnode_t parent) {
+    auto filename = path.get();
+    if (parent) {
+        auto entry = static_cast<dir_entry *>(parent->data);
+        auto new_entry = new dir_entry(node_nr++, filename, vfs::vnode::type::dir, this);
+        entry->dir_entries.push_back(new_entry);
+        return new vfs::vnode(new_entry->id, 0u, 1u, static_cast<void *>(new_entry), this, vfs::vnode::type::dir);
     }
     return {};
 }

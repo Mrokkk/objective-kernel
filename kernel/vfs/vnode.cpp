@@ -15,11 +15,9 @@ vnode_t lookup(const path_t &path) {
         return fs->lookup("");
     }
     auto path_it = path.begin();
-    utils::path temp_path;
     vnode_t node;
     while (path_it) {
-        temp_path.append(*path_it);
-        node = fs->lookup(temp_path);
+        node = fs->lookup(utils::path(*path_it), node);
         if (!node) {
             return {};
         }
@@ -28,7 +26,6 @@ vnode_t lookup(const path_t &path) {
                 return {};
             }
             fs = node->fs;
-            temp_path = utils::path();
         }
         ++path_it;
     }
@@ -36,14 +33,16 @@ vnode_t lookup(const path_t &path) {
 }
 
 vnode_t create(const path_t &path, vnode::type type) {
-    // FIXME
     auto dir_node = lookup(utils::path(path.dirname()));
+    if (!dir_node) {
+        return {};
+    }
     utils::path filename(path.basename());
     switch (type) {
         case vnode::type::file:
-            return dir_node->fs->create_file(path);
+            return dir_node->fs->create_file(filename, dir_node);
         case vnode::type::dir:
-            return dir_node->fs->create_dir(path);
+            return dir_node->fs->create_dir(filename, dir_node);
         default:
             return {};
     }
