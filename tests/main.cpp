@@ -13,6 +13,24 @@
 #define YATF_MAIN
 #include "yatf/include/yatf.h"
 
+namespace {
+
+void write_to_file(const utils::path &path, const char *data) {
+    auto file = vfs::open(path, vfs::file::mode::write);
+    REQUIRE(file);
+    file.write(data, utils::length(data) + 1);
+}
+
+void read_from_file(const utils::path &path, char *data) {
+    auto file = vfs::open(path);
+    REQUIRE(file);
+    file.read(data, 0u);
+}
+
+} // namespace
+
+namespace test_cases {
+
 TEST(kernel_allocator, can_allocate_and_free) {
     for (int i = 0; i < 1024; i++) {
         auto a = yacppl::make_shared<int>(1);
@@ -34,21 +52,6 @@ TEST(kernel_allocator, can_allocate_and_free) {
         REQUIRE(reinterpret_cast<unsigned int>(b.get()) > reinterpret_cast<unsigned int>(a.get()));
     }
 }
-namespace {
-
-void write_to_file(const utils::path &path, const char *data) {
-    auto file = vfs::open(path, vfs::file::mode::write);
-    REQUIRE(file);
-    file.write(data, utils::length(data) + 1);
-}
-
-void read_from_file(const utils::path &path, char *data) {
-    auto file = vfs::open(path);
-    REQUIRE(file);
-    file.read(data, 0u);
-}
-
-} // namespace
 
 TEST(vfs, can_do_things) {
     ramfs::ramfs ramfs;
@@ -86,6 +89,8 @@ TEST(vfs, can_do_things) {
     read_from_file("/dev/file", buffer);
     REQUIRE_EQ((const char *)buffer, "asdfg\n");
 }
+
+} // namespace test_cases
 
 asmlinkage __noreturn void main() {
     auto lock = cpu::make_irq_lock();
