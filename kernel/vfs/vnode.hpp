@@ -16,10 +16,10 @@ struct vnode final {
     type node_type;
     size_t size = 0;
     size_t blocks = 0;
-    uint32_t data = 0;
+    void *data = nullptr;
     file_system *fs = nullptr;
 
-    vnode(unsigned i, size_t s, size_t b, uint32_t d, file_system *f, type t = type::file)
+    vnode(unsigned i, size_t s, size_t b, void *d, file_system *f, type t = type::file)
             : id(i), node_type(t), size(s), blocks(b), data(d), fs(f) {
     }
 
