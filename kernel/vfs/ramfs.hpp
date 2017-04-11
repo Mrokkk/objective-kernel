@@ -48,6 +48,7 @@ public:
 
     utils::string name() override;
     vfs::vnode_t lookup(const vfs::path_t &path, vfs::vnode_t parent) override;
+    vfs::vnode_t create(const vfs::path_t &path, vfs::vnode_t parent, vfs::vnode::type type);
     vfs::vnode_t create_file(const vfs::path_t &path, vfs::vnode_t parent) override;
     vfs::vnode_t create_dir(const vfs::path_t &path, vfs::vnode_t parent) override;
     int read(vfs::vnode &vnode, char *buffer, size_t size = 0) override;

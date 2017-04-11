@@ -86,11 +86,13 @@ TEST(vfs, can_do_things) {
     REQUIRE(dev_node);
     REQUIRE_EQ(dev_node->fs, &ramfs2);
     // FIXME
-    //auto node3 = vfs::create("/dev/file");
-    //if (!node3) {
-        //console::print("Cannot mount fs vnode\n");
-    //}
-    //write_to_file("/dev/file", "asdfg\n");
+    auto node3 = vfs::create("/dev/file");
+    REQUIRE(node3);
+    REQUIRE_EQ(node3->fs, &ramfs2);
+    write_to_file("/dev/file", "asdfg\n");
+    utils::fill(buffer, 32, 0);
+    read_from_file("/dev/file", buffer);
+    REQUIRE_EQ((const char *)buffer, "asdfg\n");
 }
 
 asmlinkage __noreturn void main() {
