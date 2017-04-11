@@ -2,24 +2,60 @@
 
 #include "vfs.hpp"
 #include "vnode.hpp"
+#include "dir_entry.hpp"
 #include "file_system.hpp"
+
+#include <kernel/console/console.hpp>
 
 namespace vfs {
 
+utils::list<vnode_t> vnodes;
 extern utils::list<mount_point *> mount_points;
-extern utils::list<vnode_t> vnodes;
+
+namespace cache {
+
+dir_entry *root = nullptr;
+
+dir_entry *find(const utils::string &name, dir_entry *parent) {
+    for (auto entry : parent->dir_entries) {
+        if (entry->name == name) {
+            return entry;
+        }
+    }
+    return nullptr;
+}
+
+} // namespace cache
 
 vnode_t lookup(const path_t &path) {
     auto fs = mount_points.front()->fs;
     if (path == "") {
         return fs->lookup("");
     }
+    if (cache::root == nullptr) {
+        auto root_node = fs->lookup("");
+        vnodes.push_front(root_node);
+        cache::root = new cache::dir_entry("", root_node.get());
+    }
     auto path_it = path.begin();
     vnode_t node;
+    auto parent_entry = cache::root;
     while (path_it) {
-        node = fs->lookup(utils::path(*path_it), node);
-        if (!node) {
-            return {};
+        auto name = *path_it;
+        auto child_entry = cache::find(name, parent_entry);
+        if (child_entry == nullptr) {
+            node = fs->lookup(utils::path(name), node);
+            if (!node) {
+                return {};
+            }
+            vnodes.push_back(node);
+            parent_entry->dir_entries.push_back(new cache::dir_entry(name, node));
+        }
+        else {
+            node = child_entry->node;
+            if (!node) {
+                console::print("Node is null\n");
+            }
         }
         if (node->fs != fs) {
             if (node->fs == nullptr) {
@@ -28,6 +64,7 @@ vnode_t lookup(const path_t &path) {
             fs = node->fs;
         }
         ++path_it;
+        parent_entry = child_entry;
     }
     return node;
 }

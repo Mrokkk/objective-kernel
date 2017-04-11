@@ -34,8 +34,7 @@ file open(const path_t &path, file::mode mode) {
     if (!node) {
         return {};
     }
-    vnodes.push_back(node);
-    return file(vnodes.back().get(), mode);
+    return file(node.get(), mode);
 }
 
 
