@@ -93,7 +93,9 @@ asmlinkage __noreturn void main() {
     cpu::idt::initialize();
     drivers::serial::initialize();
     console::initialize(drivers::serial::print);
-    yatf::main(console::print);
+    yatf::config config{true, false, false};
+    yatf::run_one(console::print, "kernel_allocator.can_allocate_and_free", config);
+    yatf::run_one(console::print, "vfs.can_do_things", config);
     reboot();
     while (1);
 }
