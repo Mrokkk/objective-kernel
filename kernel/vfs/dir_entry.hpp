@@ -22,7 +22,6 @@ struct dir_entry {
 
 };
 
-
 dir_entry *find(const utils::string &name, dir_entry *parent);
 
 } // namespace cache

@@ -3,20 +3,18 @@
 
 namespace vfs {
 
-extern utils::list<vnode_t> vnodes;
-
 int file::read(char *buffer, size_t n) {
     if (mode_ == mode::write) {
         return -1;
     }
-    return vnode_->fs->read(*vnode_, buffer, n);
+    return vnode_->fs->read(this, vnode_, buffer, n);
 }
 
 int file::write(const char *buffer, size_t n) {
     if (mode_ == mode::read) {
         return -1;
     }
-    return vnode_->fs->write(*vnode_, buffer, n);
+    return vnode_->fs->write(this, vnode_, buffer, n);
 }
 
 int file::seek(int pos) {

@@ -25,6 +25,10 @@ dir_entry *find(const utils::string &name, dir_entry *parent) {
     return nullptr;
 }
 
+void add(const utils::string &name, vnode_t vnode, dir_entry *parent) {
+    parent->dir_entries.push_back(new dir_entry(name, vnode));
+}
+
 } // namespace cache
 
 vnode_t lookup(const path_t &path) {
@@ -49,7 +53,7 @@ vnode_t lookup(const path_t &path) {
                 return {};
             }
             vnodes.push_back(node);
-            parent_entry->dir_entries.push_back(new cache::dir_entry(name, node));
+            cache::add(name, node, parent_entry);
         }
         else {
             node = child_entry->node;
