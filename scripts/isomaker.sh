@@ -36,6 +36,7 @@ else
     multiboot_command="multiboot"
 fi
 
+# For debug: set debug=all
 menu_entry="set timeout=0
 set default=0
 menuentry "${binary}" {
@@ -49,11 +50,11 @@ terminal_output serial"
 
 mkdir -p ${name}.d/boot/grub
 
-echo "${menu_entry}" > ${name}.d/boot/grub/grub.cfg
+echo "${menu_entry}" >${name}.d/boot/grub/grub.cfg
 if [ "${serial}" ]; then
-    echo "${serial_set}" >> ${name}.d/boot/grub/grub.cfg
+    echo "${serial_set}" >>${name}.d/boot/grub/grub.cfg
 fi
 
 cp ${binary} ${name}.d/kernel
-grub-mkrescue -o ${name}.iso ${name}.d 2> /dev/null
+grub-mkrescue -o ${name}.iso ${name}.d 2>/dev/null
 
