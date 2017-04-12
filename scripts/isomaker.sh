@@ -14,6 +14,9 @@ while [[ $# -gt 0 ]]; do
             multiboot2=1 ;;
         --grub-use-serial)
             serial=1 ;;
+        --args)
+            args=$2
+            shift ;;
         *)
             break ;;
     esac
@@ -29,7 +32,7 @@ fi
 menu_entry="set timeout=0
 set default=0
 menuentry "${name}" {
-    if ! $multiboot_command /kernel; then reboot; fi
+    if ! $multiboot_command /kernel $args; then reboot; fi
     boot
 }"
 

@@ -5,7 +5,7 @@ add_subdirectory(scheduler)
 add_subdirectory(vfs)
 
 set_property(SOURCE head.S PROPERTY LANGUAGE C)
-add_library(kernel head.S cpp_support.cpp printf.cpp
+add_library(kernel head.S cpp_support.cpp printf.cpp multiboot.cpp
     $<TARGET_OBJECTS:console>
     $<TARGET_OBJECTS:cpu>
     $<TARGET_OBJECTS:memory>

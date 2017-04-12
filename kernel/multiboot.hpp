@@ -6,7 +6,8 @@
 #define MULTIBOOT_HEADER_FLAGS_MEMORY   (1 << 1)
 #define MULTIBOOT_HEADER_FLAGS_VIDEO    (1 << 2)
 #define MULTIBOOT_HEADER_FLAGS_ADDRESS  (1 << 16)
-#define MULTIBOOT_HEADER_FLAGS      MULTIBOOT_HEADER_FLAGS_ALIGNED | MULTIBOOT_HEADER_FLAGS_MEMORY
+#define MULTIBOOT_HEADER_FLAGS \
+    MULTIBOOT_HEADER_FLAGS_ALIGNED | MULTIBOOT_HEADER_FLAGS_MEMORY
 
 #define MULTIBOOT_HEADER \
     .long MULTIBOOT_HEADER_MAGIC; \
@@ -89,7 +90,7 @@ struct multiboot_info {
         unsigned long interface_off;
         unsigned long interface_len;
     } vbe;
-};
+} __packed;
 
 /* The module structure. */
 struct module {
@@ -144,7 +145,7 @@ struct multiboot_apm_table_struct {
 #define MULTIBOOT_FLAGS_APM_TABLE_BIT       (1 << 10)
 #define MULTIBOOT_FLAGS_VBE_BIT             (1 << 11)
 
-int multiboot_read(struct multiboot_info *mb, unsigned int magic);
+char *multiboot_read(struct multiboot_info *mb);
 
 #endif /* __ASSEMBLER__ */
 

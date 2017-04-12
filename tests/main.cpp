@@ -92,6 +92,9 @@ TEST(vfs, can_do_things) {
 
 } // namespace test_cases
 
+extern char cmdline[];
+extern char *cmdline_ptr;
+
 asmlinkage __noreturn void main() {
     auto lock = cpu::make_irq_lock();
     cpu::gdt::initialize();
@@ -99,8 +102,8 @@ asmlinkage __noreturn void main() {
     drivers::serial::initialize();
     console::initialize(drivers::serial::print);
     yatf::config config{true, false, false};
-    yatf::run_one(console::print, "kernel_allocator.can_allocate_and_free", config);
-    yatf::run_one(console::print, "vfs.can_do_things", config);
+    console::print("Cmdline: ", cmdline, "\n");
+    yatf::run_one(console::print, cmdline, config);
     reboot();
     while (1);
 }

@@ -15,6 +15,7 @@ SECTION(.text.boot)
 
 ENTRY(_start)
 
+    mov %ebx, %edx
     pushl $0
     popfl
 
@@ -29,7 +30,7 @@ ENTRY(_start)
 1:
     stosl
     add $0x1000, %eax                        //FIXME
-    cmp $__heap_start - KERNEL_PAGE_OFFSET + 0x10000 + PAGE_INIT_FLAGS, %eax
+    cmp $__heap_start - KERNEL_PAGE_OFFSET + 0x30000 + PAGE_INIT_FLAGS, %eax
     jne 1b
 
     mov $page_dir, %eax
@@ -50,6 +51,7 @@ ENTRY(_start)
     cld
     rep
 
+    push %edx
     call _init
     call main
 
