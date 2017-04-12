@@ -2,13 +2,18 @@
 
 set -e
 
-tests=("kernel_allocator.can_allocate_and_free" "vfs.can_do_things")
+IFS=$'\n'
+tests=(`strings @PROJECT_NAME@-tests | grep test_cases | c++filt | grep "()" | sed 's/test_cases:://g;s/__/\./g;s/()//g'`)
+unset IFS
+
+rm -rf log
 
 for t in "${tests[@]}"; do
-    echo "Running $t"
     @CMAKE_SOURCE_DIR@/scripts/isomaker.sh -o @PROJECT_NAME@-tests @MULTIBOOT_FLAG@ --grub-use-serial --args "$t"
-    $(which qemu-system-i386 || which qemu-system-x86_64) -cdrom @CMAKE_BINARY_DIR@/tests/os-tests.iso -display none -serial stdio -no-reboot -cpu core2duo $@ | tee log
-    if grep -q "FAIL\|error" log; then
-        exit 1
-    fi
+    $(which qemu-system-i386 || which qemu-system-x86_64) -cdrom @CMAKE_BINARY_DIR@/tests/os-tests.iso -display none -serial stdio -no-reboot -cpu core2duo $@ | grep "RUN\|PASS" | tee -a log
 done
+
+if grep -q "FAIL\|error" log; then
+    exit 1
+fi
+

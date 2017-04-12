@@ -96,6 +96,7 @@ extern char cmdline[];
 extern char *cmdline_ptr;
 
 asmlinkage __noreturn void main() {
+    // FIXME: multiboot2 support
     auto lock = cpu::make_irq_lock();
     cpu::gdt::initialize();
     cpu::idt::initialize();
