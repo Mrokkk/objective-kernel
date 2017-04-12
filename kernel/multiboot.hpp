@@ -24,13 +24,18 @@
     .long MULTIBOOT2_HEADER_ARCH; \
     .long header_end - header_start; \
     .long -(MULTIBOOT2_HEADER_MAGIC + MULTIBOOT2_HEADER_ARCH + header_end - header_start); \
+    .word 1; \
+    .word 0; \
+    .long 4+8; \
+    .long 1; \
+    .balign 8; \
     .word 0; \
     .word 0; \
     .long 8; \
     header_end:
 
-/* Magic number passed from Multiboot 1 compliant bootloader */
 #define MULTIBOOT_BOOTLOADER_MAGIC  0x2BADB002
+#define MULTIBOOT2_BOOTLOADER_MAGIC 0x36d76289
 
 #ifndef __ASSEMBLER__
 
@@ -68,7 +73,7 @@ struct multiboot_info {
     unsigned long mem_lower;
     unsigned long mem_upper;
     unsigned long boot_device;
-    unsigned long cmdline;
+    char *cmdline;
     unsigned long mods_count;
     unsigned long mods_addr;
     union {
@@ -145,7 +150,21 @@ struct multiboot_apm_table_struct {
 #define MULTIBOOT_FLAGS_APM_TABLE_BIT       (1 << 10)
 #define MULTIBOOT_FLAGS_VBE_BIT             (1 << 11)
 
-char *multiboot_read(struct multiboot_info *mb);
+struct mb2_tags_header {
+    uint32_t size;
+    uint32_t reserved;
+};
+
+struct mb2_tag {
+    uint32_t type;
+    uint32_t size;
+} __packed;
+
+namespace bootloader {
+
+char *read_cmdline(void *data, uint32_t magic);
+
+} // namespace bootloader
 
 #endif /* __ASSEMBLER__ */
 

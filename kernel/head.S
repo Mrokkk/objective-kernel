@@ -15,7 +15,7 @@ SECTION(.text.boot)
 
 ENTRY(_start)
 
-    mov %ebx, %edx
+    mov %eax, %edx
     pushl $0
     popfl
 
@@ -52,6 +52,7 @@ ENTRY(_start)
     rep
 
     push %edx
+    push %ebx
     call _init
     call main
 

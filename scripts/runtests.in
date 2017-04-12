@@ -10,7 +10,7 @@ rm -rf log
 
 for t in "${tests[@]}"; do
     @CMAKE_SOURCE_DIR@/scripts/isomaker.sh -o @PROJECT_NAME@-tests @MULTIBOOT_FLAG@ --grub-use-serial --args "$t"
-    $(which qemu-system-i386 || which qemu-system-x86_64) -cdrom @CMAKE_BINARY_DIR@/tests/os-tests.iso -display none -serial stdio -no-reboot -cpu core2duo $@ | grep "RUN\|PASS" | tee -a log
+    $(which qemu-system-i386 || which qemu-system-x86_64) -cdrom @CMAKE_BINARY_DIR@/tests/os-tests.iso -display none -serial stdio -no-reboot -cpu core2duo $@ 2>>log | tee -a log| grep "RUN\|PASS"
 done
 
 if grep -q "FAIL\|error" log; then

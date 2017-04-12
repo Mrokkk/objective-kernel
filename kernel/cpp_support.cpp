@@ -1,5 +1,6 @@
 #include <string.h>
 #include <kernel/multiboot.hpp>
+#include <kernel/console/console.hpp>
 
 asmlinkage {
 
@@ -14,10 +15,12 @@ int __cxa_atexit(void (*)(void *), void *, void *) {
     return 0;
 }
 
-void __cxa_pure_virtual() {}
+void __cxa_pure_virtual() {
+    console::print("PANIC: called pure virtual method\n");
+    while (1);
+}
 
 char cmdline[128];
-char *cmdline_ptr = nullptr;
 
 // for clang
 void *memset(void *ptr, int value, unsigned n) {
@@ -27,9 +30,15 @@ void *memset(void *ptr, int value, unsigned n) {
     return ptr;
 }
 
-void _init(struct multiboot_info *mb) {
-    cmdline_ptr = multiboot_read(mb);
-    utils::copy(cmdline_ptr, cmdline);
+void _init(void *data, uint32_t magic) {
+    // TODO: move to other file
+    auto cmdline_ptr = bootloader::read_cmdline(data, magic);
+    if (cmdline_ptr == nullptr) {
+        cmdline[0] = 0;
+    }
+    else {
+        utils::copy(cmdline_ptr, cmdline);
+    }
     void (**preinit_constructor)() = &__preinit_array_start;
     void (**init_constructor)() = &__init_array_start;
     while (preinit_constructor != &__preinit_array_end) {
@@ -41,7 +50,6 @@ void _init(struct multiboot_info *mb) {
         ++init_constructor;
     }
 }
-
 
 }
 
