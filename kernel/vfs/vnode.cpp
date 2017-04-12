@@ -25,7 +25,34 @@ dir_entry *find(const utils::string &name, dir_entry *parent) {
     return nullptr;
 }
 
-void add(const utils::string &name, vnode_t vnode, dir_entry *parent) {
+dir_entry *find(const vnode_t &node, utils::list<dir_entry *> *list = nullptr) {
+    if (list == nullptr) {
+        if (root->node == node.get()) {
+            return root;
+        }
+        if (root->dir_entries.size() == 0) {
+            return nullptr;
+        }
+        list = &root->dir_entries;
+    }
+    for (auto entry : *list) {
+        if (entry->node == node.get()) {
+            return entry;
+        }
+        if (not entry->node) {
+            continue;
+        }
+        if (entry->node->node_type == vnode::type::dir && entry->dir_entries.size()) {
+            auto result = find(node, &entry->dir_entries);
+            if (result) {
+                return result;
+            }
+        }
+    }
+    return nullptr;
+}
+
+void add(const utils::string &name, vnode_t &vnode, dir_entry *parent) {
     parent->dir_entries.push_back(new dir_entry(name, vnode));
 }
 
@@ -33,13 +60,13 @@ void add(const utils::string &name, vnode_t vnode, dir_entry *parent) {
 
 vnode_t lookup(const path_t &path) {
     auto fs = mount_points.front()->fs;
-    if (path == "") {
-        return fs->lookup("");
-    }
     if (cache::root == nullptr) {
         auto root_node = fs->lookup("");
         vnodes.push_front(root_node);
         cache::root = new cache::dir_entry("", root_node.get());
+    }
+    if (path == "") {
+        return cache::root->node;
     }
     auto path_it = path.begin();
     vnode_t node;
@@ -75,11 +102,20 @@ vnode_t lookup(const path_t &path) {
 
 vnode_t create(const path_t &path, vnode::type type) {
     auto dir_node = lookup(utils::path(path.dirname()));
-    if (!dir_node) {
+    if (not dir_node) {
         return {};
     }
     utils::path filename(path.basename());
-    return dir_node->fs->create(filename, dir_node, type);
+    auto new_node = dir_node->fs->create(filename, dir_node, type);
+    if (not new_node) {
+        return {};
+    }
+    auto cache_parent = cache::find(dir_node);
+    if (not cache_parent) {
+        return new_node;
+    }
+    cache::add(filename.get(), new_node, cache_parent);
+    return new_node;
 }
 
 } // namespace vfs
