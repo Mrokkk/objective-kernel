@@ -11,7 +11,7 @@ namespace ramfs {
 
 class ramfs final : public vfs::file_system {
 
-    unsigned node_nr = 1;
+    unsigned node_nr = 2;
 
     struct dir_entry {
 

@@ -45,14 +45,14 @@ vfs::vnode_t ramfs::lookup(const vfs::path_t &path, vfs::vnode_t parent) {
     if (!parent) {
         auto entry = dir_entry_lookup(path);
         if (entry) {
-            return new vfs::vnode(entry->id, entry->size, 1u, static_cast<void *>(entry), entry->fs);
+            return new vfs::vnode(entry->id, entry->size, 1u, static_cast<void *>(entry), entry->fs, entry->file_type);
         }
     }
     else {
         auto dir_node = static_cast<dir_entry *>(parent->data);
         auto entry = lookup_in_dir(dir_node->dir_entries, path.get());
         if (entry) {
-            return new vfs::vnode(entry->id, entry->size, 1u, static_cast<void *>(entry), entry->fs);
+            return new vfs::vnode(entry->id, entry->size, 1u, static_cast<void *>(entry), entry->fs, entry->file_type);
         }
     }
     return {};

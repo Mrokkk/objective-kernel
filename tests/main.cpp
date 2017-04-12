@@ -91,6 +91,34 @@ TEST(vfs, can_do_things) {
     REQUIRE_EQ((const char *)buffer, "asdfg\n");
 }
 
+TEST(vfs, can_create_root) {
+    ramfs::ramfs ramfs;
+    vfs::initialize(ramfs);
+    auto node = vfs::lookup("");
+    REQUIRE(node);
+    REQUIRE_EQ(node->id, 1u);
+    REQUIRE(node->node_type == vfs::vnode::type::dir);
+    REQUIRE_EQ(node->size, 0u);
+}
+
+TEST(vfs, can_create_files) {
+    ramfs::ramfs ramfs;
+    vfs::initialize(ramfs);
+    auto node = vfs::create("/some_file");
+    REQUIRE(node);
+    REQUIRE_EQ(node->id, 2u);
+    REQUIRE(node->node_type == vfs::vnode::type::file);
+    // TODO: check size
+    {
+        auto node2 = vfs::lookup("/some_file");
+        REQUIRE_EQ(node2->id, 2u);
+        REQUIRE(node2->node_type == vfs::vnode::type::file);
+        //REQUIRE_EQ(node.get(), node2.get()); FIXME
+        auto node3 = vfs::lookup("/some_file");
+        REQUIRE_EQ(node3.get(), node2.get());
+    }
+}
+
 } // namespace test_cases
 
 asmlinkage __noreturn void main() {
