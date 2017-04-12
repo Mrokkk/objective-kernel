@@ -8,9 +8,9 @@ configure_file(${CMAKE_SOURCE_DIR}/scripts/runtests.in ${CMAKE_BINARY_DIR}/runte
 
 add_custom_target(
     tests-iso
-    COMMAND ${CMAKE_SOURCE_DIR}/scripts/isomaker.sh -o ${PROJECT_NAME}-tests ${MULTIBOOT_FLAG} --grub-use-serial
+    COMMAND ${CMAKE_SOURCE_DIR}/scripts/create_test_images.sh ${PROJECT_NAME}-tests ${MULTIBOOT_FLAG}
     DEPENDS ${PROJECT_NAME}-tests
-    COMMENT "Building bootable ISO for tests"
+    COMMENT "Building bootable ISO images for tests"
 )
 
 add_custom_target(

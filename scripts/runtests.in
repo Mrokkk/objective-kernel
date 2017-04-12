@@ -2,15 +2,17 @@
 
 set -e
 
-IFS=$'\n'
-tests=(`strings @PROJECT_NAME@-tests | grep test_cases | c++filt | grep "()" | sed 's/test_cases:://g;s/__/\./g;s/()//g'`)
-unset IFS
+qemu=$(which qemu-system-i386 2>/dev/null || which qemu-system-x86_64 2>/dev/null)
+
+if [[ "${qemu}" == "" ]]; then
+    echo "No QEMU found!"
+    exit 1
+fi
 
 rm -rf log
 
-for t in "${tests[@]}"; do
-    @CMAKE_SOURCE_DIR@/scripts/isomaker.sh -o @PROJECT_NAME@-tests @MULTIBOOT_FLAG@ --grub-use-serial --args "$t"
-    $(which qemu-system-i386 || which qemu-system-x86_64) -cdrom @CMAKE_BINARY_DIR@/tests/os-tests.iso -display none -serial stdio -no-reboot -cpu core2duo $@ 2>>log | tee -a log| grep "RUN\|PASS"
+for image in *.iso; do
+    ${qemu} -cdrom ${image} -display none -serial stdio -no-reboot -cpu core2duo $@ 2>>log | tee -a log| grep "RUN\|PASS"
 done
 
 if grep -q "FAIL\|error" log; then
