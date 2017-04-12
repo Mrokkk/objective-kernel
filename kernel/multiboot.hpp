@@ -153,18 +153,12 @@ struct multiboot_apm_table_struct {
 struct mb2_tags_header {
     uint32_t size;
     uint32_t reserved;
-};
+} __packed;
 
 struct mb2_tag {
     uint32_t type;
     uint32_t size;
 } __packed;
-
-namespace bootloader {
-
-char *read_cmdline(void *data, uint32_t magic);
-
-} // namespace bootloader
 
 #endif /* __ASSEMBLER__ */
 

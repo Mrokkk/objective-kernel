@@ -1,6 +1,7 @@
 #include <shared_ptr.h>
 #include <unique_ptr.h>
 
+#include <kernel/boot.hpp>
 #include <drivers/serial.hpp>
 #include <kernel/cpu/gdt.hpp>
 #include <kernel/cpu/idt.hpp>
@@ -92,8 +93,6 @@ TEST(vfs, can_do_things) {
 
 } // namespace test_cases
 
-extern char cmdline[];
-
 asmlinkage __noreturn void main() {
     auto lock = cpu::make_irq_lock();
     cpu::gdt::initialize();
@@ -101,8 +100,8 @@ asmlinkage __noreturn void main() {
     drivers::serial::initialize();
     console::initialize(drivers::serial::print);
     yatf::config config{true, false, false};
-    console::print("Cmdline: ", cmdline, "\n");
-    yatf::run_one(console::print, cmdline, config);
+    console::print("Boot command-line: ", boot::cmdline, "\n");
+    yatf::run_one(console::print, boot::cmdline, config);
     reboot();
     while (1);
 }

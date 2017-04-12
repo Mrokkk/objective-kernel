@@ -1,6 +1,11 @@
+#include <string.h>
+
+#include "boot.hpp"
 #include "multiboot.hpp"
 
-namespace bootloader {
+namespace boot {
+
+char cmdline[128];
 
 char *get_mb2_cmdline(mb2_tags_header *tag) {
     auto temp = reinterpret_cast<mb2_tag *>(++tag);
@@ -20,6 +25,17 @@ char *read_cmdline(void *data, uint32_t magic) {
         return get_mb2_cmdline(reinterpret_cast<mb2_tags_header *>(data));
     return nullptr;
 }
+
+asmlinkage void read_bootloader_data(void *data, uint32_t magic) {
+    auto cmdline_ptr = read_cmdline(data, magic);
+    if (cmdline_ptr == nullptr) {
+        cmdline[0] = 0;
+    }
+    else {
+        utils::copy(cmdline_ptr, cmdline);
+    }
+}
+
 
 } // namespace bootloader
 

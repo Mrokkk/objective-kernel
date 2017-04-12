@@ -1,5 +1,3 @@
-#include <string.h>
-#include <kernel/multiboot.hpp>
 #include <kernel/console/console.hpp>
 
 asmlinkage {
@@ -20,8 +18,6 @@ void __cxa_pure_virtual() {
     while (1);
 }
 
-char cmdline[128];
-
 // for clang
 void *memset(void *ptr, int value, unsigned n) {
     for (auto i = 0u; i < n; ++i) {
@@ -30,15 +26,7 @@ void *memset(void *ptr, int value, unsigned n) {
     return ptr;
 }
 
-void _init(void *data, uint32_t magic) {
-    // TODO: move to other file
-    auto cmdline_ptr = bootloader::read_cmdline(data, magic);
-    if (cmdline_ptr == nullptr) {
-        cmdline[0] = 0;
-    }
-    else {
-        utils::copy(cmdline_ptr, cmdline);
-    }
+void _init() {
     void (**preinit_constructor)() = &__preinit_array_start;
     void (**init_constructor)() = &__init_array_start;
     while (preinit_constructor != &__preinit_array_end) {

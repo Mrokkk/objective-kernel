@@ -53,6 +53,7 @@ ENTRY(_start)
 
     push %edx
     push %ebx
+    call read_bootloader_data
     call _init
     call main
 
