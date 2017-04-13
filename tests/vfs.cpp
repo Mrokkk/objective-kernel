@@ -168,5 +168,32 @@ TEST(vfs, can_cache_nodes) {
     }
 }
 
+TEST(vfs, can_read_write_to_file) {
+    ramfs::ramfs ramfs;
+    vfs::initialize(ramfs);
+    vfs::create("/file", vfs::vnode::type::file);
+    auto file = vfs::open("/file", vfs::file::mode::read_write);
+    REQUIRE(file);
+    REQUIRE_EQ(file.position(), 0u);
+    file.write("some text", 10);
+    REQUIRE_EQ(file.position(), 10u);
+    file.seek(0u);
+    REQUIRE_EQ(file.position(), 0u);
+    char buffer[32];
+    file.read(buffer, 10);
+    REQUIRE_EQ(file.position(), 10u);
+    REQUIRE_EQ((const char *)buffer, "some text");
+    file.seek(5);
+    REQUIRE_EQ(file.position(), 5u);
+    file.read(buffer, 5);
+    REQUIRE_EQ(file.position(), 10u);
+    REQUIRE_EQ((const char *)buffer, "text");
+    file.seek(5);
+    file.write("testing", 8);
+    file.seek(0);
+    file.read(buffer, 13);
+    REQUIRE_EQ((const char *)buffer, "some testing");
+}
+
 } // namespace test_cases
 
