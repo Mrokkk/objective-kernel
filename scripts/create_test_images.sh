@@ -8,7 +8,7 @@ name="${1}"
 multiboot_flag="${2}"
 
 IFS=$'\n'
-tests=(`strings ${name} | grep test_cases | c++filt | grep "()" | sed 's/test_cases:://g;s/__/\./g;s/()//g'`)
+tests=(`strings ${name} | grep test_cases | c++filt | grep "()" | sed 's/test_cases:://g;s/__/\./g;s/()//g; /yacppl/d; /{/d'`)
 unset IFS
 
 index=0

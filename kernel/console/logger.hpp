@@ -13,5 +13,12 @@ namespace console {
 #define debug(...) \
     console::print(utils::last_occurrence(__FILE__, '/') + 1, ":", __LINE__, ":DEBUG: ", __VA_ARGS__, "\n")
 
+#define assert(cond) \
+    do { \
+        if (!(cond)) { \
+            warning("assertion failed: ", #cond); \
+        } \
+    } while (0)
+
 } // namespace console
 

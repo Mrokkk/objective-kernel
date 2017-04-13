@@ -29,6 +29,8 @@ struct mount_point final {
 
 };
 
+using mount_point_t = utils::shared_ptr<mount_point>;
+
 void initialize(file_system &fs, block_device &bd = null_bd);
 vnode_t mount_fs(const path_t &path, file_system &fs, block_device &bd = null_bd);
 

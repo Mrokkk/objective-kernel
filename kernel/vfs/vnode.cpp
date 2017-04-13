@@ -1,4 +1,5 @@
 #include <list.h>
+#include <unique_ptr.h>
 
 #include "vfs.hpp"
 #include "vnode.hpp"
@@ -10,11 +11,11 @@
 namespace vfs {
 
 utils::list<vnode_t> vnodes;
-extern utils::list<mount_point *> mount_points;
+extern utils::list<mount_point_t> mount_points;
 
 namespace cache {
 
-dir_entry *root = nullptr;
+utils::unique_ptr<dir_entry> root;
 
 dir_entry *find(const utils::string &name, const dir_entry *parent) {
     for (auto entry : parent->dir_entries) {
@@ -78,7 +79,7 @@ vnode_t lookup(const path_t &path) {
     }
     auto path_it = path.begin();
     vnode_t node;
-    auto parent_entry = cache::root;
+    auto parent_entry = cache::root.get();
     while (path_it) {
         auto name = *path_it;
         auto child_entry = cache::find(name, parent_entry);
@@ -129,12 +130,10 @@ vnode_t create(const path_t &path, vnode::type type) {
     vnodes.push_back(new_node);
     auto cache_parent = cache::find(dir_node);
     if (not cache_parent) {
-        if (cache_parent->name != path.dirname()) {
-            warning("something is broken");
-        }
         warning("parent node for ", (const char *)path, " isn\'t cached");
         return new_node;
     }
+    assert(cache_parent->name != path.dirname());
     cache::add(filename.get(), new_node, cache_parent);
     return new_node;
 }

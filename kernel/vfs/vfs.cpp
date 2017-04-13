@@ -8,7 +8,7 @@
 
 namespace vfs {
 
-utils::list<mount_point *> mount_points;
+utils::list<mount_point_t> mount_points;
 
 void initialize(file_system &rootfs, block_device &bd) {
     register_device(null_bd);
