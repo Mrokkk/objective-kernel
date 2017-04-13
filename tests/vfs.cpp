@@ -1,5 +1,6 @@
-#include <kernel/vfs/ramfs.hpp>
 #include <kernel/vfs/file.hpp>
+#include <kernel/vfs/ramfs.hpp>
+#include <kernel/vfs/dir_entry.hpp>
 
 #include "yatf/include/yatf.h"
 
@@ -18,7 +19,7 @@ TEST(vfs, can_create_root) {
 TEST(vfs, can_create_files) {
     ramfs::ramfs ramfs;
     vfs::initialize(ramfs);
-    auto node = vfs::create("/some_file");
+    auto node = vfs::create("/some_file", vfs::vnode::type::file);
     REQUIRE(node);
     REQUIRE_EQ(node->id, 2u);
     REQUIRE(node->node_type == vfs::vnode::type::file);
@@ -28,7 +29,7 @@ TEST(vfs, can_create_files) {
         REQUIRE_EQ(node2->id, 2u);
         REQUIRE(node2->node_type == vfs::vnode::type::file);
     }
-    node = vfs::create("/some_file2");
+    node = vfs::create("/some_file2", vfs::vnode::type::file);
     REQUIRE(node);
     REQUIRE_EQ(node->id, 3u);
     REQUIRE(node->node_type == vfs::vnode::type::file);
@@ -65,7 +66,34 @@ TEST(vfs, can_create_dirs) {
 }
 
 TEST(vfs, can_cache_nodes) {
-    // TODO
+    ramfs::ramfs ramfs;
+    vfs::initialize(ramfs);
+    {
+        auto orig_node = vfs::create("/some_file", vfs::vnode::type::file);
+        auto cache_entry = vfs::cache::find(orig_node);
+        REQUIRE(cache_entry->node == orig_node);
+        REQUIRE(cache_entry->name == "some_file");
+    }
+    {
+        auto orig_node = vfs::create("/some_dir", vfs::vnode::type::dir);
+        auto cache_entry = vfs::cache::find(orig_node);
+        REQUIRE(cache_entry != nullptr);
+        REQUIRE(cache_entry->node == orig_node);
+        REQUIRE(cache_entry->name == "some_dir");
+        REQUIRE(cache_entry->node->node_type == vfs::vnode::type::dir);
+    }
+    {
+        auto orig_node = vfs::create("/some_dir/some_other_file", vfs::vnode::type::file);
+        auto cache_entry = vfs::cache::find(orig_node);
+        REQUIRE(cache_entry != nullptr);
+        REQUIRE(cache_entry->name == "some_other_file");
+    }
+    {
+        auto orig_node = vfs::create("/some_dir/other_file", vfs::vnode::type::file);
+        auto node = vfs::lookup("/some_dir");
+        //auto cache_entry = vfs::cache::find(orig_node);
+        //REQUIRE(cache_entry != nullptr);
+    }
 }
 
 } // namespace test_cases

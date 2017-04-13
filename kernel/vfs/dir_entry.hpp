@@ -3,9 +3,9 @@
 #include <list.h>
 #include <string.h>
 
-namespace vfs {
+#include "vnode.hpp"
 
-struct vnode;
+namespace vfs {
 
 namespace cache {
 
@@ -22,7 +22,8 @@ struct dir_entry {
 
 };
 
-dir_entry *find(const utils::string &name, dir_entry *parent);
+dir_entry *find(const utils::string &name, const dir_entry *parent);
+dir_entry *find(const vnode_t &node, utils::list<dir_entry *> *list = nullptr);
 
 } // namespace cache
 

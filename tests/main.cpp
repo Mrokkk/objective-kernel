@@ -58,7 +58,7 @@ TEST(vfs, can_do_things) {
     // TODO: remove this
     ramfs::ramfs ramfs;
     vfs::initialize(ramfs);
-    auto node = vfs::create("/some_file");
+    auto node = vfs::create("/some_file", vfs::vnode::type::file);
     REQUIRE(node);
     REQUIRE_EQ(node->fs, &ramfs);
     write_to_file("/some_file", "hello kernel!");
@@ -68,7 +68,7 @@ TEST(vfs, can_do_things) {
     REQUIRE_EQ((const char *)buffer, "hello kernel!");
     auto dir_node = vfs::create("/some_dir", vfs::vnode::type::dir);
     REQUIRE(dir_node);
-    auto node2 = vfs::create("/some_dir/file");
+    auto node2 = vfs::create("/some_dir/file", vfs::vnode::type::file);
     REQUIRE(node2);
     write_to_file("/some_dir/file", "hello world from file in dir!");
     utils::fill(buffer, 32, 0);
@@ -82,7 +82,7 @@ TEST(vfs, can_do_things) {
     dev_node = vfs::lookup("/dev");
     REQUIRE(dev_node);
     REQUIRE_EQ(dev_node->fs, &ramfs2);
-    auto node3 = vfs::create("/dev/file");
+    auto node3 = vfs::create("/dev/file", vfs::vnode::type::file);
     REQUIRE(node3);
     REQUIRE_EQ(node3->fs, &ramfs2);
     REQUIRE_EQ((const char *)node3->fs->name(), "ramfs");

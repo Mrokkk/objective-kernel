@@ -5,7 +5,7 @@
 #include "dir_entry.hpp"
 #include "file_system.hpp"
 
-#include <kernel/console/console.hpp>
+#include <kernel/console/logger.hpp>
 
 namespace vfs {
 
@@ -16,7 +16,7 @@ namespace cache {
 
 dir_entry *root = nullptr;
 
-dir_entry *find(const utils::string &name, dir_entry *parent) {
+dir_entry *find(const utils::string &name, const dir_entry *parent) {
     for (auto entry : parent->dir_entries) {
         if (entry->name == name) {
             return entry;
@@ -25,7 +25,7 @@ dir_entry *find(const utils::string &name, dir_entry *parent) {
     return nullptr;
 }
 
-dir_entry *find(const vnode_t &node, utils::list<dir_entry *> *list = nullptr) {
+dir_entry *find(const vnode_t &node, utils::list<dir_entry *> *list) {
     if (list == nullptr) {
         if (root->node == node.get()) {
             return root;
@@ -36,24 +36,32 @@ dir_entry *find(const vnode_t &node, utils::list<dir_entry *> *list = nullptr) {
         list = &root->dir_entries;
     }
     for (auto entry : *list) {
+        debug("looking at ", (const char *)entry->name);
+        if (entry->node == nullptr) {
+            warning("cache entry is null");
+            continue; // FIXME
+        }
         if (entry->node == node.get()) {
+            debug("\"", (const char *)entry->name, "\" found in cache");
             return entry;
         }
-        if (not entry->node) {
-            continue;
-        }
-        if (entry->node->node_type == vnode::type::dir && entry->dir_entries.size()) {
+        if (entry->node->node_type == vnode::type::dir) {
+            debug("going to dir ", (const char *)entry->name);
             auto result = find(node, &entry->dir_entries);
             if (result) {
                 return result;
             }
         }
+        else {
+            debug((const char *)entry->name, " is a file");
+        }
     }
+    warning("no cache for node");
     return nullptr;
 }
 
 void add(const utils::string &name, vnode_t &vnode, dir_entry *parent) {
-    parent->dir_entries.push_back(new dir_entry(name, vnode));
+    parent->dir_entries.push_back(new dir_entry(name, vnode, parent));
 }
 
 } // namespace cache
@@ -85,11 +93,12 @@ vnode_t lookup(const path_t &path) {
         else {
             node = child_entry->node;
             if (!node) {
-                console::print("Node is null\n");
+                warning("node is null");
             }
         }
         if (node->fs != fs) {
             if (node->fs == nullptr) {
+                warning("no fs pointer");
                 return {};
             }
             fs = node->fs;
@@ -110,8 +119,20 @@ vnode_t create(const path_t &path, vnode::type type) {
     if (not new_node) {
         return {};
     }
+    if (type == vnode::type::file) {
+        warning("creating file ", path.get());
+    }
+    else {
+        warning("creating dir ", path.get());
+    }
+    new_node->node_type = type;
+    vnodes.push_back(new_node);
     auto cache_parent = cache::find(dir_node);
     if (not cache_parent) {
+        if (cache_parent->name != path.dirname()) {
+            warning("something is broken");
+        }
+        warning("parent node for ", (const char *)path, " isn\'t cached");
         return new_node;
     }
     cache::add(filename.get(), new_node, cache_parent);

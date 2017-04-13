@@ -1,6 +1,8 @@
 #include "file.hpp"
 #include "ramfs.hpp"
 
+#include <kernel/console/logger.hpp>
+
 namespace ramfs {
 
 ramfs::dir_entry *ramfs::lookup_in_dir(utils::list<dir_entry *> &dir, const utils::string &name) {
@@ -75,7 +77,7 @@ vfs::vnode_t ramfs::create(const vfs::path_t &path, vfs::vnode_t parent, vfs::vn
 
 void ramfs::sync(vfs::vnode &vnode) {
     if (static_cast<dir_entry *>(vnode.data)->fs != this) {
-        // TODO
+        warning("i'm not the owner of this node!");
     }
     static_cast<dir_entry *>(vnode.data)->fs = vnode.fs;
 }

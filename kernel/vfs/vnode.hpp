@@ -9,7 +9,7 @@ struct file_system;
 struct vnode final {
 
     enum class type {
-        file, dir
+        file = 1, dir
     };
 
     unsigned id = 0;
@@ -19,14 +19,14 @@ struct vnode final {
     void *data = nullptr;
     file_system *fs = nullptr;
 
-    vnode(unsigned i, size_t s, size_t b, void *d, file_system *f, type t = type::file)
+    vnode(unsigned i, size_t s, size_t b, void *d, file_system *f, type t)
             : id(i), node_type(t), size(s), blocks(b), data(d), fs(f) {
     }
 
 };
 
 vnode_t lookup(const path_t &path);
-vnode_t create(const path_t &path, vnode::type type = vnode::type::file);
+vnode_t create(const path_t &path, vnode::type type);
 
 } // namespace vfs
 
