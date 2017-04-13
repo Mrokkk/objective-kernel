@@ -12,7 +12,7 @@ namespace cache {
 struct dir_entry {
 
     utils::string name;
-    vnode *node = nullptr;
+    vnode_t node = nullptr;
     dir_entry *parent = nullptr;
     utils::list<dir_entry *> dir_entries;
 
