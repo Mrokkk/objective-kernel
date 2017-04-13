@@ -38,6 +38,9 @@ TEST(vfs, can_create_files) {
         REQUIRE_EQ(node2->id, 3u);
         REQUIRE(node2->node_type == vfs::vnode::type::file);
     }
+    // TODO: fail if file/dir exists
+    //node = vfs::create("/some_file", vfs::vnode::type::file);
+    //REQUIRE(!node);
 }
 
 TEST(vfs, can_create_dirs) {
@@ -63,21 +66,68 @@ TEST(vfs, can_create_dirs) {
         REQUIRE(node2->node_type == vfs::vnode::type::dir);
         REQUIRE_EQ(node2->size, 0u);
     }
-    node = create("/some_dir2/file", vfs::vnode::type::file);
-    REQUIRE(node);
-    REQUIRE_EQ(node->id, 4u);
-    REQUIRE(node->node_type == vfs::vnode::type::file);
+}
+
+TEST(vfs, fails_on_lookup_for_nonexistent_path) {
+    ramfs::ramfs ramfs;
+    vfs::initialize(ramfs);
+    REQUIRE_FALSE(vfs::lookup("/a"));
+    REQUIRE_FALSE(vfs::lookup("/dir1"));
+    REQUIRE_FALSE(vfs::lookup("/dir2"));
+    REQUIRE_FALSE(vfs::lookup("/file"));
+    REQUIRE_FALSE(vfs::lookup("/file/dir"));
+    REQUIRE_FALSE(vfs::lookup("/file/dir/a/b"));
+}
+
+TEST(vfs, can_create_tree) {
+    ramfs::ramfs ramfs;
+    vfs::initialize(ramfs);
+    auto node2 = vfs::create("/some_dir", vfs::vnode::type::dir);
+    REQUIRE(node2);
+    auto node3 = vfs::create("/file", vfs::vnode::type::file);
+    REQUIRE(node3);
+    auto node4 = vfs::create("/some_dir/file1", vfs::vnode::type::file);
+    REQUIRE(node4);
+    auto node5 = vfs::create("/some_dir/file2", vfs::vnode::type::file);
+    REQUIRE(node5);
+    auto node6 = vfs::create("/some_dir/dir1", vfs::vnode::type::dir);
+    REQUIRE(node6);
+    auto node7 = vfs::create("/some_dir/dir1/file", vfs::vnode::type::file);
+    REQUIRE(node7);
     {
-        auto node2 = vfs::lookup("/some_dir2");
-        REQUIRE_EQ(node2->id, 3u);
-        REQUIRE(node2->node_type == vfs::vnode::type::dir);
-        REQUIRE_EQ(node2->size, 0u);
+        auto node = vfs::lookup("/file");
+        REQUIRE(node);
+        REQUIRE(node == node3);
+        REQUIRE_EQ(node->id, 3u);
+        REQUIRE(node->node_type == vfs::vnode::type::file);
     }
     {
-        auto node2 = vfs::lookup("/some_dir2");
-        REQUIRE_EQ(node2->id, 3u);
-        REQUIRE(node2->node_type == vfs::vnode::type::dir);
-        REQUIRE_EQ(node2->size, 0u);
+        auto node = vfs::lookup("/some_dir/file1");
+        REQUIRE(node);
+        REQUIRE(node == node4);
+        REQUIRE_EQ(node->id, 4u);
+        REQUIRE(node->node_type == vfs::vnode::type::file);
+    }
+    {
+        auto node = vfs::lookup("/some_dir/dir1/file");
+        REQUIRE(node);
+        REQUIRE(node == node7);
+        REQUIRE_EQ(node->id, 7u);
+        REQUIRE(node->node_type == vfs::vnode::type::file);
+    }
+    {
+        auto node = vfs::lookup("/some_dir/dir1");
+        REQUIRE(node);
+        REQUIRE(node == node6);
+        REQUIRE_EQ(node->id, 6u);
+        REQUIRE(node->node_type == vfs::vnode::type::dir);
+    }
+    {
+        auto node = vfs::lookup("/some_dir/file2");
+        REQUIRE(node);
+        REQUIRE(node == node5);
+        REQUIRE_EQ(node->id, 5u);
+        REQUIRE(node->node_type == vfs::vnode::type::file);
     }
 }
 
@@ -115,7 +165,6 @@ TEST(vfs, can_cache_nodes) {
     {
         auto node = vfs::lookup("/some_dir");
         REQUIRE(node);
-        REQUIRE(node->node_type == vfs::vnode::type::dir);
     }
 }
 
