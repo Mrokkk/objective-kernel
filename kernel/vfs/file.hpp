@@ -20,8 +20,6 @@ private:
 
 public:
 
-    file() = default;
-
     file(const vnode_t &vnode, mode m) : vnode_(vnode), mode_(m) {
     }
 
@@ -34,7 +32,7 @@ public:
 
 };
 
-file open(const path_t &path, file::mode mode = file::mode::read);
+file_t open(const path_t &path, file::mode mode = file::mode::read);
 
 } // namespace vfs
 

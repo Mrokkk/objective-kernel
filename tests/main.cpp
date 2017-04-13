@@ -19,13 +19,14 @@ namespace {
 void write_to_file(const utils::path &path, const char *data) {
     auto file = vfs::open(path, vfs::file::mode::write);
     REQUIRE(file);
-    file.write(data, utils::length(data) + 1);
+    file->write(data, utils::length(data) + 1);
 }
 
 void read_from_file(const utils::path &path, char *data) {
     auto file = vfs::open(path);
     REQUIRE(file);
-    file.read(data, 0u);
+    // FIXME
+    file->read(data, 32);
 }
 
 } // namespace

@@ -11,8 +11,9 @@ struct file;
 struct vnode;
 struct file_system;
 
-using vnode_t = utils::shared_ptr<vnode>;
 using path_t = utils::path;
+using vnode_t = utils::shared_ptr<vnode>;
+using file_t = utils::shared_ptr<file>;
 
 struct mount_point final {
 

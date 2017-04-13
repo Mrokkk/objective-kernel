@@ -3,6 +3,8 @@
 
 namespace vfs {
 
+utils::list<file_t> files;
+
 int file::read(char *buffer, size_t n) {
     if (mode_ == mode::write) {
         return -1;
@@ -34,13 +36,13 @@ off_t file::position() const {
     return position_;
 }
 
-file open(const path_t &path, file::mode mode) {
+file_t open(const path_t &path, file::mode mode) {
     // TODO: creating file
     auto node = lookup(path);
     if (not node) {
         return {};
     }
-    return file(node.get(), mode);
+    return utils::make_shared<file>(node.get(), mode);
 }
 
 } // namespace vfs

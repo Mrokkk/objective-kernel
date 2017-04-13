@@ -83,7 +83,7 @@ void ramfs::sync(vfs::vnode &vnode) {
 }
 
 int ramfs::read(vfs::file *file, vfs::vnode_t &vnode, char *buffer, size_t size) {
-    if (size == 0) {
+    if (size == 0u) {
         size = vnode->size;
     }
     auto node = reinterpret_cast<dir_entry *>(vnode->data);
