@@ -62,17 +62,26 @@ dir_entry *find(const vnode_t &node, utils::list<dir_entry *> *list) {
 }
 
 void add(const utils::string &name, vnode_t &vnode, dir_entry *parent) {
-    parent->dir_entries.push_back(new dir_entry(name, vnode, parent));
+    if (parent == nullptr) {
+        cache::root = new cache::dir_entry("", vnode);
+    }
+    else {
+        parent->dir_entries.push_back(new dir_entry(name, vnode, parent));
+    }
+}
+
+bool empty() {
+    return root == nullptr;
 }
 
 } // namespace cache
 
 vnode_t lookup(const path_t &path) {
     auto fs = mount_points.front()->fs;
-    if (cache::root == nullptr) {
+    if (cache::empty()) {
         auto root_node = fs->lookup("");
         vnodes.push_front(root_node);
-        cache::root = new cache::dir_entry("", root_node.get());
+        cache::add("", root_node);
     }
     if (path == "") {
         return cache::root->node;
@@ -133,7 +142,6 @@ vnode_t create(const path_t &path, vnode::type type) {
         warning("parent node for ", (const char *)path, " isn\'t cached");
         return new_node;
     }
-    assert(cache_parent->name != path.dirname());
     cache::add(filename.get(), new_node, cache_parent);
     return new_node;
 }
