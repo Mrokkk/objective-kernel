@@ -1,6 +1,7 @@
 #include <array.h>
 
 #include <drivers/vga.hpp>
+#include <kernel/boot.hpp>
 #include <kernel/cpu/gdt.hpp>
 #include <kernel/cpu/idt.hpp>
 #include <kernel/vfs/vfs.hpp>
@@ -39,6 +40,7 @@ asmlinkage __noreturn void main() {
     console::initialize(drivers::vga::print);
     ramfs::ramfs ramfs;
     vfs::initialize(ramfs);
+    console::print("Boot command-line: ", boot::cmdline, "\n");
     console::print("\nHello World!\n");
     switch_to_user();
     while (1);
