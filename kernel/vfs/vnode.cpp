@@ -120,10 +120,10 @@ vnode_t create(const path_t &path, vnode::type type) {
         return {};
     }
     if (type == vnode::type::file) {
-        warning("creating file ", path.get());
+        debug("creating file ", path.get());
     }
     else {
-        warning("creating dir ", path.get());
+        debug("creating dir ", path.get());
     }
     new_node->node_type = type;
     vnodes.push_back(new_node);
