@@ -82,20 +82,28 @@ void ramfs::sync(vfs::vnode &vnode) {
     static_cast<dir_entry *>(vnode.data)->fs = vnode.fs;
 }
 
-int ramfs::read(vfs::file *, vfs::vnode_t &vnode, char *buffer, size_t size) {
-    if (size == 0) size = vnode->size;
+int ramfs::read(vfs::file *file, vfs::vnode_t &vnode, char *buffer, size_t size) {
+    if (size == 0) {
+        size = vnode->size;
+    }
     auto node = reinterpret_cast<dir_entry *>(vnode->data);
     if (node->file_type != vfs::vnode::type::file) return 0;
-    utils::memcopy(node->content, buffer, size);
+    auto pos = file->position();
+    utils::memcopy(node->content + pos, buffer, size);
+    pos += size;
+    file->position(pos);
     return size;
 }
 
-int ramfs::write(vfs::file *, vfs::vnode_t &vnode, const char *buffer, size_t size) {
+int ramfs::write(vfs::file *file, vfs::vnode_t &vnode, const char *buffer, size_t size) {
     auto node = reinterpret_cast<dir_entry *>(vnode->data);
     if (node->file_type != vfs::vnode::type::file) return 0;
-    utils::memcopy(buffer, node->content, size);
+    auto pos = file->position();
+    utils::memcopy(buffer, node->content + pos, size);
     vnode->size = size;
     node->size = size;
+    pos += size;
+    file->position(pos);
     return size;
 }
 

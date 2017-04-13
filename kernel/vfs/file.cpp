@@ -17,7 +17,7 @@ int file::write(const char *buffer, size_t n) {
     return vnode_->fs->write(this, vnode_, buffer, n);
 }
 
-int file::seek(int pos) {
+int file::seek(off_t pos) {
     position_ = pos;
     return 0;
 }
@@ -26,10 +26,18 @@ file::operator bool() const {
     return vnode_ ? true : false;
 }
 
+void file::position(off_t position) {
+    position_ = position;
+}
+
+off_t file::position() const {
+    return position_;
+}
+
 file open(const path_t &path, file::mode mode) {
     // TODO: creating file
     auto node = lookup(path);
-    if (!node) {
+    if (not node) {
         return {};
     }
     return file(node.get(), mode);

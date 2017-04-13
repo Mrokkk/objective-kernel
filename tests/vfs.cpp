@@ -1,6 +1,6 @@
 #include <kernel/vfs/file.hpp>
 #include <kernel/vfs/ramfs.hpp>
-#include <kernel/vfs/dir_entry.hpp>
+#include <kernel/vfs/cache.hpp>
 
 #include "yatf/include/yatf.h"
 

@@ -27,7 +27,9 @@ public:
 
     int read(char *buffer, size_t n);
     int write(const char *buffer, size_t n);
-    int seek(int pos);
+    int seek(off_t pos);
+    void position(off_t position);
+    off_t position() const;
     operator bool() const;
 
 };
