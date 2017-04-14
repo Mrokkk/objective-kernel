@@ -47,14 +47,14 @@ vfs::vnode_t ramfs::lookup(const vfs::path_t &path, vfs::vnode_t parent) {
     if (!parent) {
         auto entry = dir_entry_lookup(path);
         if (entry) {
-            return utils::make_shared<vfs::vnode>(entry->id, entry->size, 1u, static_cast<void *>(entry), entry->fs, entry->file_type);
+            return utils::make_shared<vfs::vnode>(entry->id, entry->content.data_written(), 1u, static_cast<void *>(entry), entry->fs, entry->file_type);
         }
     }
     else {
         auto dir_node = static_cast<dir_entry *>(parent->data);
         auto entry = lookup_in_dir(dir_node->dir_entries, path.get());
         if (entry) {
-            return utils::make_shared<vfs::vnode>(entry->id, entry->size, 1u, static_cast<void *>(entry), entry->fs, entry->file_type);
+            return utils::make_shared<vfs::vnode>(entry->id, entry->content.data_written(), 1u, static_cast<void *>(entry), entry->fs, entry->file_type);
         }
     }
     return {};
@@ -97,7 +97,6 @@ int ramfs::write(vfs::file *file, vfs::vnode_t &vnode, const char *buffer, size_
     auto pos = file->position();
     node->content.write(pos, buffer, size);
     vnode->size = size;
-    node->size = size;
     pos += size;
     file->position(pos);
     return size;

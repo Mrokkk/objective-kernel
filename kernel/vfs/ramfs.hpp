@@ -71,7 +71,6 @@ class ramfs final : public vfs::file_system {
         utils::string file_name;
         vfs::vnode::type file_type;
         file_content content;
-        size_t size;
         utils::list<dir_entry *> dir_entries;
         vfs::file_system *fs = nullptr;
 
