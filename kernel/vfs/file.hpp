@@ -28,6 +28,7 @@ public:
     int seek(off_t pos);
     void position(off_t position);
     off_t position() const;
+    size_t size() const;
     operator bool() const;
 
 };

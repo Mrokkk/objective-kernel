@@ -47,13 +47,11 @@ class ramfs final : public vfs::file_system {
                 allocate(pos + size);
                 utils::fill(data_, pos + size, 0);
             }
-            if (size + pos >= data_written()) {
-                reallocate(data_written() + pos + 2 * size);
+            if (size + pos > data_written()) {
+                reallocate(data_written() + pos + size);
+                iterator_ = data_ + size + pos;
             }
             utils::memcopy(data, data_ + pos, size);
-            if (size - pos > 0) {
-                iterator_ += size - pos;
-            }
         }
 
         void read(size_t pos, char *data, size_t size) {

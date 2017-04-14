@@ -190,6 +190,7 @@ TEST(vfs, can_read_write_to_file) {
     REQUIRE_EQ((const char *)buffer, "text");
     file->seek(5);
     file->write("testing", 8);
+    REQUIRE_EQ(file->size(), 13u);
     file->seek(0);
     REQUIRE_EQ(file->position(), 0u);
     file->read(buffer, 13);
@@ -200,6 +201,7 @@ TEST(vfs, can_read_write_to_file) {
     file->seek(0);
     file->read(buffer, 25u);
     REQUIRE_EQ((const char *)buffer, "some testing for kernel");
+    REQUIRE_EQ(file->size(), 24u);
 }
 
 TEST(vfs, cannot_create_file_under_file) {

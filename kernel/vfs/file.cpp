@@ -36,6 +36,10 @@ off_t file::position() const {
     return position_;
 }
 
+size_t file::size() const {
+    return vnode_->size;
+}
+
 file_t open(const path_t &path, file::mode mode) {
     // TODO: creating file
     auto node = lookup(path);

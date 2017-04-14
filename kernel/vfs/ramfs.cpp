@@ -96,7 +96,7 @@ int ramfs::write(vfs::file *file, vfs::vnode_t &vnode, const char *buffer, size_
     if (node->file_type != vfs::vnode::type::file) return 0;
     auto pos = file->position();
     node->content.write(pos, buffer, size);
-    vnode->size = size;
+    vnode->size = node->content.data_written();
     pos += size;
     file->position(pos);
     return size;
