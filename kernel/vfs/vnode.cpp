@@ -67,6 +67,11 @@ vnode_t lookup(const path_t &path) {
     return node;
 }
 
+bool node_exists(const utils::path &filename, const vnode_t &parent) {
+    auto n = parent->fs->lookup(filename, parent);
+    return (bool)n;
+}
+
 vnode_t create(const path_t &path, vnode::type type) {
     auto dir_node = lookup(utils::path(path.dirname()));
     if (not dir_node) {
@@ -76,6 +81,10 @@ vnode_t create(const path_t &path, vnode::type type) {
         return {};
     }
     utils::path filename(path.basename());
+    if (node_exists(filename, dir_node)) {
+        warning(to_string(type), " ", (const char *)path, " exists");
+        return {};
+    }
     debug("creating ", to_string(type), " ", path.get());
     auto new_node = dir_node->fs->create(filename, dir_node, type);
     if (not new_node) {

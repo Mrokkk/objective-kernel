@@ -206,8 +206,28 @@ TEST(vfs, cannot_create_file_under_file) {
     ramfs::ramfs ramfs;
     vfs::initialize(ramfs);
     auto file_node = vfs::create("/some_file", vfs::vnode::type::file);
-    auto bad_node = vfs::create("/some_file/file", vfs::vnode::type::file);
-    REQUIRE_FALSE(bad_node);
+    {
+        auto bad_node = vfs::create("/some_file/file", vfs::vnode::type::file);
+        REQUIRE_FALSE(bad_node);
+    }
+    {
+        auto bad_node = vfs::create("/some_file/dir", vfs::vnode::type::dir);
+        REQUIRE_FALSE(bad_node);
+    }
+    {
+        auto bad_node = vfs::create("/some_file/dir/dir", vfs::vnode::type::dir);
+        REQUIRE_FALSE(bad_node);
+    }
+}
+
+TEST(vfs, cannot_create_files_with_the_same_name) {
+    ramfs::ramfs ramfs;
+    vfs::initialize(ramfs);
+    auto file_node = vfs::create("/some_file", vfs::vnode::type::file);
+    for (auto i = 0; i < 32; ++i) {
+        auto bad_node = vfs::create("/some_file", vfs::vnode::type::file);
+        REQUIRE_FALSE(bad_node);
+    }
 }
 
 } // namespace test_cases
