@@ -23,24 +23,24 @@ TEST(vfs, can_create_files) {
     REQUIRE(node);
     REQUIRE_EQ(node->id, 2u);
     REQUIRE(node->node_type == vfs::vnode::type::file);
-    // TODO: check size
+    REQUIRE_EQ(node->size, 0u);
     {
         auto node2 = vfs::lookup("/some_file");
         REQUIRE_EQ(node2->id, 2u);
+        REQUIRE_EQ(node2->size, 0u);
         REQUIRE(node2->node_type == vfs::vnode::type::file);
     }
     node = vfs::create("/some_file2", vfs::vnode::type::file);
     REQUIRE(node);
     REQUIRE_EQ(node->id, 3u);
+    REQUIRE_EQ(node->size, 0u);
     REQUIRE(node->node_type == vfs::vnode::type::file);
     {
         auto node2 = vfs::lookup("/some_file2");
         REQUIRE_EQ(node2->id, 3u);
+        REQUIRE_EQ(node2->size, 0u);
         REQUIRE(node2->node_type == vfs::vnode::type::file);
     }
-    // TODO: fail if file/dir exists
-    //node = vfs::create("/some_file", vfs::vnode::type::file);
-    //REQUIRE(!node);
 }
 
 TEST(vfs, can_create_dirs) {
