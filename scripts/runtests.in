@@ -1,8 +1,9 @@
 #!/bin/bash
 
-set -e
-
 qemu=$(which qemu-system-i386 2>/dev/null || which qemu-system-x86_64 2>/dev/null)
+timeout=3
+
+set -e
 
 if [[ "${qemu}" == "" ]]; then
     echo "No QEMU found!"
@@ -12,7 +13,10 @@ fi
 rm -rf log
 
 for image in images/*.iso; do
-    ${qemu} -cdrom ${image} -display none -serial stdio -no-reboot -cpu core2duo $@ 2>>log | sed '/.*Booting/d' | tee -a log | grep "RUN\|PASS\|FAIL\|failed\|WARNING"
+    timeout --foreground ${timeout} ${qemu} -cdrom ${image} -display none -serial stdio -no-reboot -cpu core2duo $@ 2>>log | sed -u '/.*Booting/d' | tee -a log | grep "RUN\|PASS\|FAIL\|failed\|WARNING"
+    if [[ ${PIPESTATUS[0]} -eq 124 ]]; then
+        echo -e "\e[31m[  FAIL  ]\e[0m $(sed 's/.*-//g; s/\.iso//g' <<<${image}) timed out (${timeout}s)" | tee -a log
+    fi
 done
 
 if grep -q "FAIL\|error" log; then
