@@ -7,15 +7,6 @@ BASEDIR="$(dirname ${0})"
 name="${1}"
 multiboot_flag="${2}"
 
-IFS=$'\n'
-tests=(`strings ${name} | grep test_cases | c++filt | grep "()" | sed 's/test_cases:://g;s/__/\./g;s/()//g; /yacppl/d; /{/d'`)
-unset IFS
-
 mkdir -p images
-
-index=0
-for t in "${tests[@]}"; do
-    ${BASEDIR}/isomaker.sh -i ${name} -o "images/$(printf "%03d" ${index})-${t}" ${multiboot_flag} --grub-use-serial --args "${t}"
-    ((index+=1))
-done
+${BASEDIR}/isomaker.sh -i ${name} -o "images/test-image" ${multiboot_flag} --grub-use-serial --args "$(printf "%-64s" "")"
 

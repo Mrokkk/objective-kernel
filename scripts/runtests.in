@@ -12,8 +12,15 @@ fi
 
 rm -rf log
 
-for image in images/*.iso; do
-    timeout --foreground ${timeout} ${qemu} -cdrom ${image} -display none -serial stdio -no-reboot -cpu core2duo $@ 2>>log | sed -u '/.*Booting/d' | tee -a log | grep "RUN\|PASS\|FAIL\|failed\|WARNING"
+IFS=$'\n'
+tests=(`strings os-tests | grep test_cases | c++filt | grep "()" | \
+    sed 's/test_cases:://g;s/__/\./g;s/()//g; /yacppl/d; /{/d'`)
+
+unset IFS
+
+for test in "${tests[@]}"; do
+    perl -pi -e 's/ \/kernel .*;/ \/kernel '"$(printf "%-64s" ${test})"'; then reboot;/g' images/test-image.iso
+    timeout --foreground ${timeout} ${qemu} -cdrom images/test-image.iso -display none -serial stdio -no-reboot -cpu core2duo $@ 2>>log | sed -u '/.*Booting/d' | tee -a log | grep "RUN\|PASS\|FAIL\|failed\|error\|WARNING"
     if [[ ${PIPESTATUS[0]} -eq 124 ]]; then
         echo -e "\e[31m[  FAIL  ]\e[0m $(sed 's/.*-//g; s/\.iso//g' <<<${image}) timed out (${timeout}s)" | tee -a log
     fi
