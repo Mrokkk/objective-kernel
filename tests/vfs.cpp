@@ -191,6 +191,7 @@ TEST(vfs, can_read_write_to_file) {
     file->seek(5);
     file->write("testing", 8);
     file->seek(0);
+    REQUIRE_EQ(file->position(), 0u);
     file->read(buffer, 13);
     REQUIRE_EQ((const char *)buffer, "some testing");
 }

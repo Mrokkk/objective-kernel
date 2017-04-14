@@ -62,15 +62,11 @@ vfs::vnode_t ramfs::lookup(const vfs::path_t &path, vfs::vnode_t parent) {
 
 vfs::vnode_t ramfs::create(const vfs::path_t &path, vfs::vnode_t parent, vfs::vnode::type type) {
     auto filename = path.get();
-    char *content = nullptr;
     if (!parent) {
         return {};
     }
     auto entry = static_cast<dir_entry *>(parent->data);
-    if (type == vfs::vnode::type::file) {
-        content = new char[32];
-    }
-    auto new_entry = new dir_entry(node_nr++, filename, type, this, content);
+    auto new_entry = new dir_entry(node_nr++, filename, type, this);
     entry->dir_entries.push_back(new_entry);
     return utils::make_shared<vfs::vnode>(new_entry->id, 0u, 1u, static_cast<void *>(new_entry), this, type);
 }
@@ -89,7 +85,7 @@ int ramfs::read(vfs::file *file, vfs::vnode_t &vnode, char *buffer, size_t size)
     auto node = reinterpret_cast<dir_entry *>(vnode->data);
     if (node->file_type != vfs::vnode::type::file) return 0;
     auto pos = file->position();
-    utils::memcopy(node->content + pos, buffer, size);
+    node->content.read(pos, buffer, size);
     pos += size;
     file->position(pos);
     return size;
@@ -99,7 +95,7 @@ int ramfs::write(vfs::file *file, vfs::vnode_t &vnode, const char *buffer, size_
     auto node = reinterpret_cast<dir_entry *>(vnode->data);
     if (node->file_type != vfs::vnode::type::file) return 0;
     auto pos = file->position();
-    utils::memcopy(buffer, node->content + pos, size);
+    node->content.write(pos, buffer, size);
     vnode->size = size;
     node->size = size;
     pos += size;

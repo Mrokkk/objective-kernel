@@ -7,31 +7,80 @@
 #include "vnode.hpp"
 #include "file_system.hpp"
 
+#include <kernel/console/logger.hpp>
+
 namespace ramfs {
 
 class ramfs final : public vfs::file_system {
 
     unsigned node_nr = 2;
 
+    class file_content {
+
+        char *data_ = nullptr;
+        char *iterator_ = nullptr;
+
+        void allocate(size_t size) {
+            data_ = new char[size];
+            iterator_ = data_;
+        }
+
+        void reallocate(size_t new_size) {
+            auto new_data = new char[new_size];
+            auto size = data_written();
+            utils::memcopy(data_, new_data, size);
+            delete [] data_;
+            data_ = new_data;
+            iterator_ = data_ + size;
+        }
+
+    public:
+
+        file_content() = default;
+
+        size_t data_written() const {
+            return iterator_ - data_;
+        }
+
+        void write(size_t pos, const char *data, size_t size) {
+            if (data_ == nullptr) {
+                allocate(pos + size);
+                utils::fill(data_, pos + size, 0);
+            }
+            if (size + pos >= data_written()) {
+                reallocate(data_written() + pos + 2 * size);
+            }
+            utils::memcopy(data, data_ + pos, size);
+            if (size - pos > 0) {
+                iterator_ += size - pos;
+            }
+        }
+
+        void read(size_t pos, char *data, size_t size) {
+            if (data_ == nullptr) {
+                return;
+            }
+            utils::memcopy(data_ + pos, data, size);
+        }
+
+    };
+
     struct dir_entry {
 
         unsigned id = 0;
         utils::string file_name;
         vfs::vnode::type file_type;
-        char *content = nullptr;
+        file_content content;
         size_t size;
         utils::list<dir_entry *> dir_entries;
         vfs::file_system *fs = nullptr;
 
         dir_entry(unsigned id, const utils::string &name, vfs::vnode::type t,
-            vfs::file_system *f, char *c = nullptr, size_t s = 0)
-                : id(id), file_name(name), file_type(t), content(c), size(s), fs(f) {
+            vfs::file_system *f)
+                : id(id), file_name(name), file_type(t), fs(f) {
         }
 
         ~dir_entry() {
-            if (content) {
-                delete [] content;
-            }
         }
 
     };
