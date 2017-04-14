@@ -194,6 +194,20 @@ TEST(vfs, can_read_write_to_file) {
     REQUIRE_EQ(file->position(), 0u);
     file->read(buffer, 13);
     REQUIRE_EQ((const char *)buffer, "some testing");
+    REQUIRE_EQ(file->position(), 13u);
+    file->seek(12u);
+    file->write(" for kernel", 12u);
+    file->seek(0);
+    file->read(buffer, 25u);
+    REQUIRE_EQ((const char *)buffer, "some testing for kernel");
+}
+
+TEST(vfs, cannot_create_file_under_file) {
+    ramfs::ramfs ramfs;
+    vfs::initialize(ramfs);
+    auto file_node = vfs::create("/some_file", vfs::vnode::type::file);
+    auto bad_node = vfs::create("/some_file/file", vfs::vnode::type::file);
+    REQUIRE_FALSE(bad_node);
 }
 
 } // namespace test_cases

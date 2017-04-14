@@ -61,6 +61,9 @@ vnode_t create(const path_t &path, vnode::type type) {
     if (not dir_node) {
         return {};
     }
+    if (dir_node->node_type != vfs::vnode::type::dir) {
+        return {};
+    }
     utils::path filename(path.basename());
     auto new_node = dir_node->fs->create(filename, dir_node, type);
     if (not new_node) {
