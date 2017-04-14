@@ -13,6 +13,17 @@ namespace vfs {
 utils::list<vnode_t> vnodes;
 extern utils::list<mount_point_t> mount_points;
 
+const char *to_string(vnode::type type) {
+    switch (type) {
+        case vnode::type::file:
+            return "file";
+        case vnode::type::dir:
+            return "dir";
+        default:
+            return "unknown type";
+    }
+}
+
 vnode_t lookup(const path_t &path) {
     auto fs = mount_points.front()->fs;
     if (cache::empty()) {
@@ -65,15 +76,10 @@ vnode_t create(const path_t &path, vnode::type type) {
         return {};
     }
     utils::path filename(path.basename());
+    debug("creating ", to_string(type), " ", path.get());
     auto new_node = dir_node->fs->create(filename, dir_node, type);
     if (not new_node) {
         return {};
-    }
-    if (type == vnode::type::file) {
-        debug("creating file ", path.get());
-    }
-    else {
-        debug("creating dir ", path.get());
     }
     new_node->node_type = type;
     vnodes.push_back(new_node);
