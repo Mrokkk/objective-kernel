@@ -44,6 +44,9 @@ file_t open(const path_t &path, file::mode mode) {
     // TODO: creating file
     auto node = lookup(path);
     if (not node) {
+        node = create(path, vnode::type::file);
+    }
+    if (node->node_type != vnode::type::file) {
         return {};
     }
     return utils::make_shared<file>(node.get(), mode);

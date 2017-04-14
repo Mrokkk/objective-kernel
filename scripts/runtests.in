@@ -11,7 +11,7 @@ fi
 
 rm -rf log
 
-for image in *.iso; do
+for image in images/*.iso; do
     ${qemu} -cdrom ${image} -display none -serial stdio -no-reboot -cpu core2duo $@ 2>>log | sed '/.*Booting/d' | tee -a log | grep "RUN\|PASS\|FAIL\|failed\|WARNING"
 done
 

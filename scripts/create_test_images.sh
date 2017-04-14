@@ -11,9 +11,11 @@ IFS=$'\n'
 tests=(`strings ${name} | grep test_cases | c++filt | grep "()" | sed 's/test_cases:://g;s/__/\./g;s/()//g; /yacppl/d; /{/d'`)
 unset IFS
 
+mkdir -p images
+
 index=0
 for t in "${tests[@]}"; do
-    ${BASEDIR}/isomaker.sh -i ${name} -o "${index}-${t}.iso" ${multiboot_flag} --grub-use-serial --args "${t}"
+    ${BASEDIR}/isomaker.sh -i ${name} -o "images/$(printf "%03d" ${index})-${t}" ${multiboot_flag} --grub-use-serial --args "${t}"
     ((index+=1))
 done
 

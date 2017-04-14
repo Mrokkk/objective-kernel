@@ -4,6 +4,9 @@
 
 #include "yatf/include/yatf.h"
 
+namespace {
+} // namespace
+
 namespace test_cases {
 
 TEST(vfs, can_create_root) {
@@ -168,6 +171,26 @@ TEST(vfs, can_cache_nodes) {
     }
 }
 
+TEST(vfs, open_can_create_file) {
+    ramfs::ramfs ramfs;
+    vfs::initialize(ramfs);
+    auto file = vfs::open("/file", vfs::file::mode::write);
+    REQUIRE(file);
+    REQUIRE_EQ(file->size(), 0u);
+}
+
+TEST(vfs, cannot_open_directory) {
+    ramfs::ramfs ramfs;
+    vfs::initialize(ramfs);
+    vfs::create("/some_dir", vfs::vnode::type::dir);
+    auto file = vfs::open("/some_dir", vfs::file::mode::read);
+    REQUIRE_FALSE(file);
+    file = vfs::open("/some_dir", vfs::file::mode::write);
+    REQUIRE_FALSE(file);
+    file = vfs::open("/some_dir", vfs::file::mode::read_write);
+    REQUIRE_FALSE(file);
+}
+
 TEST(vfs, can_read_write_to_file) {
     ramfs::ramfs ramfs;
     vfs::initialize(ramfs);
@@ -176,6 +199,7 @@ TEST(vfs, can_read_write_to_file) {
     REQUIRE(file);
     REQUIRE_EQ(file->position(), 0u);
     file->write("some text", 10);
+    REQUIRE_EQ(file->size(), 10u);
     REQUIRE_EQ(file->position(), 10u);
     file->seek(0u);
     REQUIRE_EQ(file->position(), 0u);
@@ -199,7 +223,7 @@ TEST(vfs, can_read_write_to_file) {
     file->seek(12u);
     file->write(" for kernel", 12u);
     file->seek(0);
-    file->read(buffer, 25u);
+    file->read(buffer, 24u);
     REQUIRE_EQ((const char *)buffer, "some testing for kernel");
     REQUIRE_EQ(file->size(), 24u);
 }
