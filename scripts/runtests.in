@@ -42,30 +42,50 @@ function run_test() {
     fi
 }
 
-set -e
+function main() {
+    local test_case="${1}"
+    if [[ "${qemu}" == "" ]]; then
+        echo "No QEMU found!"
+        exit 1
+    fi
+    rm -rf log
+    if [[ "${test_case}" == "" ]]; then
+        IFS=$'\n'
+        tests=(`strings @CMAKE_CURRENT_BINARY_DIR@/@PROJECT_NAME@-tests | grep test_cases | c++filt | \
+            grep "()" | sed 's/test_cases:://g;s/__/\./g;s/()//g; /yacppl/d; /{/d'`)
+        unset IFS
+    else
+        tests=(${test_case})
+    fi
+    if [[ "$DEBUG" ]]; then
+        grep_patterns+="\|DEBUG"
+    fi
+    tests_nr=${#tests[@]}
+    start_end_message "Running ${tests_nr} test cases"
+    for test in "${tests[@]}"; do
+        run_test "${test}"
+    done
+    passed=$(grep "PASS" log | wc -l)
+    failed=$((tests_nr-passed))
+    start_end_message "Passed ${passed} test cases"
+    if [[ ${failed} -ne 0 ]]; then
+        end_failed_message "Failed ${failed} test cases"
+        exit 1
+    fi
+}
 
-if [[ "${qemu}" == "" ]]; then
-    echo "No QEMU found!"
-    exit 1
-fi
-rm -rf log
-IFS=$'\n'
-tests=(`strings @CMAKE_CURRENT_BINARY_DIR@/@PROJECT_NAME@-tests | grep test_cases | c++filt | grep "()" | \
-    sed 's/test_cases:://g;s/__/\./g;s/()//g; /yacppl/d; /{/d'`)
-unset IFS
-if [[ "$DEBUG" ]]; then
-    grep_patterns+="\|DEBUG"
-fi
-tests_nr=${#tests[@]}
-start_end_message "Running ${tests_nr} test cases"
-for test in "${tests[@]}"; do
-    run_test "${test}"
+while [[ $# -gt 0 ]]; do
+    arg="$1"
+    case $arg in
+        --test)
+            test_case="$2"
+            shift ;;
+        *)
+            break ;;
+    esac
+    shift
 done
-passed=$(grep "PASS" log | wc -l)
-failed=$((tests_nr-passed))
-start_end_message "Passed ${passed} test cases"
-if [[ ${failed} -ne 0 ]]; then
-    end_failed_message "Failed ${failed} test cases"
-    exit 1
-fi
+
+set -e
+main ${test_case}
 
