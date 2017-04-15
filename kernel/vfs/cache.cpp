@@ -52,8 +52,9 @@ dir_entry *find(const vnode_t &node, utils::list<dir_entry *> *list) {
 }
 
 void add(const utils::string &name, vnode_t &vnode, dir_entry *parent) {
+    debug("adding ", (const char *)name);
     if (parent == nullptr) {
-        cache::root = new cache::dir_entry("", vnode);
+        cache::root = new cache::dir_entry("/", vnode);
     }
     else {
         parent->dir_entries.push_back(new dir_entry(name, vnode, parent));

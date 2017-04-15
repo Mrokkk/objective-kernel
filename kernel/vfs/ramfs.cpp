@@ -15,11 +15,11 @@ ramfs::dir_entry *ramfs::lookup_in_dir(utils::list<dir_entry *> &dir, const util
 }
 
 ramfs::dir_entry *ramfs::dir_entry_lookup(const vfs::path_t &path) {
-    if (path == "") {
+    if (path == "/") {
         return &root_;
     }
     auto list = &root_.dir_entries;
-    auto path_it = path.cbegin();
+    auto path_it = path.cbegin() + 1;
     if (root_.dir_entries.size() == 0) return nullptr;
     while (true) {
         auto node = lookup_in_dir(*list, *path_it);

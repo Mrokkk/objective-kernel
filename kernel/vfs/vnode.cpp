@@ -31,11 +31,11 @@ vnode_t lookup(const path_t &path) {
     }
     auto fs = mount_points.front()->fs;
     if (cache::empty()) {
-        auto root_node = fs->lookup("");
+        auto root_node = fs->lookup("/");
         vnodes.push_front(root_node);
-        cache::add("", root_node);
+        cache::add("/", root_node);
     }
-    if (path == "") {
+    if (path == "/") {
         return cache::root->node;
     }
     auto path_it = path.begin() + 1; // FIXME
@@ -77,7 +77,8 @@ bool node_exists(const utils::path &filename, const vnode_t &parent) {
 }
 
 vnode_t create(const path_t &path, vnode::type type) {
-    auto dir_node = lookup(utils::path(path.dirname()));
+    auto dirname = utils::path(path.dirname());
+    auto dir_node = lookup(dirname);
     if (not dir_node) {
         return {};
     }

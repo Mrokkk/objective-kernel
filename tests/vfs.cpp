@@ -18,7 +18,7 @@ TEST(vfs, have_to_be_initialized) {
 TEST(vfs, can_create_root) {
     ramfs::ramfs ramfs;
     vfs::initialize(ramfs);
-    auto node = vfs::lookup("");
+    auto node = vfs::lookup("/");
     REQUIRE(node);
     REQUIRE_EQ(node->id, 1u);
     REQUIRE(node->node_type == vfs::vnode::type::dir);
