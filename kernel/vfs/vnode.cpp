@@ -25,6 +25,10 @@ const char *to_string(vnode::type type) {
 }
 
 vnode_t lookup(const path_t &path) {
+    if (not mount_points.size()) {
+        warning("No root fs!");
+        return {};
+    }
     auto fs = mount_points.front()->fs;
     if (cache::empty()) {
         auto root_node = fs->lookup("");
@@ -69,7 +73,7 @@ vnode_t lookup(const path_t &path) {
 
 bool node_exists(const utils::path &filename, const vnode_t &parent) {
     auto n = parent->fs->lookup(filename, parent);
-    return (bool)n;
+    return static_cast<bool>(n);
 }
 
 vnode_t create(const path_t &path, vnode::type type) {

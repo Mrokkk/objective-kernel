@@ -9,6 +9,12 @@ namespace {
 
 namespace test_cases {
 
+TEST(vfs, have_to_be_initialized) {
+    REQUIRE_FALSE(vfs::create("/file", vfs::vnode::type::file));
+    REQUIRE_FALSE(vfs::lookup("/file"));
+    REQUIRE_FALSE(vfs::lookup(""));
+}
+
 TEST(vfs, can_create_root) {
     ramfs::ramfs ramfs;
     vfs::initialize(ramfs);
@@ -71,7 +77,7 @@ TEST(vfs, can_create_dirs) {
     }
 }
 
-TEST(vfs, fails_on_lookup_for_nonexistent_path) {
+TEST(vfs, cannot_lookup_for_nonexistent_path) {
     ramfs::ramfs ramfs;
     vfs::initialize(ramfs);
     REQUIRE_FALSE(vfs::lookup("/a"));
@@ -177,6 +183,10 @@ TEST(vfs, open_can_create_file) {
     auto file = vfs::open("/file", vfs::file::mode::write);
     REQUIRE(file);
     REQUIRE_EQ(file->size(), 0u);
+    auto node = vfs::lookup("/file");
+    REQUIRE(node);
+    REQUIRE_EQ(node->size, 0u);
+    REQUIRE_EQ(node->id, 2u);
 }
 
 TEST(vfs, cannot_open_directory) {
@@ -194,7 +204,6 @@ TEST(vfs, cannot_open_directory) {
 TEST(vfs, can_read_write_to_file) {
     ramfs::ramfs ramfs;
     vfs::initialize(ramfs);
-    vfs::create("/file", vfs::vnode::type::file);
     auto file = vfs::open("/file", vfs::file::mode::read_write);
     REQUIRE(file);
     REQUIRE_EQ(file->position(), 0u);
