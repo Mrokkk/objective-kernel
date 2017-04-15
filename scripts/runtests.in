@@ -3,6 +3,44 @@
 qemu=$(which qemu-system-i386 2>/dev/null || which qemu-system-x86_64 2>/dev/null)
 timeout=3
 grep_patterns=
+GREEN="\e[32m"
+RED="\e[31m"
+RESET="\e[0m"
+START_MESSAGE="[========]"
+FAIL_MESSAGE="[  FAIL  ]"
+
+
+function fail_message() {
+    echo -e "${RED}${FAIL_MESSAGE}${RESET} ${@}"
+}
+
+function start_end_message() {
+    echo -e "${GREEN}${START_MESSAGE}${RESET} ${@}"
+}
+
+function end_failed_message() {
+    echo -e "${RED}${START_MESSAGE}${RESET} ${@}"
+}
+
+function set_boot_command_line() {
+    local image="${1}"
+    local cmdline="${2}"
+    perl -pi -e 's/ \/kernel .*;/ \/kernel '"$(printf "%-64s" ${cmdline})"'; then reboot;/g' \
+        ${image}
+}
+
+function run_test() {
+    local test="${1}"
+    local image=@CMAKE_CURRENT_BINARY_DIR@/images/test-image.iso
+    set_boot_command_line ${image} ${test}
+    timeout --foreground ${timeout} \
+        ${qemu} -cdrom ${image} -display none -serial stdio -no-reboot -cpu core2duo 2>>log \
+                | sed -u '/.*Booting/d' | tee -a log | \
+                    grep "RUN\|PASS\|FAIL\|failed\|error\|WARNING${grep_patterns}"
+    if [[ ${PIPESTATUS[0]} -eq 124 ]]; then
+        fail_message "$(sed 's/.*-//g; s/\.iso//g' <<<${test}) timed out (${timeout}s)" | tee -a log
+    fi
+}
 
 set -e
 
@@ -10,48 +48,24 @@ if [[ "${qemu}" == "" ]]; then
     echo "No QEMU found!"
     exit 1
 fi
-
 rm -rf log
-
 IFS=$'\n'
 tests=(`strings @CMAKE_CURRENT_BINARY_DIR@/@PROJECT_NAME@-tests | grep test_cases | c++filt | grep "()" | \
     sed 's/test_cases:://g;s/__/\./g;s/()//g; /yacppl/d; /{/d'`)
-
 unset IFS
-
 if [[ "$DEBUG" ]]; then
     grep_patterns+="\|DEBUG"
 fi
-
-function run_test() {
-    local name=${1}
-    perl -pi -e 's/ \/kernel .*;/ \/kernel '"$(printf "%-64s" ${test})"'; then reboot;/g' \
-        @CMAKE_CURRENT_BINARY_DIR@/images/test-image.iso
-    # TODO
-}
-
-for test in "${tests[@]}"; do
-    perl -pi -e 's/ \/kernel .*;/ \/kernel '"$(printf "%-64s" ${test})"'; then reboot;/g' \
-        @CMAKE_CURRENT_BINARY_DIR@/images/test-image.iso
-    timeout --foreground ${timeout} \
-        ${qemu} -cdrom @CMAKE_CURRENT_BINARY_DIR@/images/test-image.iso \
-            -display none -serial stdio -no-reboot -cpu core2duo $@ 2>>log \
-                | sed -u '/.*Booting/d' | tee -a log | \
-        grep "RUN\|PASS\|FAIL\|failed\|error\|WARNING${grep_patterns}"
-    if [[ ${PIPESTATUS[0]} -eq 124 ]]; then
-        echo -e "\e[31m[  FAIL  ]\e[0m $(sed 's/.*-//g; s/\.iso//g' <<<${image}) timed out (${timeout}s)" | tee -a log
-    fi
-done
-
-passed=$(grep "PASS" log | wc -l)
 tests_nr=${#tests[@]}
+start_end_message "Running ${tests_nr} test cases"
+for test in "${tests[@]}"; do
+    run_test "${test}"
+done
+passed=$(grep "PASS" log | wc -l)
 failed=$((tests_nr-passed))
-
+start_end_message "Passed ${passed} test cases"
 if [[ ${failed} -ne 0 ]]; then
-    exit 1
-fi
-
-if grep -q "FAIL\|error" log; then
+    end_failed_message "Failed ${failed} test cases"
     exit 1
 fi
 
