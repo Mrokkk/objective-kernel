@@ -38,7 +38,7 @@ vnode_t lookup(const path_t &path) {
     if (path == "") {
         return cache::root->node;
     }
-    auto path_it = path.begin();
+    auto path_it = path.begin() + 1; // FIXME
     vnode_t node;
     auto parent_entry = cache::root.get();
     while (path_it) {
