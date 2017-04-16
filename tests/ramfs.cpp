@@ -1,6 +1,16 @@
 #include <kernel/vfs/ramfs.hpp>
 #include "yatf/include/yatf.h"
 
+namespace {
+
+void lookup_for(ramfs::ramfs &ramfs, const std::initializer_list<utils::string> &names) {
+    for (const auto &name : names) {
+        REQUIRE(ramfs.lookup(vfs::path_t(name), ramfs.lookup("/", nullptr)));
+    }
+}
+
+} // namespace
+
 namespace test_cases {
 
 TEST(ramfs, can_create_nodes) {
@@ -24,6 +34,17 @@ TEST(ramfs, can_create_nodes) {
     REQUIRE(dir_node->node_type == vfs::vnode::type::dir);
     REQUIRE_EQ(dir_node->id, 3u);
     REQUIRE_EQ(dir_node->size, 0u);
+    auto file_under_dir_node = ramfs.create("file", dir_node, vfs::vnode::type::file);
+    REQUIRE(file_under_dir_node);
+    REQUIRE(file_under_dir_node->node_type == vfs::vnode::type::file);
+    REQUIRE_EQ(file_under_dir_node->id, 4u);
+    REQUIRE_EQ(file_under_dir_node->size, 0u);
+    auto file2_under_dir_node = ramfs.create("file2", dir_node, vfs::vnode::type::file);
+    REQUIRE(file2_under_dir_node);
+    REQUIRE(file2_under_dir_node->node_type == vfs::vnode::type::file);
+    REQUIRE_EQ(file2_under_dir_node->id, 5u);
+    REQUIRE_EQ(file2_under_dir_node->size, 0u);
+    lookup_for(ramfs, {"file", "dir"});
 }
 
 } // namespace test_cases

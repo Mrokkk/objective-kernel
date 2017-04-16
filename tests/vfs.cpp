@@ -4,9 +4,6 @@
 
 #include "yatf/include/yatf.h"
 
-namespace {
-} // namespace
-
 namespace test_cases {
 
 TEST(vfs, can_create_root) {
