@@ -9,13 +9,10 @@ namespace {
 
 namespace test_cases {
 
-TEST(vfs, have_to_be_initialized) {
+TEST(vfs, can_create_root) {
     REQUIRE_FALSE(vfs::create("/file", vfs::vnode::type::file));
     REQUIRE_FALSE(vfs::lookup("/file"));
-    REQUIRE_FALSE(vfs::lookup(""));
-}
-
-TEST(vfs, can_create_root) {
+    REQUIRE_FALSE(vfs::lookup("/"));
     ramfs::ramfs ramfs;
     vfs::initialize(ramfs);
     auto node = vfs::lookup("/");

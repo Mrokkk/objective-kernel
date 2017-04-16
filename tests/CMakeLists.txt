@@ -1,6 +1,7 @@
 add_executable(${PROJECT_NAME}-tests
     main.cpp
     vfs.cpp
+    ramfs.cpp
 )
 
 target_link_libraries(${PROJECT_NAME}-tests ${PROJECT_NAME}-lib)
