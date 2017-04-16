@@ -82,7 +82,7 @@ vnode_t create(const path_t &path, vnode::type type) {
     if (not dir_node) {
         return {};
     }
-    if (dir_node->node_type != vfs::vnode::type::dir) {
+    if (dir_node->node_type != vnode::type::dir) {
         return {};
     }
     utils::path filename(path.basename());
