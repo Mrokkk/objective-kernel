@@ -1,3 +1,4 @@
+#include <kernel/vfs/vfs.hpp>
 #include <kernel/vfs/file.hpp>
 #include <kernel/vfs/ramfs.hpp>
 #include <kernel/vfs/cache.hpp>

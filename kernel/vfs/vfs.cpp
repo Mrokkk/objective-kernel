@@ -52,7 +52,7 @@ vnode_t vfs::mount(const path_t &path, file_system &fs, block_device &bd) {
     return dir_node;
 }
 
-file_t vfs::open(const path_t &path, mode) {
+file_t vfs::open(const path_t &path, file::mode) {
     auto node = lookup(path);
     if (not node) {
         node = create(path, vnode::type::file);

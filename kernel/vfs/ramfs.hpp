@@ -3,8 +3,8 @@
 #include <list.h>
 #include <string.h>
 
-#include "vfs.hpp"
 #include "vnode.hpp"
+#include "definitions.hpp"
 #include "file_system.hpp"
 
 #include <kernel/console/logger.hpp>

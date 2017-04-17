@@ -1,10 +1,9 @@
 #pragma once
 
 #include <list.h>
-#include <path.h>
 #include <array.h>
-#include <shared_ptr.h>
 
+#include "file.hpp"
 #include "definitions.hpp"
 #include "block_device.hpp"
 
@@ -42,7 +41,7 @@ public:
 
     vfs(file_system &rootfs, block_device &bd = null_bd_);
     vnode_t mount(const path_t &path, file_system &fs, block_device &bd = null_bd_);
-    file_t open(const path_t &path, mode mode);
+    file_t open(const path_t &path, file::mode mode);
 
 };
 
