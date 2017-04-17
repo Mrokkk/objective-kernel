@@ -5,17 +5,10 @@
 #include <array.h>
 #include <shared_ptr.h>
 
+#include "definitions.hpp"
 #include "block_device.hpp"
 
 namespace vfs {
-
-struct file;
-struct vnode;
-struct file_system;
-
-using path_t = utils::path;
-using vnode_t = utils::shared_ptr<vnode>;
-using file_t = utils::shared_ptr<file>;
 
 struct mount_point final {
 
@@ -31,8 +24,6 @@ struct mount_point final {
     }
 
 };
-
-using mount_point_t = utils::shared_ptr<mount_point>;
 
 class vfs {
 

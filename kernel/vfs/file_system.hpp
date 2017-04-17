@@ -1,7 +1,7 @@
 #pragma once
 
-#include "vfs.hpp"
 #include "file.hpp"
+#include "definitions.hpp"
 
 namespace vfs {
 
