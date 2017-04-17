@@ -140,13 +140,13 @@ TEST(vfs, can_cache_nodes) {
     vfs::initialize(ramfs);
     {
         auto orig_node = vfs::create("/some_file", vfs::vnode::type::file);
-        auto cache_entry = vfs::cache::find(orig_node);
+        auto cache_entry = vfs::get_cache().find(orig_node);
         REQUIRE(cache_entry->node == orig_node);
         REQUIRE(cache_entry->name == "some_file");
     }
     {
         auto orig_node = vfs::create("/some_dir", vfs::vnode::type::dir);
-        auto cache_entry = vfs::cache::find(orig_node);
+        auto cache_entry = vfs::get_cache().find(orig_node);
         REQUIRE(cache_entry != nullptr);
         REQUIRE(cache_entry->node == orig_node);
         REQUIRE(cache_entry->name == "some_dir");
@@ -154,7 +154,7 @@ TEST(vfs, can_cache_nodes) {
     }
     {
         auto orig_node = vfs::create("/some_dir/some_other_file", vfs::vnode::type::file);
-        auto cache_entry = vfs::cache::find(orig_node);
+        auto cache_entry = vfs::get_cache().find(orig_node);
         REQUIRE(cache_entry != nullptr);
         REQUIRE(cache_entry->node == orig_node);
         REQUIRE(cache_entry->name == "some_other_file");
@@ -162,7 +162,7 @@ TEST(vfs, can_cache_nodes) {
     {
         auto orig_node = vfs::create("/some_dir/other_file", vfs::vnode::type::file);
         auto node = vfs::lookup("/some_dir");
-        auto cache_entry = vfs::cache::find(orig_node);
+        auto cache_entry = vfs::get_cache().find(orig_node);
         REQUIRE(cache_entry != nullptr);
         REQUIRE(node->node_type == vfs::vnode::type::dir);
     }

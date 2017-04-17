@@ -22,6 +22,10 @@ vnode_t mount_fs(const path_t &path, file_system &fs, block_device &bd) {
     return vfs_->mount(path, fs, bd);
 }
 
+cache &get_cache() {
+    return vfs_->get_cache();
+}
+
 null_block_device vfs::null_bd_;
 
 vfs::vfs(file_system &rootfs, block_device &bd) {
@@ -55,27 +59,27 @@ vnode_t vfs::lookup(const path_t &path) {
         return {};
     }
     auto fs = mount_points_.front()->fs;
-    if (cache::empty()) {
+    if (cache_.empty()) {
         auto root_node = fs->lookup("/");
         vnodes_.push_front(root_node);
-        cache::add("/", root_node);
+        cache_.add("/", root_node);
     }
     if (path == "/") {
-        return cache::root->node;
+        return cache_.root()->node;
     }
     auto path_it = path.begin() + 1; // FIXME
     vnode_t node;
-    auto parent_entry = cache::root.get();
+    auto parent_entry = cache_.root();
     while (path_it) {
         auto name = *path_it;
-        auto child_entry = cache::find(name, parent_entry);
+        auto child_entry = cache_.find(name, parent_entry);
         if (child_entry == nullptr) {
             node = fs->lookup(utils::path(name), node);
             if (not node) {
                 return {};
             }
             vnodes_.push_back(node);
-            cache::add(name, node, parent_entry);
+            cache_.add(name, node, parent_entry);
         }
         else {
             node = child_entry->node;
@@ -117,12 +121,12 @@ vnode_t vfs::create(const path_t &path, vnode::type type) {
     }
     new_node->node_type = type;
     vnodes_.push_back(new_node);
-    auto cache_parent = cache::find(dir_node);
+    auto cache_parent = cache_.find(dir_node);
     if (not cache_parent) {
         warning("parent node for ", (const char *)path, " isn\'t cached");
         return new_node;
     }
-    cache::add(filename.get(), new_node, cache_parent);
+    cache_.add(filename.get(), new_node, cache_parent);
     return new_node;
 }
 
@@ -135,6 +139,10 @@ file_t vfs::open(const path_t &path, file::mode) {
         return {};
     }
     return utils::make_shared<file>(node.get(), file::mode::read_write);
+}
+
+struct cache &vfs::get_cache() {
+    return cache_;
 }
 
 } // namespace vfs

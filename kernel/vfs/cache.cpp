@@ -3,11 +3,7 @@
 
 namespace vfs {
 
-namespace cache {
-
-utils::unique_ptr<dir_entry> root;
-
-dir_entry *find(const utils::string &name, const dir_entry *parent) {
+cache::dir_entry *cache::find(const utils::string &name, const dir_entry *parent) {
     for (auto entry : parent->dir_entries) {
         if (entry->name == name) {
             return entry;
@@ -16,15 +12,15 @@ dir_entry *find(const utils::string &name, const dir_entry *parent) {
     return nullptr;
 }
 
-dir_entry *find(const vnode_t &node, utils::list<dir_entry *> *list) {
+cache::dir_entry *cache::find(const vnode_t &node, utils::list<dir_entry *> *list) {
     if (list == nullptr) {
-        if (root->node == node.get()) {
-            return root;
+        if (root_->node == node.get()) {
+            return root_;
         }
-        if (root->dir_entries.size() == 0) {
+        if (root_->dir_entries.size() == 0) {
             return nullptr;
         }
-        list = &root->dir_entries;
+        list = &root_->dir_entries;
     }
     for (auto entry : *list) {
         debug("looking at ", (const char *)entry->name);
@@ -51,21 +47,23 @@ dir_entry *find(const vnode_t &node, utils::list<dir_entry *> *list) {
     return nullptr;
 }
 
-void add(const utils::string &name, vnode_t &vnode, dir_entry *parent) {
+void cache::add(const utils::string &name, vnode_t &vnode, dir_entry *parent) {
     debug("adding ", (const char *)name);
     if (parent == nullptr) {
-        cache::root = new cache::dir_entry("/", vnode);
+        root_ = new cache::dir_entry("/", vnode);
     }
     else {
         parent->dir_entries.push_back(new dir_entry(name, vnode, parent));
     }
 }
 
-bool empty() {
-    return root == nullptr;
+bool cache::empty() {
+    return root_ == nullptr;
 }
 
-} // namespace cache
+cache::dir_entry *cache::root() {
+    return root_;
+}
 
 } // namespace vfs
 

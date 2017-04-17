@@ -4,6 +4,7 @@
 #include <array.h>
 
 #include "file.hpp"
+#include "cache.hpp"
 #include "definitions.hpp"
 #include "block_device.hpp"
 
@@ -32,6 +33,7 @@ class vfs {
     utils::list<mount_point_t> mount_points_;
     utils::list<vnode_t> vnodes_;
     utils::list<file_t> files_;
+    cache cache_;
 
     bool node_exists(const utils::path &filename, const vnode_t &parent);
 
@@ -46,11 +48,13 @@ public:
     vnode_t lookup(const path_t &path);
     vnode_t create(const path_t &path, vnode::type type);
     file_t open(const path_t &path, file::mode mode);
+    cache &get_cache();
 
 };
 
 void initialize(file_system &fs, block_device &bd = null_bd);
 vnode_t mount_fs(const path_t &path, file_system &fs, block_device &bd = null_bd);
+cache &get_cache();
 
 } // namespace vfs
 
