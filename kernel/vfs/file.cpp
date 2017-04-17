@@ -1,9 +1,10 @@
 #include <list.h>
+#include <unique_ptr.h>
+
 #include "file.hpp"
+#include "vfs.hpp"
 
 namespace vfs {
-
-utils::list<file_t> files;
 
 int file::read(char *buffer, size_t n) {
     if (mode_ == mode::write) {
@@ -40,16 +41,11 @@ size_t file::size() const {
     return vnode_->size;
 }
 
+extern utils::unique_ptr<vfs> vfs_;
+
 file_t open(const path_t &path, file::mode mode) {
-    // TODO: creating file
-    auto node = lookup(path);
-    if (not node) {
-        node = create(path, vnode::type::file);
-    }
-    if (node->node_type != vnode::type::file) {
-        return {};
-    }
-    return utils::make_shared<file>(node.get(), mode);
+    if (not vfs_) return {};
+    return vfs_->open(path, mode);
 }
 
 } // namespace vfs
