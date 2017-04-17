@@ -33,6 +33,8 @@ class vfs {
     utils::list<vnode_t> vnodes_;
     utils::list<file_t> files_;
 
+    bool node_exists(const utils::path &filename, const vnode_t &parent);
+
 public:
 
     enum class mode {
@@ -41,6 +43,8 @@ public:
 
     vfs(file_system &rootfs, block_device &bd = null_bd_);
     vnode_t mount(const path_t &path, file_system &fs, block_device &bd = null_bd_);
+    vnode_t lookup(const path_t &path);
+    vnode_t create(const path_t &path, vnode::type type);
     file_t open(const path_t &path, file::mode mode);
 
 };

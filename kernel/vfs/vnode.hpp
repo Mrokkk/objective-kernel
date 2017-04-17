@@ -25,6 +25,7 @@ struct vnode final {
 
 };
 
+const char *to_string(vnode::type type);
 vnode_t lookup(const path_t &path);
 vnode_t create(const path_t &path, vnode::type type);
 
