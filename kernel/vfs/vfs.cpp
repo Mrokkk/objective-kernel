@@ -30,7 +30,7 @@ null_block_device vfs::null_bd_;
 
 vfs::vfs(file_system &rootfs, block_device &bd) {
     block_devices_[0] = &null_bd_;
-    register_device(null_bd_);
+    register_device(null_bd_); // FIXME
     auto dev = get_device_id(bd);
     mount_points_.push_back(utils::make_shared<mount_point>("/", rootfs, dev));
 }

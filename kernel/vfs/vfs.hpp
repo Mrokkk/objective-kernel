@@ -43,8 +43,8 @@ public:
        read, write, read_write
     };
 
-    vfs(file_system &rootfs, block_device &bd = null_bd_);
-    vnode_t mount(const path_t &path, file_system &fs, block_device &bd = null_bd_);
+    vfs(file_system &rootfs, block_device &bd);
+    vnode_t mount(const path_t &path, file_system &fs, block_device &bd);
     vnode_t lookup(const path_t &path);
     vnode_t create(const path_t &path, vnode::type type);
     file_t open(const path_t &path, file::mode mode);

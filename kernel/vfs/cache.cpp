@@ -57,7 +57,7 @@ void cache::add(const utils::string &name, vnode_t &vnode, dir_entry *parent) {
     }
 }
 
-bool cache::empty() {
+bool cache::empty() const {
     return root_ == nullptr;
 }
 

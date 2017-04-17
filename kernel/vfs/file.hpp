@@ -20,7 +20,7 @@ private:
 
 public:
 
-    file(const vnode_t &vnode, mode m) : vnode_(vnode), mode_(m) {
+    file(const vnode_t &vnode, mode mode) : vnode_(vnode), mode_(mode) {
     }
 
     int read(char *buffer, size_t n);

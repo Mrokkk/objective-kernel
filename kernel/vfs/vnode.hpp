@@ -4,8 +4,6 @@
 
 namespace vfs {
 
-struct file_system;
-
 struct vnode final {
 
     enum class type {
@@ -19,8 +17,8 @@ struct vnode final {
     void *data = nullptr;
     file_system *fs = nullptr;
 
-    vnode(unsigned i, size_t s, size_t b, void *d, file_system *f, type t)
-            : id(i), node_type(t), size(s), blocks(b), data(d), fs(f) {
+    vnode(unsigned id, size_t size, size_t blocks, void *data, file_system *fs, type type)
+            : id(id), node_type(type), size(size), blocks(blocks), data(data), fs(fs) {
     }
 
 };
