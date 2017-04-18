@@ -30,10 +30,9 @@ private:
 public:
 
     void add(const utils::string &name, vnode_t &vnode, dir_entry *parent = nullptr);
-    dir_entry *find(const utils::string &name, const dir_entry *parent);
+    dir_entry *find(const utils::string &name, const dir_entry *parent = nullptr);
     dir_entry *find(const vnode_t &node, utils::list<dir_entry *> *list = nullptr);
     bool empty() const;
-    dir_entry *root();
 
 };
 

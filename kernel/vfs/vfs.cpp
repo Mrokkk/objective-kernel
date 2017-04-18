@@ -65,11 +65,17 @@ vnode_t vfs::lookup(const path_t &path) {
         cache_.add("/", root_node);
     }
     if (path == "/") {
-        return cache_.root()->node;
+        auto cache_entry = cache_.find("/");
+        if (not cache_entry) {
+            return {};
+        }
+        else {
+            return cache_entry->node;
+        }
     }
     auto path_it = path.begin() + 1; // FIXME
     vnode_t node;
-    auto parent_entry = cache_.root();
+    auto parent_entry = cache_.find("/");
     while (path_it) {
         auto name = *path_it;
         auto child_entry = cache_.find(name, parent_entry);

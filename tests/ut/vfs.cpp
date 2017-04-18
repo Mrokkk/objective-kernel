@@ -17,14 +17,14 @@ TEST(vfs, have_to_be_initialized) {
 TEST(cache, new_cache_is_empty) {
     vfs::cache c;
     REQUIRE(c.empty());
-    REQUIRE_FALSE(c.root());
+    REQUIRE_FALSE(c.find("/", nullptr));
 }
 
 TEST(cache, can_add_root_element) {
     vfs::cache c;
     auto root_node = utils::make_shared<vfs::vnode>(1u, 0u, 0u, nullptr, nullptr, vfs::vnode::type::dir);
     c.add("/", root_node, nullptr);
-    auto cached_node = c.root()->node;
+    auto cached_node = c.find("/")->node;
     REQUIRE(cached_node);
     REQUIRE(cached_node == root_node);
     REQUIRE_EQ(cached_node->id, 1u);

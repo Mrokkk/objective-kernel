@@ -4,6 +4,17 @@
 namespace vfs {
 
 cache::dir_entry *cache::find(const utils::string &name, const dir_entry *parent) {
+    if (not parent) {
+        if (not root_) {
+            return nullptr;
+        }
+        if (name == root_->name) {
+            return root_;
+        }
+        else {
+            return nullptr;
+        }
+    }
     for (auto entry : parent->dir_entries) {
         if (entry->name == name) {
             return entry;
@@ -59,10 +70,6 @@ void cache::add(const utils::string &name, vnode_t &vnode, dir_entry *parent) {
 
 bool cache::empty() const {
     return root_ == nullptr;
-}
-
-cache::dir_entry *cache::root() {
-    return root_;
 }
 
 } // namespace vfs
