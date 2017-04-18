@@ -1,4 +1,3 @@
-#include <cstdint>
 #include <kernel/definitions.hpp>
 #include <kernel/cpu/common.hpp>
 #include <kernel/vfs/vfs.hpp>
