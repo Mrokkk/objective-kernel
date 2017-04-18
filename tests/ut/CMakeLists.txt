@@ -22,7 +22,6 @@ add_executable(${PROJECT_NAME}-ut
 add_library(ut-common
     ${CMAKE_SOURCE_DIR}/kernel/printf.cpp
     ${CMAKE_SOURCE_DIR}/kernel/console/console.cpp
-
 )
 
 set_target_properties(ut-common PROPERTIES
@@ -30,7 +29,6 @@ set_target_properties(ut-common PROPERTIES
 
 add_library(ut-vfs
     ${CMAKE_SOURCE_DIR}/kernel/vfs/vfs.cpp
-    ${CMAKE_SOURCE_DIR}/kernel/vfs/block_device.cpp
     ${CMAKE_SOURCE_DIR}/kernel/vfs/vnode.cpp
     ${CMAKE_SOURCE_DIR}/kernel/vfs/cache.cpp
     ${CMAKE_SOURCE_DIR}/kernel/vfs/file.cpp

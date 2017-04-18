@@ -30,6 +30,7 @@ class vfs {
     static null_block_device null_bd_;
 
     utils::array<block_device *, 32> block_devices_;
+    unsigned bd_index_ = 0;
     utils::list<mount_point_t> mount_points_;
     utils::list<vnode_t> vnodes_;
     utils::list<file_t> files_;
@@ -50,10 +51,13 @@ public:
     file_t open(const path_t &path, file::mode mode);
     cache &get_cache();
 
+    int register_device(block_device &dev);
+    dev_t get_device_id(block_device &bd);
+
 };
 
-void initialize(file_system &fs, block_device &bd = null_bd);
-vnode_t mount_fs(const path_t &path, file_system &fs, block_device &bd = null_bd);
+void initialize(file_system &fs, block_device &bd = null_bd_);
+vnode_t mount_fs(const path_t &path, file_system &fs, block_device &bd = null_bd_);
 cache &get_cache();
 
 } // namespace vfs

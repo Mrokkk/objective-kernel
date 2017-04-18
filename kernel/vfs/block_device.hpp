@@ -33,9 +33,7 @@ struct null_block_device : public block_device {
 
 };
 
-extern null_block_device null_bd;
-int register_device(block_device &dev);
-dev_t get_device_id(block_device &bd);
+extern null_block_device null_bd_;
 
 } // namespace vfs
 

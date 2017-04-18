@@ -12,6 +12,7 @@
 namespace vfs {
 
 utils::unique_ptr<vfs> vfs_;
+null_block_device null_bd_;
 
 void initialize(file_system &rootfs, block_device &bd) {
     vfs_ = new vfs(rootfs, bd);
@@ -59,23 +60,9 @@ vnode_t vfs::lookup(const path_t &path) {
         return {};
     }
     auto fs = mount_points_.front()->fs;
-    if (cache_.empty()) {
-        auto root_node = fs->lookup("/");
-        vnodes_.push_front(root_node);
-        cache_.add("/", root_node);
-    }
-    if (path == "/") {
-        auto cache_entry = cache_.find("/");
-        if (not cache_entry) {
-            return {};
-        }
-        else {
-            return cache_entry->node;
-        }
-    }
-    auto path_it = path.begin() + 1; // FIXME
+    auto path_it = path.begin();
     vnode_t node;
-    auto parent_entry = cache_.find("/");
+    cache::dir_entry *parent_entry = nullptr;
     while (path_it) {
         auto name = *path_it;
         auto child_entry = cache_.find(name, parent_entry);
@@ -150,6 +137,21 @@ file_t vfs::open(const path_t &path, file::mode) {
 struct cache &vfs::get_cache() {
     return cache_;
 }
+
+int vfs::register_device(block_device &bd) {
+    block_devices_[bd_index_++] = &bd;
+    return bd_index_ - 1;
+}
+
+dev_t vfs::get_device_id(block_device &bd) {
+    for (auto i = 0u; i < bd_index_; ++i) {
+        if (block_devices_[i] == &bd) {
+            return i;
+        }
+    }
+    return -1;
+}
+
 
 } // namespace vfs
 
