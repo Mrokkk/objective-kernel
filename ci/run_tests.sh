@@ -10,6 +10,10 @@ cd build
 
 cores=$(nproc)
 
-cmake -DOPTIMIZE=${OPTIMIZE:-OFF} -DMULTIBOOT2=${MULTIBOOT2:-OFF} ..
-make runtests -j$cores
-
+if [[ ${UT} ]]; then
+    cmake ..
+    make ut-run -j${cores}
+else
+    cmake -DOPTIMIZE=${OPTIMIZE:-OFF} -DMULTIBOOT2=${MULTIBOOT2:-OFF} ..
+    make runtests -j$cores
+fi
