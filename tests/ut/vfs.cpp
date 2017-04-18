@@ -1,3 +1,4 @@
+#include <cstdint>
 #include <kernel/definitions.hpp>
 #include <kernel/cpu/common.hpp>
 #include <kernel/vfs/vfs.hpp>
@@ -13,13 +14,21 @@ TEST(vfs, have_to_be_initialized) {
     REQUIRE_FALSE(vfs::lookup("/"));
 }
 
-TEST(vfs, can_create_root) {
-    ramfs::ramfs ramfs;
-    vfs::initialize(ramfs);
-    auto node = vfs::lookup("/");
-    REQUIRE(node);
-    REQUIRE_EQ(node->id, 1u);
-    REQUIRE(node->node_type == vfs::vnode::type::dir);
-    REQUIRE_EQ(node->size, 0u);
+TEST(cache, new_cache_is_empty) {
+    vfs::cache c;
+    REQUIRE(c.empty());
+    REQUIRE_FALSE(c.root());
+}
+
+TEST(cache, can_add_root_element) {
+    vfs::cache c;
+    auto root_node = utils::make_shared<vfs::vnode>(1u, 0u, 0u, nullptr, nullptr, vfs::vnode::type::dir);
+    c.add("/", root_node, nullptr);
+    auto cached_node = c.root()->node;
+    REQUIRE(cached_node);
+    REQUIRE(cached_node == root_node);
+    REQUIRE_EQ(cached_node->id, 1u);
+    REQUIRE_EQ(cached_node->fs, nullptr);
+    REQUIRE_EQ(cached_node->data, nullptr);
 }
 
