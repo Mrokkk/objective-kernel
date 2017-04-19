@@ -3,6 +3,8 @@
 #include <list.h>
 #include <array.h>
 
+#include <kernel/error.hpp>
+
 #include "file.hpp"
 #include "cache.hpp"
 #include "definitions.hpp"
@@ -45,7 +47,7 @@ public:
     };
 
     vfs(file_system &rootfs, block_device &bd);
-    vnode_t mount(const path_t &path, file_system &fs, block_device &bd);
+    error_wrapper<vnode_t> mount(const path_t &path, file_system &fs, block_device &bd);
     vnode_t lookup(const path_t &path);
     vnode_t create(const path_t &path, vnode::type type);
     file_t open(const path_t &path, file::mode mode);

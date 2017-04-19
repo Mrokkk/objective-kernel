@@ -1,6 +1,7 @@
 #pragma once
 
 #include "definitions.hpp"
+#include <kernel/error.hpp>
 
 namespace vfs {
 

@@ -20,7 +20,7 @@ void initialize(file_system &rootfs, block_device &bd) {
 
 vnode_t mount_fs(const path_t &path, file_system &fs, block_device &bd) {
     if (not vfs_) return {};
-    return vfs_->mount(path, fs, bd);
+    return *vfs_->mount(path, fs, bd);
 }
 
 cache &get_cache() {
@@ -41,17 +41,17 @@ bool vfs::node_exists(const utils::path &filename, const vnode_t &parent) {
     return static_cast<bool>(n);
 }
 
-vnode_t vfs::mount(const path_t &path, file_system &fs, block_device &bd) {
+error_wrapper<vnode_t> vfs::mount(const path_t &path, file_system &fs, block_device &bd) {
     auto dev = get_device_id(bd);
     auto dir_node = lookup(path);
     if (!dir_node) {
-        return {};
+        return error::err_no_such_file;
     }
     auto old_fs = dir_node->fs;
     dir_node->fs = &fs;
     old_fs->sync(*dir_node);
     mount_points_.push_back(utils::make_shared<mount_point>(path, fs, dev));
-    return dir_node;
+    return error_wrapper<vnode_t>(dir_node);
 }
 
 vnode_t vfs::lookup(const path_t &path) {
