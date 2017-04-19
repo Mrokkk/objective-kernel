@@ -42,6 +42,7 @@ matrix:
         - env:
             - IMAGE=mrokkk/kernel-devel
             - UT=ON
+            - CODECOV=ON
           services:
             - docker
 
@@ -51,3 +52,5 @@ language: cpp
 script:
     - ./ci/ci.sh
 
+after_success:
+    - "if [ \"$CODECOV\" ]; then bash <(curl -s https://codecov.io/bash); fi"

@@ -1,3 +1,5 @@
+set(CMAKE_EXE_LINKER_FLAGS "")
+
 if(COVERAGE)
     if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
         set(COVERAGE_FLAGS "-O0 -fprofile-instr-generate -fcoverage-mapping -fno-inline")
@@ -7,8 +9,12 @@ if(COVERAGE)
     endif()
 endif()
 
-set(CMAKE_CXX_FLAGS "-fdiagnostics-color=always -std=c++1z -Wall -Wextra ${COVERAGE_FLAGS}")
-set(CMAKE_EXE_LINKER_FLAGS "")
+if(SANITIZERS)
+    set(SANITIZERS_FLAGS "-fsanitize=address,undefined")
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${SANITIZERS_FLAGS}")
+endif()
+
+set(CMAKE_CXX_FLAGS "-fdiagnostics-color=always -std=c++1z -Wall -Wextra ${COVERAGE_FLAGS} ${SANITIZERS_FLAGS}")
 include_directories(${CMAKE_SOURCE_DIR}/yacppl/include)
 include_directories(${CMAKE_SOURCE_DIR})
 include_directories(../yatf/include)

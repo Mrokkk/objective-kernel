@@ -11,8 +11,8 @@ cd build
 cores=$(nproc)
 
 if [[ ${UT} ]]; then
-    cmake ..
-    make ut-run -j${cores}
+    cmake -DSANITIZERS=ON -DCOVERAGE=ON ..
+    make tests-cov -j${cores}
 else
     cmake -DOPTIMIZE=${OPTIMIZE:-OFF} -DMULTIBOOT2=${MULTIBOOT2:-OFF} ..
     make runtests -j$cores
