@@ -128,7 +128,7 @@ error_wrapper<file_t> vfs::open(const path_t &path, file::mode) {
     if (not node) {
         node = create(path, vnode::type::file);
         if (not node) {
-            return node.error();
+            return node.get_error();
         }
     }
     if (node->node_type != vnode::type::file) {

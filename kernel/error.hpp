@@ -80,7 +80,7 @@ public:
         return v_;
     }
 
-    auto error() const {
+    error get_error() const {
         return err_;
     }
 
