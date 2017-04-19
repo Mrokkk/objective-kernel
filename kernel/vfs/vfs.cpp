@@ -69,6 +69,7 @@ maybe<vnode_t> vfs::lookup(const path_t &path) {
         if (child_entry == nullptr) {
             node = fs->lookup(utils::path(name), node);
             if (not node) {
+                warning("no such file");
                 return error::err_no_such_file;
             }
             vnodes_.push_back(node);
