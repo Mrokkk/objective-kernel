@@ -49,23 +49,23 @@ public:
 };
 
 template <typename Value>
-class error_wrapper {
+class maybe {
 
     error err_;
     Value v_;
 
 public:
 
-    error_wrapper(unsigned errno) : err_(errno) {
+    maybe(unsigned errno) : err_(errno) {
     }
 
-    error_wrapper(const error &err) : err_(err) {
+    maybe(const error &err) : err_(err) {
     }
 
-    error_wrapper(const Value &v) : err_(error::err_no_error), v_(v) {
+    maybe(const Value &v) : err_(error::err_no_error), v_(v) {
     }
 
-    error_wrapper(const error_wrapper &w) : err_(w.err_), v_(w.v_) {
+    maybe(const maybe &w) : err_(w.err_), v_(w.v_) {
     }
 
     operator bool() const {

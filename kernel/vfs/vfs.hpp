@@ -48,10 +48,10 @@ public:
     };
 
     vfs(file_system &rootfs, block_device &bd);
-    error_wrapper<vnode_t> mount(const path_t &path, file_system &fs, block_device &bd);
-    error_wrapper<vnode_t> lookup(const path_t &path);
-    error_wrapper<vnode_t> create(const path_t &path, vnode::type type);
-    error_wrapper<file_t> open(const path_t &path, file::mode mode);
+    maybe<vnode_t> mount(const path_t &path, file_system &fs, block_device &bd);
+    maybe<vnode_t> lookup(const path_t &path);
+    maybe<vnode_t> create(const path_t &path, vnode::type type);
+    maybe<file_t> open(const path_t &path, file::mode mode);
     cache &get_cache();
 
     int register_device(block_device &dev);

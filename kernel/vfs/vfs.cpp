@@ -41,7 +41,7 @@ bool vfs::node_exists(const path_t &filename, const vnode_t &parent) const {
     return static_cast<bool>(n);
 }
 
-error_wrapper<vnode_t> vfs::mount(const path_t &path, file_system &fs, block_device &bd) {
+maybe<vnode_t> vfs::mount(const path_t &path, file_system &fs, block_device &bd) {
     auto dev = get_device_id(bd);
     auto dir_node = lookup(path);
     if (not dir_node) {
@@ -54,7 +54,7 @@ error_wrapper<vnode_t> vfs::mount(const path_t &path, file_system &fs, block_dev
     return dir_node;
 }
 
-error_wrapper<vnode_t> vfs::lookup(const path_t &path) {
+maybe<vnode_t> vfs::lookup(const path_t &path) {
     if (not mount_points_.size()) {
         warning("No root fs!");
         return error::err_no_root;
@@ -93,7 +93,7 @@ error_wrapper<vnode_t> vfs::lookup(const path_t &path) {
     return node;
 }
 
-error_wrapper<vnode_t> vfs::create(const path_t &path, vnode::type type) {
+maybe<vnode_t> vfs::create(const path_t &path, vnode::type type) {
     auto dirname = utils::path(path.dirname());
     auto dir_node = lookup(dirname);
     if (not dir_node) {
@@ -123,7 +123,7 @@ error_wrapper<vnode_t> vfs::create(const path_t &path, vnode::type type) {
     return new_node;
 }
 
-error_wrapper<file_t> vfs::open(const path_t &path, file::mode) {
+maybe<file_t> vfs::open(const path_t &path, file::mode) {
     auto node = lookup(path);
     if (not node) {
         node = create(path, vnode::type::file);
