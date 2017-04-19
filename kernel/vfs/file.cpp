@@ -45,7 +45,9 @@ extern utils::unique_ptr<vfs> vfs_;
 
 file_t open(const path_t &path, file::mode mode) {
     if (not vfs_) return {};
-    return vfs_->open(path, mode);
+    auto result = vfs_->open(path, mode);
+    if (not result) return {};
+    return *result;
 }
 
 } // namespace vfs

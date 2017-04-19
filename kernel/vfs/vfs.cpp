@@ -123,13 +123,16 @@ error_wrapper<vnode_t> vfs::create(const path_t &path, vnode::type type) {
     return new_node;
 }
 
-file_t vfs::open(const path_t &path, file::mode) {
+error_wrapper<file_t> vfs::open(const path_t &path, file::mode) {
     auto node = lookup(path);
     if (not node) {
         node = create(path, vnode::type::file);
+        if (not node) {
+            return node.error();
+        }
     }
     if (node->node_type != vnode::type::file) {
-        return {};
+        return error::err_is_a_dir;
     }
     return utils::make_shared<file>((*node).get(), file::mode::read_write);
 }

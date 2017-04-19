@@ -59,6 +59,9 @@ public:
     error_wrapper(unsigned errno) : err_(errno) {
     }
 
+    error_wrapper(const error &err) : err_(err) {
+    }
+
     error_wrapper(const Value &v) : err_(error::err_no_error), v_(v) {
     }
 
@@ -75,6 +78,10 @@ public:
 
     Value operator->() {
         return v_;
+    }
+
+    auto error() const {
+        return err_;
     }
 
 };
