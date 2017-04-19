@@ -38,7 +38,8 @@ class vfs {
     utils::list<file_t> files_;
     cache cache_;
 
-    bool node_exists(const utils::path &filename, const vnode_t &parent);
+    bool node_exists(const path_t &filename, const vnode_t &parent) const;
+    void get_vnode(const utils::string &name, vnode_t &parent_node, cache::dir_entry *parent_entry, cache::dir_entry *child_entry);
 
 public:
 
@@ -49,7 +50,7 @@ public:
     vfs(file_system &rootfs, block_device &bd);
     error_wrapper<vnode_t> mount(const path_t &path, file_system &fs, block_device &bd);
     error_wrapper<vnode_t> lookup(const path_t &path);
-    vnode_t create(const path_t &path, vnode::type type);
+    error_wrapper<vnode_t> create(const path_t &path, vnode::type type);
     file_t open(const path_t &path, file::mode mode);
     cache &get_cache();
 

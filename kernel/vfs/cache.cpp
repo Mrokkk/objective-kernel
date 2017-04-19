@@ -58,13 +58,16 @@ cache::dir_entry *cache::find(const vnode_t &node, utils::list<dir_entry *> *lis
     return nullptr;
 }
 
-void cache::add(const utils::string &name, vnode_t &vnode, dir_entry *parent) {
+cache::dir_entry *cache::add(const utils::string &name, vnode_t &vnode, dir_entry *parent) {
     debug("adding ", (const char *)name);
     if (parent == nullptr) {
         root_ = new cache::dir_entry("/", vnode);
+        return root_;
     }
     else {
-        parent->dir_entries.push_back(new dir_entry(name, vnode, parent));
+        auto new_cache_entry = new dir_entry(name, vnode, parent);
+        parent->dir_entries.push_back(new_cache_entry);
+        return new_cache_entry;
     }
 }
 

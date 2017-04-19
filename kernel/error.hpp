@@ -5,6 +5,9 @@ struct error {
     enum number {
         err_no_error = 0,
         err_no_such_file,
+        err_is_a_dir,
+        err_exists,
+        err_cannot_create,
         err_no_root,
     };
 
@@ -26,8 +29,14 @@ public:
                 return "No error";
             case err_no_such_file:
                 return "No such file";
+            case err_is_a_dir:
+                return "Is a directory";
+            case err_exists:
+                return "File or directory exists";
             case err_no_root:
                 return "No root mounted";
+            case err_cannot_create:
+                return "Cannot create file/directory";
             default:
                 return "Unknown error";
         }

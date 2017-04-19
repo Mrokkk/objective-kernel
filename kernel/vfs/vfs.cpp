@@ -36,7 +36,7 @@ vfs::vfs(file_system &rootfs, block_device &bd) {
     mount_points_.push_back(utils::make_shared<mount_point>("/", rootfs, dev));
 }
 
-bool vfs::node_exists(const utils::path &filename, const vnode_t &parent) {
+bool vfs::node_exists(const path_t &filename, const vnode_t &parent) const {
     auto n = parent->fs->lookup(filename, parent);
     return static_cast<bool>(n);
 }
@@ -72,7 +72,7 @@ error_wrapper<vnode_t> vfs::lookup(const path_t &path) {
                 return error::err_no_such_file;
             }
             vnodes_.push_back(node);
-            cache_.add(name, node, parent_entry);
+            child_entry = cache_.add(name, node, parent_entry);
         }
         else {
             node = child_entry->node;
@@ -83,7 +83,7 @@ error_wrapper<vnode_t> vfs::lookup(const path_t &path) {
         if (node->fs != fs) {
             if (node->fs == nullptr) {
                 warning("no fs pointer");
-                return error::err_no_such_file;
+                return error::err_no_root;
             }
             fs = node->fs;
         }
@@ -93,24 +93,24 @@ error_wrapper<vnode_t> vfs::lookup(const path_t &path) {
     return node;
 }
 
-vnode_t vfs::create(const path_t &path, vnode::type type) {
+error_wrapper<vnode_t> vfs::create(const path_t &path, vnode::type type) {
     auto dirname = utils::path(path.dirname());
     auto dir_node = lookup(dirname);
     if (not dir_node) {
-        return {};
+        return dir_node;
     }
     if (dir_node->node_type != vnode::type::dir) {
-        return {};
+        return error::err_no_such_file;
     }
     utils::path filename(path.basename());
     if (node_exists(filename, *dir_node)) {
         warning(to_string(type), " ", (const char *)path, " exists");
-        return {};
+        return error::err_exists;
     }
     debug("creating ", to_string(type), " ", path.get());
     auto new_node = dir_node->fs->create(filename, *dir_node, type);
     if (not new_node) {
-        return {};
+        return error::err_cannot_create;
     }
     new_node->node_type = type;
     vnodes_.push_back(new_node);
