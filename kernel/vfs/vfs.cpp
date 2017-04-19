@@ -44,20 +44,20 @@ bool vfs::node_exists(const utils::path &filename, const vnode_t &parent) {
 error_wrapper<vnode_t> vfs::mount(const path_t &path, file_system &fs, block_device &bd) {
     auto dev = get_device_id(bd);
     auto dir_node = lookup(path);
-    if (!dir_node) {
-        return error::err_no_such_file;
+    if (not dir_node) {
+        return dir_node;
     }
     auto old_fs = dir_node->fs;
     dir_node->fs = &fs;
-    old_fs->sync(*dir_node);
+    old_fs->sync(**dir_node);
     mount_points_.push_back(utils::make_shared<mount_point>(path, fs, dev));
-    return error_wrapper<vnode_t>(dir_node);
+    return dir_node;
 }
 
-vnode_t vfs::lookup(const path_t &path) {
+error_wrapper<vnode_t> vfs::lookup(const path_t &path) {
     if (not mount_points_.size()) {
         warning("No root fs!");
-        return {};
+        return error::err_no_root;
     }
     auto fs = mount_points_.front()->fs;
     auto path_it = path.begin();
@@ -69,7 +69,7 @@ vnode_t vfs::lookup(const path_t &path) {
         if (child_entry == nullptr) {
             node = fs->lookup(utils::path(name), node);
             if (not node) {
-                return {};
+                return error::err_no_such_file;
             }
             vnodes_.push_back(node);
             cache_.add(name, node, parent_entry);
@@ -83,7 +83,7 @@ vnode_t vfs::lookup(const path_t &path) {
         if (node->fs != fs) {
             if (node->fs == nullptr) {
                 warning("no fs pointer");
-                return {};
+                return error::err_no_such_file;
             }
             fs = node->fs;
         }
@@ -103,18 +103,18 @@ vnode_t vfs::create(const path_t &path, vnode::type type) {
         return {};
     }
     utils::path filename(path.basename());
-    if (node_exists(filename, dir_node)) {
+    if (node_exists(filename, *dir_node)) {
         warning(to_string(type), " ", (const char *)path, " exists");
         return {};
     }
     debug("creating ", to_string(type), " ", path.get());
-    auto new_node = dir_node->fs->create(filename, dir_node, type);
+    auto new_node = dir_node->fs->create(filename, *dir_node, type);
     if (not new_node) {
         return {};
     }
     new_node->node_type = type;
     vnodes_.push_back(new_node);
-    auto cache_parent = cache_.find(dir_node);
+    auto cache_parent = cache_.find(*dir_node);
     if (not cache_parent) {
         warning("parent node for ", (const char *)path, " isn\'t cached");
         return new_node;
@@ -131,7 +131,7 @@ file_t vfs::open(const path_t &path, file::mode) {
     if (node->node_type != vnode::type::file) {
         return {};
     }
-    return utils::make_shared<file>(node.get(), file::mode::read_write);
+    return utils::make_shared<file>((*node).get(), file::mode::read_write);
 }
 
 struct cache &vfs::get_cache() {
@@ -151,7 +151,6 @@ dev_t vfs::get_device_id(block_device &bd) {
     }
     return -1;
 }
-
 
 } // namespace vfs
 

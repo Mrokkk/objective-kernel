@@ -53,8 +53,11 @@ public:
     error_wrapper(const Value &v) : err_(error::err_no_error), v_(v) {
     }
 
+    error_wrapper(const error_wrapper &w) : err_(w.err_), v_(w.v_) {
+    }
+
     operator bool() const {
-        return !v_;
+        return err_ == 0;
     }
 
     Value operator *() {
