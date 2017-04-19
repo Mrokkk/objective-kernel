@@ -98,7 +98,7 @@ maybe<vnode_t> vfs::create(const path_t &path, vnode::type type) {
     auto dirname = utils::path(path.dirname());
     auto dir_node = lookup(dirname);
     if (not dir_node) {
-        return dir_node;
+        return dir_node.get_error();
     }
     if (dir_node->node_type != vnode::type::dir) {
         return error::err_no_such_file;
