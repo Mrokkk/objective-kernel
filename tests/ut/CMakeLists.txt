@@ -14,7 +14,10 @@ if(SANITIZERS)
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${SANITIZERS_FLAGS}")
 endif()
 
-set(CMAKE_CXX_FLAGS "-fdiagnostics-color=always -std=c++1z -Wall -Wextra ${COVERAGE_FLAGS} ${SANITIZERS_FLAGS}")
+set(CMAKE_CXX_FLAGS "-fdiagnostics-color=always -std=c++1z -Wall -Wextra \
+-fno-exceptions -fno-rtti -fno-stack-protector -mno-sse -mno-sse2 \
+-mno-sse3 -mno-sse4 -mno-avx ${COVERAGE_FLAGS} ${SANITIZERS_FLAGS}")
+
 include_directories(${CMAKE_SOURCE_DIR}/yacppl/include)
 include_directories(${CMAKE_SOURCE_DIR})
 include_directories(../yatf/include)
