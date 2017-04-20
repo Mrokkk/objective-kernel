@@ -12,7 +12,7 @@
 #include <kernel/console/console.hpp>
 
 #define YATF_MAIN
-#include "yatf/include/yatf.h"
+#include <yatf.h>
 
 namespace {
 
