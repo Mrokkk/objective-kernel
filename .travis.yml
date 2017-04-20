@@ -39,12 +39,12 @@ matrix:
           services:
             - docker
 
-        #- env:
-            #- IMAGE=mrokkk/kernel-devel
-            #- UT=ON
-            #- CODECOV=ON
-          #services:
-            #- docker
+        - env:
+            - IMAGE=mrokkk/kernel-devel
+            - UT=ON
+            - CODECOV=ON
+          services:
+            - docker
 
 
 language: cpp
