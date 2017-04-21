@@ -1,23 +1,25 @@
+include(../modules/utils.cmake)
 include(../modules/coverage.cmake)
 
 set(CMAKE_EXE_LINKER_FLAGS "")
 
-if(SANITIZERS)
-    set(SANITIZERS_FLAGS "-fsanitize=address,undefined")
-    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${SANITIZERS_FLAGS}")
-endif()
-
 set(CMAKE_CXX_FLAGS "-fdiagnostics-color=always -std=c++1z -Wall -Wextra \
 -fno-exceptions -fno-rtti -fno-stack-protector -mno-sse -mno-sse2 \
--mno-sse3 -mno-sse4 -mno-avx ${COVERAGE_FLAGS} ${SANITIZERS_FLAGS}")
+-mno-sse3 -mno-sse4 -mno-avx ${SANITIZERS_FLAGS}")
+
+if(SANITIZERS)
+    add_sanitizers_flags()
+endif()
 
 if(COVERAGE)
     add_coverage_flags()
 endif()
 
-include_directories(${CMAKE_SOURCE_DIR}/yacppl/include)
-include_directories(${CMAKE_SOURCE_DIR})
-include_directories(../yatf/include)
+include_directories(
+    ${CMAKE_SOURCE_DIR}/yacppl/include
+    ${CMAKE_SOURCE_DIR}
+    ../yatf/include
+)
 
 add_executable(${PROJECT_NAME}-ut
     main.cpp
@@ -46,20 +48,10 @@ set_target_properties(ut-vfs PROPERTIES
 
 target_link_libraries(${PROJECT_NAME}-ut ut-common ut-vfs)
 
-add_custom_target(
-    ut-run
-    COMMAND ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-ut
-    DEPENDS ${PROJECT_NAME}-ut
-    COMMENT "Running UTs"
-)
-
-add_custom_target(
-    ut-valgrind
-    DEPENDS ${PROJECT_NAME}-ut
-    COMMAND valgrind ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-ut
-    COMMENT "Running UTs with valgrind"
-)
-
+add_run_target(${PROJECT_NAME}-ut ut-run)
+if (NOT SANITIZERS)
+    add_valgrind_target(${PROJECT_NAME}-ut ut-valgrind)
+endif()
 if(COVERAGE)
     add_coverage_targets(${PROJECT_NAME}-ut ut-run ut ${CMAKE_SOURCE_DIR}/kernel)
 endif()
