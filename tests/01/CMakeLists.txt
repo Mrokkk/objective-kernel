@@ -1,4 +1,5 @@
 include(../modules/utils.cmake)
+include(../modules/sanitizers.cmake)
 include(../modules/coverage.cmake)
 
 option(SANITIZERS "Use sanitizers" OFF)

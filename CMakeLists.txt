@@ -34,7 +34,7 @@ set(CMAKE_CXX_FLAGS "-m32 -fdiagnostics-color=always -std=c++1z -ffreestanding -
 set(CMAKE_EXE_LINKER_FLAGS "-Wl,-T${CMAKE_SOURCE_DIR}/linker.ld -Wl,-Map=kernel.map -Wl,--oformat -Wl,elf32-i386 -Wl,-m -Wl,elf_i386 -nostartfiles -nostdlib")
 
 if(MULTIBOOT2)
-    add_definitions("-DMULTIBOOT2")
+    add_compile_options("-DMULTIBOOT2")
 endif()
 
 include_directories(
