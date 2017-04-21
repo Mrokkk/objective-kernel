@@ -1,6 +1,12 @@
 include(../modules/utils.cmake)
 include(../modules/coverage.cmake)
 
+option(SANITIZERS "Use sanitizers" OFF)
+message(STATUS "Use sanitizers: ${SANITIZERS}")
+
+option(COVERAGE "Generate coverage report" OFF)
+message(STATUS "Generate coverage report: ${COVERAGE}")
+
 set(CMAKE_EXE_LINKER_FLAGS "")
 
 set(CMAKE_CXX_FLAGS "-fdiagnostics-color=always -std=c++1z -Wall -Wextra \

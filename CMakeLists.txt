@@ -37,8 +37,10 @@ if(MULTIBOOT2)
     add_definitions("-DMULTIBOOT2")
 endif()
 
-include_directories(yacppl/include)
-include_directories(${CMAKE_SOURCE_DIR})
+include_directories(
+    yacppl/include
+    ${CMAKE_SOURCE_DIR}
+)
 
 add_subdirectory(drivers)
 add_subdirectory(kernel)
