@@ -1,6 +1,6 @@
-include(../modules/utils.cmake)
-include(../modules/sanitizers.cmake)
-include(../modules/coverage.cmake)
+include(../cmake-utils/utils.cmake)
+include(../cmake-utils/sanitizers.cmake)
+include(../cmake-utils/coverage.cmake)
 
 option(SANITIZERS "Use sanitizers" OFF)
 message(STATUS "Use sanitizers: ${SANITIZERS}")

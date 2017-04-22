@@ -4,3 +4,6 @@
 [submodule "tests/yatf"]
     path = tests/yatf
     url = https://github.com/Mrokkk/yatf.git
+[submodule "tests/cmake-utils"]
+	path = tests/cmake-utils
+	url = https://github.com/Mrokkk/cmake-utils.git
