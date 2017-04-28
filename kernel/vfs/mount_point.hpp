@@ -8,8 +8,8 @@ namespace vfs {
 
 class mount_point final {
 
-
 public:
+
     path_t path;
     file_system *fs;
     dev_t dev;
@@ -19,12 +19,7 @@ public:
             : path(path), fs(&fs), dev(dev) {
     }
 
-    ~mount_point() {
-    }
-
 };
-
-
 
 } // namespace vfs
 

@@ -12,7 +12,7 @@ set(CMAKE_EXE_LINKER_FLAGS "")
 
 set(CMAKE_CXX_FLAGS "-fdiagnostics-color=always -std=c++1z -Wall -Wextra \
 -fno-exceptions -fno-rtti -fno-stack-protector -mno-sse -mno-sse2 \
--mno-sse3 -mno-sse4 -mno-avx ${SANITIZERS_FLAGS}")
+-mno-sse3 -mno-sse4 -mno-avx ${SANITIZERS_FLAGS} -g3")
 
 if(SANITIZERS)
     add_sanitizers_flags()

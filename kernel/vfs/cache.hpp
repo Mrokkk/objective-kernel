@@ -21,6 +21,12 @@ struct cache {
                 : name(name), node(node), parent(parent) {
         }
 
+        ~dir_entry() {
+            for (auto &entry : dir_entries) {
+                delete entry;
+            }
+        }
+
     };
 
 private:

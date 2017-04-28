@@ -38,6 +38,12 @@ class ramfs final : public vfs::file_system {
 
         file_content() = default;
 
+        ~file_content() {
+            if (data_) {
+                delete [] data_;
+            }
+        }
+
         size_t data_written() const {
             return iterator_ - data_;
         }
@@ -76,6 +82,9 @@ class ramfs final : public vfs::file_system {
         }
 
         ~dir_entry() {
+            for (auto &entry : dir_entries) {
+                delete entry;
+            }
         }
 
     };
@@ -87,7 +96,7 @@ class ramfs final : public vfs::file_system {
 
 public:
 
-    ramfs() : root_(1, "", vfs::vnode::type::dir) {
+    ramfs() : root_(1, "/", vfs::vnode::type::dir) {
     }
 
     utils::string name() override;
