@@ -14,7 +14,7 @@ struct file final {
 
 private:
 
-    vnode_t vnode_ = nullptr;
+    vnode_t vnode_;
     mode mode_ = mode::read;
     off_t position_ = 0;
 

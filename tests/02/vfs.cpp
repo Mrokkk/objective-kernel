@@ -23,18 +23,15 @@ TEST(vfs, can_create_root) {
 TEST(vfs, can_create_files) {
     ramfs::ramfs ramfs;
     vfs::initialize(ramfs);
-    auto node = vfs::create("/some_file", vfs::vnode::type::file);
-    REQUIRE(node);
-    REQUIRE_EQ(node->id, 2u);
-    REQUIRE(node->node_type == vfs::vnode::type::file);
-    REQUIRE_EQ(node->size, 0u);
+    REQUIRE(vfs::create("/some_file", vfs::vnode::type::file));
     {
         auto node2 = vfs::lookup("/some_file");
         REQUIRE_EQ(node2->id, 2u);
         REQUIRE_EQ(node2->size, 0u);
         REQUIRE(node2->node_type == vfs::vnode::type::file);
     }
-    node = vfs::create("/some_file2", vfs::vnode::type::file);
+    auto node = vfs::create("/some_file2", vfs::vnode::type::file);
+    REQUIRE_EQ(node->fs->fs, &ramfs);
     REQUIRE(node);
     REQUIRE_EQ(node->id, 3u);
     REQUIRE_EQ(node->size, 0u);

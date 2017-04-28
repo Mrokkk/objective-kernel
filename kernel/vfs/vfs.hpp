@@ -9,23 +9,9 @@
 #include "cache.hpp"
 #include "definitions.hpp"
 #include "block_device.hpp"
+#include "mount_point.hpp"
 
 namespace vfs {
-
-struct mount_point final {
-
-    path_t path;
-    file_system *fs;
-    dev_t dev;
-
-    mount_point(const path_t &path, file_system &fs, dev_t dev)
-            : path(path), fs(&fs), dev(dev) {
-    }
-
-    ~mount_point() {
-    }
-
-};
 
 class vfs {
 
@@ -34,7 +20,6 @@ class vfs {
     utils::array<block_device *, 32> block_devices_;
     unsigned bd_index_ = 0;
     utils::list<mount_point_t> mount_points_;
-    utils::list<vnode_t> vnodes_;
     utils::list<file_t> files_;
     cache cache_;
 

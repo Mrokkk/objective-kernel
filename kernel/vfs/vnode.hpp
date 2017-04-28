@@ -1,6 +1,7 @@
 #pragma once
 
 #include "definitions.hpp"
+#include "mount_point.hpp"
 #include <kernel/error.hpp>
 
 namespace vfs {
@@ -16,10 +17,11 @@ struct vnode final {
     size_t size = 0;
     size_t blocks = 0;
     void *data = nullptr;
-    file_system *fs = nullptr;
+    mount_point_t fs;
 
-    vnode(unsigned id, size_t size, size_t blocks, void *data, file_system *fs, type type)
-            : id(id), node_type(type), size(size), blocks(blocks), data(data), fs(fs) {
+
+    vnode(unsigned id, size_t size, size_t blocks, void *data, type type)
+            : id(id), node_type(type), size(size), blocks(blocks), data(data) {
     }
 
 };

@@ -37,7 +37,7 @@ vfs::vfs(file_system &rootfs, block_device &bd) {
 }
 
 bool vfs::node_exists(const path_t &filename, const vnode_t &parent) const {
-    auto n = parent->fs->lookup(filename, parent);
+    auto n = parent->fs->fs->lookup(filename, parent);
     return static_cast<bool>(n);
 }
 
@@ -47,10 +47,9 @@ maybe<vnode_t> vfs::mount(const path_t &path, file_system &fs, block_device &bd)
     if (not dir_node) {
         return dir_node;
     }
-    auto old_fs = dir_node->fs;
-    dir_node->fs = &fs;
-    old_fs->sync(**dir_node);
-    mount_points_.push_back(utils::make_shared<mount_point>(path, fs, dev));
+    auto m_point = utils::make_shared<mount_point>(path, fs, dev);
+    mount_points_.push_back(m_point);
+    dir_node->fs = m_point;
     return dir_node;
 }
 
@@ -59,7 +58,7 @@ maybe<vnode_t> vfs::lookup(const path_t &path) {
         warning("No root fs!");
         return error::err_no_root;
     }
-    auto fs = mount_points_.front()->fs;
+    auto fs = mount_points_.front();
     auto path_it = path.begin();
     vnode_t node;
     cache::dir_entry *parent_entry = nullptr;
@@ -67,12 +66,13 @@ maybe<vnode_t> vfs::lookup(const path_t &path) {
         auto name = *path_it;
         auto child_entry = cache_.find(name, parent_entry);
         if (child_entry == nullptr) {
-            node = fs->lookup(utils::path(name), node);
+            node = fs->fs->lookup(utils::path(name), node);
             if (not node) {
-                warning("no such file");
+                warning("no such file ", (const char *)path);
                 return error::err_no_such_file;
             }
-            vnodes_.push_back(node);
+            node->fs = fs;
+            fs->vnodes_.push_back(node);
             child_entry = cache_.add(name, node, parent_entry);
         }
         else {
@@ -83,7 +83,7 @@ maybe<vnode_t> vfs::lookup(const path_t &path) {
         }
         if (node->fs != fs) {
             if (node->fs == nullptr) {
-                warning("no fs pointer");
+                warning("no fs pointer for ", (const char *)path);
                 return error::err_no_root;
             }
             fs = node->fs;
@@ -109,12 +109,13 @@ maybe<vnode_t> vfs::create(const path_t &path, vnode::type type) {
         return error::err_exists;
     }
     debug("creating ", to_string(type), " ", path.get());
-    auto new_node = dir_node->fs->create(filename, *dir_node, type);
+    auto new_node = dir_node->fs->fs->create(filename, *dir_node, type);
     if (not new_node) {
         return error::err_cannot_create;
     }
     new_node->node_type = type;
-    vnodes_.push_back(new_node);
+    new_node->fs = dir_node->fs;
+    dir_node->fs->vnodes_.push_back(new_node);
     auto cache_parent = cache_.find(*dir_node);
     if (not cache_parent) {
         warning("parent node for ", (const char *)path, " isn\'t cached");
@@ -135,7 +136,7 @@ maybe<file_t> vfs::open(const path_t &path, file::mode) {
     if (node->node_type != vnode::type::file) {
         return error::err_is_a_dir;
     }
-    return utils::make_shared<file>((*node).get(), file::mode::read_write);
+    return utils::make_shared<file>(*node, file::mode::read_write);
 }
 
 struct cache &vfs::get_cache() {

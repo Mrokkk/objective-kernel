@@ -10,14 +10,14 @@ int file::read(char *buffer, size_t n) {
     if (mode_ == mode::write) {
         return -1;
     }
-    return vnode_->fs->read(this, vnode_, buffer, n);
+    return vnode_->fs->fs->read(this, vnode_, buffer, n);
 }
 
 int file::write(const char *buffer, size_t n) {
     if (mode_ == mode::read) {
         return -1;
     }
-    return vnode_->fs->write(this, vnode_, buffer, n);
+    return vnode_->fs->fs->write(this, vnode_, buffer, n);
 }
 
 int file::seek(off_t pos) {

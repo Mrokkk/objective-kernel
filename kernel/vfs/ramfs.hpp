@@ -70,11 +70,9 @@ class ramfs final : public vfs::file_system {
         vfs::vnode::type file_type;
         file_content content;
         utils::list<dir_entry *> dir_entries;
-        vfs::file_system *fs = nullptr;
 
-        dir_entry(unsigned id, const utils::string &name, vfs::vnode::type t,
-            vfs::file_system *f)
-                : id(id), file_name(name), file_type(t), fs(f) {
+        dir_entry(unsigned id, const utils::string &name, vfs::vnode::type t)
+                : id(id), file_name(name), file_type(t) {
         }
 
         ~dir_entry() {
@@ -89,7 +87,7 @@ class ramfs final : public vfs::file_system {
 
 public:
 
-    ramfs() : root_(1, "", vfs::vnode::type::dir, this) {
+    ramfs() : root_(1, "", vfs::vnode::type::dir) {
     }
 
     utils::string name() override;

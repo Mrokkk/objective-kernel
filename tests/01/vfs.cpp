@@ -22,13 +22,13 @@ TEST(cache, new_cache_is_empty) {
 
 TEST(cache, can_add_root_element) {
     vfs::cache c;
-    auto root_node = utils::make_shared<vfs::vnode>(1u, 0u, 0u, nullptr, nullptr, vfs::vnode::type::dir);
+    auto root_node = utils::make_shared<vfs::vnode>(1u, 0u, 0u, nullptr, vfs::vnode::type::dir);
     c.add("/", root_node, nullptr);
     auto cached_node = c.find("/")->node;
     REQUIRE(cached_node);
     REQUIRE(cached_node == root_node);
     REQUIRE_EQ(cached_node->id, 1u);
-    REQUIRE_EQ(cached_node->fs, nullptr);
+    REQUIRE_EQ(cached_node->fs.get(), nullptr);
     REQUIRE_EQ(cached_node->data, nullptr);
 }
 

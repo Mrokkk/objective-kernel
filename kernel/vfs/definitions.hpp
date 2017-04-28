@@ -9,7 +9,7 @@ namespace vfs {
 struct file;
 struct vnode;
 struct file_system;
-struct mount_point;
+class mount_point;
 
 using path_t = utils::path;
 using vnode_t = utils::shared_ptr<vnode>;

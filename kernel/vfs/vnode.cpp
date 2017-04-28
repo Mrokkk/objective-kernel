@@ -23,11 +23,12 @@ const char *to_string(vnode::type type) {
     }
 }
 
+
 vnode_t lookup(const path_t &path) {
     if (not vfs_) return {};
     auto result = vfs_->lookup(path);
     if (not result) return {};
-    return *result;
+    return result.operator*();
 }
 
 vnode_t create(const path_t &path, vnode::type type) {
