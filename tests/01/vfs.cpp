@@ -28,7 +28,7 @@ TEST(cache, can_add_root_element) {
     REQUIRE(cached_node);
     REQUIRE(cached_node == root_node);
     REQUIRE_EQ(cached_node->id, 1u);
-    REQUIRE_EQ(cached_node->fs.get(), nullptr);
+    REQUIRE_EQ(cached_node->mount_point.get(), nullptr);
     REQUIRE_EQ(cached_node->data, nullptr);
 }
 

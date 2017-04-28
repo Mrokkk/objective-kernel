@@ -17,8 +17,7 @@ struct vnode final {
     size_t size = 0;
     size_t blocks = 0;
     void *data = nullptr;
-    mount_point_t fs;
-
+    mount_point_t mount_point;
 
     vnode(unsigned id, size_t size, size_t blocks, void *data, type type)
             : id(id), node_type(type), size(size), blocks(blocks), data(data) {

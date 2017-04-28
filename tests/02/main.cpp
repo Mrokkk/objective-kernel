@@ -61,7 +61,7 @@ TEST(vfs, can_do_things) {
     vfs::initialize(ramfs);
     auto node = vfs::create("/some_file", vfs::vnode::type::file);
     REQUIRE(node);
-    REQUIRE_EQ(node->fs->fs, &ramfs);
+    REQUIRE_EQ(node->mount_point->fs, &ramfs);
     write_to_file("/some_file", "hello kernel!");
     char buffer[32];
     utils::fill(buffer, 32, 0);
@@ -79,14 +79,14 @@ TEST(vfs, can_do_things) {
     auto dev_node = vfs::create("/dev", vfs::vnode::type::dir);
     auto mounted_node = vfs::mount_fs("/dev", ramfs2);
     REQUIRE(mounted_node);
-    REQUIRE_EQ(mounted_node->fs->fs, &ramfs2);
+    REQUIRE_EQ(mounted_node->mount_point->fs, &ramfs2);
     dev_node = vfs::lookup("/dev");
     REQUIRE(dev_node);
-    REQUIRE_EQ(dev_node->fs->fs, &ramfs2);
+    REQUIRE_EQ(dev_node->mount_point->fs, &ramfs2);
     auto node3 = vfs::create("/dev/file", vfs::vnode::type::file);
     REQUIRE(node3);
-    REQUIRE_EQ(node3->fs->fs, &ramfs2);
-    REQUIRE_EQ((const char *)node3->fs->fs->name(), "ramfs");
+    REQUIRE_EQ(node3->mount_point->fs, &ramfs2);
+    REQUIRE_EQ((const char *)node3->mount_point->fs->name(), "ramfs");
     write_to_file("/dev/file", "asdfg\n");
     utils::fill(buffer, 32, 0);
     read_from_file("/dev/file", buffer);

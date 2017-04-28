@@ -31,7 +31,7 @@ TEST(vfs, can_create_files) {
         REQUIRE(node2->node_type == vfs::vnode::type::file);
     }
     auto node = vfs::create("/some_file2", vfs::vnode::type::file);
-    REQUIRE_EQ(node->fs->fs, &ramfs);
+    REQUIRE_EQ(node->mount_point->fs, &ramfs);
     REQUIRE(node);
     REQUIRE_EQ(node->id, 3u);
     REQUIRE_EQ(node->size, 0u);
