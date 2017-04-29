@@ -30,6 +30,12 @@ namespace vfs {
 extern null_block_device null_bd_;
 }
 
+TEST(vfs, null_bd_works) {
+    REQUIRE(vfs::null_bd_.name());
+    // FIXME: check something
+    vfs::null_bd_.handle_request({});
+}
+
 TEST(vfs, can_create_root) {
     ramfs::ramfs ramfs;
     vfs::vfs fs(ramfs, vfs::null_bd_);
