@@ -58,7 +58,7 @@ maybe<vnode_t> vfs::lookup(const path_t &path) {
         warning("No root fs!");
         return error::err_no_root;
     }
-    auto mount_point = mount_points_.front();
+    class mount_point *mount_point = mount_points_.front().get();
     auto path_it = path.begin();
     vnode_t node;
     cache::dir_entry *parent_entry = nullptr;
