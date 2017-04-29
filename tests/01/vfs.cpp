@@ -355,3 +355,10 @@ TEST(vfs, can_mount_multiple_fs) {
     REQUIRE(content == "hello world");
 }
 
+TEST(vfs, cannot_mount_fs_in_nonexistent_dir) {
+    ramfs::ramfs fs1;
+    ramfs::ramfs fs2;
+    vfs::vfs vfs(fs1, vfs::null_bd_);
+    REQUIRE_FALSE(vfs.mount("/dir", fs2, vfs::null_bd_));
+}
+

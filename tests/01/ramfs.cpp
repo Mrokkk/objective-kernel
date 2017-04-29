@@ -16,6 +16,12 @@ TEST(ramfs, can_create) {
     REQUIRE_EQ(root_node->id, 1u);
 }
 
+TEST(ramfs, parent_node_has_to_be_passed_to_create) {
+    ramfs::ramfs fs;
+    REQUIRE_FALSE(fs.create("file", nullptr, vfs::vnode::type::file));
+    REQUIRE_FALSE(fs.create("dir", nullptr, vfs::vnode::type::dir));
+}
+
 TEST(ramfs, can_create_dir) {
     ramfs::ramfs fs;
     auto root_node = fs.lookup("/", nullptr);
@@ -35,6 +41,7 @@ TEST(ramfs, can_create_file) {
 TEST(ramfs, can_lookup_for_file_in_root_dir) {
     ramfs::ramfs fs;
     auto root_node = fs.lookup("/", nullptr);
+    REQUIRE_FALSE(fs.lookup("/file1", nullptr));
     fs.create("file1", root_node, vfs::vnode::type::file);
     fs.create("file2", root_node, vfs::vnode::type::file);
     fs.create("file3", root_node, vfs::vnode::type::file);

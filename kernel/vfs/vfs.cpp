@@ -41,10 +41,6 @@ maybe<vnode_t> vfs::mount(const path_t &path, file_system &fs, block_device &bd)
 }
 
 maybe<vnode_t> vfs::lookup(const path_t &path) {
-    if (not mount_points_.size()) {
-        warning("No root fs!");
-        return error::err_no_root;
-    }
     class mount_point *mount_point = mount_points_.front().get();
     auto path_it = path.begin();
     vnode_t node;
