@@ -33,6 +33,7 @@ add_executable(${PROJECT_NAME}-ut
     console.cpp
     vfs.cpp
     sprintf.cpp
+    ramfs.cpp
 )
 
 add_library(ut-common

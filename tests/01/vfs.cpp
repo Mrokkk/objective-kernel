@@ -325,7 +325,7 @@ TEST(vfs, cannot_create_files_with_the_same_name) {
 utils::string read_from_file(vfs::vfs &vfs, const vfs::path_t &path) {
     char buffer[128];
     auto file = vfs.open(path, vfs::file::mode::read);
-    file->read(buffer, file->size());
+    file->read(buffer, 0u);
     return buffer;
 }
 
