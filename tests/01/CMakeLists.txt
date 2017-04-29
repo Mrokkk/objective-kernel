@@ -32,6 +32,7 @@ add_executable(${PROJECT_NAME}-ut
     main.cpp
     console.cpp
     vfs.cpp
+    sprintf.cpp
 )
 
 add_library(ut-common
