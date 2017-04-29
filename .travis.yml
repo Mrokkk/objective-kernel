@@ -46,6 +46,13 @@ matrix:
           services:
             - docker
 
+        - env:
+            - IMAGE=mrokkk/kernel-devel
+            - UT=ON
+            - SANITIZERS=ON
+          services:
+            - docker
+
 
 language: cpp
 

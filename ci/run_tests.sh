@@ -11,7 +11,7 @@ cd build
 cores=$(nproc)
 
 if [[ ${UT} ]]; then
-    cmake -DCOVERAGE=ON .. # TODO: -DSANITIZERS=ON
+    cmake -DCOVERAGE=ON -DSANITIZERS=${SANITIZERS:-OFF} ..
     make ut-cov -j${cores}
 else
     cmake -DOPTIMIZE=${OPTIMIZE:-OFF} -DMULTIBOOT2=${MULTIBOOT2:-OFF} ..
