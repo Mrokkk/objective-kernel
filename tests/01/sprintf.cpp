@@ -36,3 +36,19 @@ TEST(sprintf, can_format_char) {
     REQUIRE_EQ((const char *)buffer, "");
 }
 
+TEST(sprintf, can_format_string) {
+    char buffer[32];
+    sprintf(buffer, "%s", "test string");
+    REQUIRE_EQ((const char *)buffer, "test string");
+    sprintf(buffer, "testing");
+    REQUIRE_EQ((const char *)buffer, "testing");
+}
+
+TEST(sprintf, can_pad) {
+    char buffer[32];
+    sprintf(buffer, "%06d", 324);
+    REQUIRE_EQ((const char *)buffer, "000324");
+    sprintf(buffer, "0x%03x", 0x21);
+    REQUIRE_EQ((const char *)buffer, "0x021");
+}
+
