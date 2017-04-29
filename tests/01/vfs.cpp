@@ -271,6 +271,23 @@ TEST(vfs, cannot_write_to_read_open_file) {
     REQUIRE_EQ(file->position(), 0u);
 }
 
+TEST(vfs, cannot_read_from_write_open_file) {
+    ramfs::ramfs ramfs;
+    vfs::vfs vfs(ramfs, vfs::null_bd_);
+    auto file = vfs.open("/file", vfs::file::mode::write);
+    REQUIRE(file);
+    REQUIRE(file->mode_ == vfs::file::mode::write);
+    REQUIRE_EQ(file->position(), 0u);
+    auto res = file->write("some text", 10);
+    REQUIRE(res == 10);
+    REQUIRE_EQ(file->position(), 10u);
+    char buffer[32];
+    utils::fill(buffer, 32, 0);
+    res = file->read(buffer, 10);
+    REQUIRE(res < 0);
+    REQUIRE_EQ(buffer[0], 0);
+}
+
 TEST(vfs, cannot_create_file_under_file) {
     ramfs::ramfs ramfs;
     vfs::vfs vfs(ramfs, vfs::null_bd_);
