@@ -46,6 +46,12 @@ TEST(vfs, can_create_root) {
     REQUIRE_EQ(node->size, 0u);
 }
 
+TEST(vfs, can_convert_vnode_type_to_string) {
+    REQUIRE_EQ(vfs::to_string(vfs::vnode::type::file), "file");
+    REQUIRE_EQ(vfs::to_string(vfs::vnode::type::dir), "dir");
+    REQUIRE_EQ(vfs::to_string(static_cast<vfs::vnode::type>(89)), "unknown type");
+}
+
 TEST(vfs, can_create_files) {
     ramfs::ramfs ramfs;
     vfs::vfs vfs(ramfs, vfs::null_bd_);
