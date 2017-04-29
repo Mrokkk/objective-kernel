@@ -10,8 +10,6 @@
 
 namespace vfs {
 
-extern utils::unique_ptr<vfs> vfs_;
-
 const char *to_string(vnode::type type) {
     switch (type) {
         case vnode::type::file:
@@ -21,21 +19,6 @@ const char *to_string(vnode::type type) {
         default:
             return "unknown type";
     }
-}
-
-
-vnode_t lookup(const path_t &path) {
-    if (not vfs_) return {};
-    auto result = vfs_->lookup(path);
-    if (not result) return {};
-    return result.operator*();
-}
-
-vnode_t create(const path_t &path, vnode::type type) {
-    if (not vfs_) return {};
-    auto result = vfs_->create(path, type);
-    if (not result) return {};
-    return *result;
 }
 
 } // namespace vfs

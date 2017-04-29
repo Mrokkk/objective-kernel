@@ -8,12 +8,6 @@
 
 #include <yatf.h>
 
-TEST(vfs, have_to_be_initialized) {
-    REQUIRE_FALSE(vfs::create("/file", vfs::vnode::type::file));
-    REQUIRE_FALSE(vfs::lookup("/file"));
-    REQUIRE_FALSE(vfs::lookup("/"));
-}
-
 TEST(cache, new_cache_is_empty) {
     vfs::cache c;
     REQUIRE(c.empty());

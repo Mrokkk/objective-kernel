@@ -14,19 +14,6 @@ namespace vfs {
 utils::unique_ptr<vfs> vfs_;
 null_block_device null_bd_;
 
-void initialize(file_system &rootfs, block_device &bd) {
-    vfs_ = new vfs(rootfs, bd);
-}
-
-vnode_t mount_fs(const path_t &path, file_system &fs, block_device &bd) {
-    if (not vfs_) return {};
-    return *vfs_->mount(path, fs, bd);
-}
-
-cache &get_cache() {
-    return vfs_->get_cache();
-}
-
 null_block_device vfs::null_bd_;
 
 vfs::vfs(file_system &rootfs, block_device &bd) {
