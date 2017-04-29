@@ -12,15 +12,15 @@ struct file final {
         read, write, read_write
     };
 
+    mode mode_ = mode::read;
 private:
 
     vnode_t vnode_;
-    mode mode_ = mode::read;
     off_t position_ = 0;
 
 public:
 
-    file(const vnode_t &vnode, mode mode) : vnode_(vnode), mode_(mode) {
+    file(const vnode_t &vnode, mode mode) : mode_(mode), vnode_(vnode) {
     }
 
     int read(char *buffer, size_t n);

@@ -203,6 +203,7 @@ TEST(vfs, open_can_create_file) {
     vfs::vfs vfs(ramfs, vfs::null_bd_);
     auto file = vfs.open("/file", vfs::file::mode::write);
     REQUIRE(file);
+    REQUIRE(file->operator bool());
     REQUIRE_EQ(file->size(), 0u);
     auto node = vfs.lookup("/file");
     REQUIRE(node);
@@ -256,6 +257,18 @@ TEST(vfs, can_read_write_to_file) {
     file->read(buffer, 24u);
     REQUIRE_EQ((const char *)buffer, "some testing for kernel");
     REQUIRE_EQ(file->size(), 24u);
+}
+
+TEST(vfs, cannot_write_to_read_open_file) {
+    ramfs::ramfs ramfs;
+    vfs::vfs vfs(ramfs, vfs::null_bd_);
+    auto file = vfs.open("/file", vfs::file::mode::read);
+    REQUIRE(file);
+    REQUIRE(file->mode_ == vfs::file::mode::read);
+    REQUIRE_EQ(file->position(), 0u);
+    auto res = file->write("some text", 10);
+    REQUIRE(res < 0);
+    REQUIRE_EQ(file->position(), 0u);
 }
 
 TEST(vfs, cannot_create_file_under_file) {

@@ -125,7 +125,7 @@ maybe<vnode_t> vfs::create(const path_t &path, vnode::type type) {
     return new_node;
 }
 
-maybe<file_t> vfs::open(const path_t &path, file::mode) {
+maybe<file_t> vfs::open(const path_t &path, file::mode mode) {
     auto node = lookup(path);
     if (not node) {
         node = create(path, vnode::type::file);
@@ -136,7 +136,7 @@ maybe<file_t> vfs::open(const path_t &path, file::mode) {
     if (node->node_type != vnode::type::file) {
         return error::err_is_a_dir;
     }
-    return utils::make_shared<file>(*node, file::mode::read_write);
+    return utils::make_shared<file>(*node, mode);
 }
 
 struct cache &vfs::get_cache() {
