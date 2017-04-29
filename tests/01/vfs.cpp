@@ -322,3 +322,36 @@ TEST(vfs, cannot_create_files_with_the_same_name) {
     }
 }
 
+utils::string read_from_file(vfs::vfs &vfs, const vfs::path_t &path) {
+    char buffer[128];
+    auto file = vfs.open(path, vfs::file::mode::read);
+    file->read(buffer, file->size());
+    return buffer;
+}
+
+TEST(vfs, can_mount_multiple_fs) {
+    ramfs::ramfs fs1;
+    ramfs::ramfs fs2;
+    ramfs::ramfs fs3;
+    vfs::vfs vfs(fs1, vfs::null_bd_);
+    auto node1 = vfs.create("/some_dir1", vfs::vnode::type::dir);
+    REQUIRE(node1->mount_point->fs == &fs1);
+    auto node2 = vfs.create("/some_dir2", vfs::vnode::type::dir);
+    REQUIRE(node2->mount_point->fs == &fs1);
+    auto node3 = vfs.mount("/some_dir1", fs2, vfs::null_bd_);
+    REQUIRE(node3->mount_point->fs == &fs2);
+    REQUIRE(node3 == node1);
+    auto node4 = vfs.create("/some_dir1/some_dir", vfs::vnode::type::dir);
+    REQUIRE(node4->mount_point->fs == &fs2);
+    auto node5 = vfs.mount("/some_dir1/some_dir", fs3, vfs::null_bd_);
+    REQUIRE(node5->mount_point->fs == &fs3);
+    REQUIRE(node5 == node5);
+    auto node6 = vfs.create("/some_dir1/some_dir/file", vfs::vnode::type::file);
+    REQUIRE(node6);
+    auto file = vfs.open("/some_dir1/some_dir/file", vfs::file::mode::read_write);
+    auto result = file->write("hello world", 12u);
+    REQUIRE(result > 0);
+    auto content = read_from_file(vfs, "/some_dir1/some_dir/file");
+    REQUIRE(content == "hello world");
+}
+
