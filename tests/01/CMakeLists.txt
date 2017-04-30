@@ -32,7 +32,6 @@ add_executable(${PROJECT_NAME}-ut
     main.cpp
     console.cpp
     vfs.cpp
-    sprintf.cpp
     ramfs.cpp
 )
 
@@ -62,6 +61,10 @@ if (NOT SANITIZERS)
     add_valgrind_target(${PROJECT_NAME}-ut ut-valgrind)
 endif()
 if(COVERAGE)
-    add_coverage_targets(${PROJECT_NAME}-ut ut-run ut ${CMAKE_SOURCE_DIR}/kernel)
+    add_coverage_targets(${PROJECT_NAME}-ut ut-run ut ${CMAKE_SOURCE_DIR}/kernel
+        # Excluded files
+        ${CMAKE_SOURCE_DIR}/kernel/printf.cpp
+        ${CMAKE_SOURCE_DIR}/kernel/console/console.cpp
+        ${CMAKE_SOURCE_DIR}/kernel/console/console.hpp)
 endif()
 
