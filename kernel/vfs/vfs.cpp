@@ -11,9 +11,6 @@
 
 namespace vfs {
 
-utils::unique_ptr<vfs> vfs_;
-null_block_device null_bd_;
-
 null_block_device vfs::null_bd_;
 
 vfs::vfs(file_system &rootfs, block_device &bd) {

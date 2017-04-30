@@ -4,7 +4,8 @@
 
 namespace vfs {
 
-extern utils::unique_ptr<vfs> vfs_;
+utils::unique_ptr<vfs> vfs_;
+null_block_device null_bd_;
 
 void initialize(file_system &rootfs, block_device &bd) {
     vfs_ = new vfs(rootfs, bd);

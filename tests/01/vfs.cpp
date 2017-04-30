@@ -27,8 +27,10 @@ TEST(cache, can_add_root_element) {
 }
 
 namespace vfs {
-extern null_block_device null_bd_;
-}
+
+null_block_device null_bd_;
+
+} // namespace vfs
 
 TEST(vfs, null_bd_works) {
     REQUIRE(vfs::null_bd_.name());
