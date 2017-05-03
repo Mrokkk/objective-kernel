@@ -1,8 +1,9 @@
 #include <string.h>
 #include <algorithm.h>
 #include <kernel/cpu/io.hpp>
+#include <kernel/memory/paging.hpp>
 
-#define VIDEO_SEGMENT (0xb8000)
+#define VIDEO_SEGMENT (0xb8000 + KERNEL_PAGE_OFFSET)
 
 #define COLOR_BLACK         0
 #define COLOR_BLUE          1

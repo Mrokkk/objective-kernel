@@ -8,6 +8,7 @@
 #include <kernel/vfs/file.hpp>
 #include <kernel/vfs/ramfs.hpp>
 #include <kernel/cpu/reboot.hpp>
+#include <kernel/memory/paging.hpp>
 #include <kernel/console/console.hpp>
 #include <kernel/scheduler/process.hpp>
 
@@ -35,6 +36,7 @@ utils::array<char, 2048> user_stack;
 asmlinkage __noreturn void main() {
     cpu::gdt::initialize();
     cpu::idt::initialize();
+    memory::initialize();
     scheduler::initialize();
     drivers::vga::initialize();
     console::initialize(drivers::vga::print);

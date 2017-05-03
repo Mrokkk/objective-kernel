@@ -41,6 +41,8 @@ struct page_table_entry final {
 
 } // namespace paging
 
+void initialize();
+
 } // namespace memory
 
 #endif
