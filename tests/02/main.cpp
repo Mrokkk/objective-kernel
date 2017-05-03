@@ -9,6 +9,7 @@
 #include <kernel/vfs/ramfs.hpp>
 #include <kernel/vfs/file.hpp>
 #include <kernel/cpu/reboot.hpp>
+#include <kernel/memory/paging.hpp>
 #include <kernel/console/console.hpp>
 
 #define YATF_MAIN
@@ -99,12 +100,13 @@ asmlinkage void main() {
     auto lock = cpu::make_irq_lock();
     cpu::gdt::initialize();
     cpu::idt::initialize();
+    memory::initialize();
     drivers::serial::initialize();
     console::initialize(drivers::serial::print);
     yatf::config config{true, false, false};
     console::print("Boot command-line: ", boot::cmdline, "\n");
     yatf::run_one(console::print, boot::cmdline, config);
-    reboot();
+    cpu::reboot();
     while (1);
 }
 

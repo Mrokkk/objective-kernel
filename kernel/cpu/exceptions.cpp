@@ -1,6 +1,7 @@
 #include <kernel/cpu/exceptions.h>
 #include <kernel/cpu/stack_frame.hpp>
 #include <kernel/console/console.hpp>
+#include "crx.hpp"
 
 const char *exception_names[] = {
     exception_name(divide_error),
@@ -23,6 +24,8 @@ const char *exception_names[] = {
 asmlinkage __noreturn void exception_handler(uint32_t nr, uint32_t error_code, cpu::stack_frame frame) {
     console::print("Exception: ", exception_names[nr], " #", static_cast<int>(error_code), "\n");
     frame.print();
+    uint32_t cr2 = cr2_get();
+    console::print("CR2 = ", cr2, "\n");
     while (1);
 }
 
