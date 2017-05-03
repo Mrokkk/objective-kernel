@@ -43,6 +43,7 @@ asmlinkage __noreturn void main() {
     ramfs::ramfs ramfs;
     vfs::initialize(ramfs);
     console::print("Boot command-line: ", boot::cmdline, "\n");
+    console::print("Upper mem: ", (int)(boot::upper_mem / 1024), "MiB\n");
     console::print("\nHello World!\n");
     switch_to_user();
     while (1);

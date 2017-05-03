@@ -30,7 +30,7 @@ ENTRY(_start)
 1:
     stosl
     add $0x1000, %eax                        //FIXME
-    cmp $__heap_start - KERNEL_PAGE_OFFSET + 0x30000 + PAGE_INIT_FLAGS, %eax
+    cmp $__heap_start - KERNEL_PAGE_OFFSET + 0x40000 + PAGE_INIT_FLAGS, %eax
     jne 1b
 
     mov $page_dir, %eax

@@ -64,7 +64,7 @@ endif()
 
 add_custom_target(
     iso
-    COMMAND ${CMAKE_SOURCE_DIR}/scripts/isomaker.sh -o ${PROJECT_NAME} ${MULTIBOOT_FLAG}
+    COMMAND ${CMAKE_SOURCE_DIR}/scripts/isomaker.sh -o ${PROJECT_NAME} --args hello ${MULTIBOOT_FLAG}
     DEPENDS ${PROJECT_NAME}
     COMMENT "Building bootable ISO"
 )

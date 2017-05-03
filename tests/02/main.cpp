@@ -97,7 +97,6 @@ TEST(vfs, can_do_things) {
 } // namespace test_cases
 
 asmlinkage void main() {
-    auto lock = cpu::make_irq_lock();
     cpu::gdt::initialize();
     cpu::idt::initialize();
     memory::initialize();
