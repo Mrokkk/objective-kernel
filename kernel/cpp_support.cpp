@@ -58,6 +58,10 @@ void *operator new(size_t, void *address) {
     return address;
 }
 
+void * operator new[] (std::size_t, void *address) {
+    return address;
+}
+
 void operator delete(void *address) noexcept {
     memory::a->free(address);
 }

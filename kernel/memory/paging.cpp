@@ -7,7 +7,8 @@
 
 asmlinkage char page_dir[];
 
-void *operator new(size_t, void *address);
+void * operator new(std::size_t, void *address);
+void * operator new[](std::size_t, void *address);
 
 namespace memory {
 
@@ -23,7 +24,7 @@ void initialize() {
     utils::fill(_page_dir, 4, 0);
     allocator_memory = sections::__heap_start;
     frames_size = align(32768 * (boot::upper_mem / 1024) / 4096, 0x100);
-    frames = new(align(allocator_memory, 4096)) uint32_t;
+    frames = new(align(allocator_memory, 4096)) uint32_t[frames_size];
     allocator_memory = align(allocator_memory + frames_size, 4096);
     a = new(allocator_memory) allocator(align(allocator_memory + sizeof(allocator), 4096));
 }
