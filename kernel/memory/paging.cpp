@@ -11,27 +11,21 @@ void *operator new(size_t, void *address);
 
 namespace memory {
 
-char *_page_dir = page_dir + KERNEL_PAGE_OFFSET;
-utils::allocator<heap_allocator, 32> *a = nullptr;
+using allocator = utils::allocator<heap_allocator, 32>;
+
+char *_page_dir = virt_address(page_dir);
+allocator *a = nullptr;
 char *allocator_memory = nullptr;
 uint32_t frames_size = 0u;
 uint32_t *frames = nullptr;
 
-template <typename Type, size_t size>
-Type *align(Type *address) {
-    auto mod = (uint32_t)address % size;
-    if (mod != 0)
-        return reinterpret_cast<Type *>((uint8_t *)address + mod);
-    return address;
-}
-
 void initialize() {
     utils::fill(_page_dir, 4, 0);
     allocator_memory = sections::__heap_start;
-    frames_size = 32768 * (boot::upper_mem / 1024) / 4096; // FIXME: align
-    frames = new(align<char, 4096>(allocator_memory)) uint32_t;
-    allocator_memory = align<char, 4096>(allocator_memory + frames_size);
-    a = new(allocator_memory) utils::allocator<heap_allocator, 32>(align<char, 4096>(allocator_memory) + 64);
+    frames_size = 32768 * (boot::upper_mem / 1024) / 4096; // FIXME: align to MiB
+    frames = new(align(allocator_memory, 4096)) uint32_t;
+    allocator_memory = align(allocator_memory + frames_size, 4096);
+    a = new(allocator_memory) allocator(align(allocator_memory + sizeof(allocator), 4096));
 }
 
 } // namespacce memory
