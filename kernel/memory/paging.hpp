@@ -41,6 +41,8 @@ struct page_table_entry final {
 
 } // namespace paging
 
+extern char *allocator_memory;
+
 void initialize();
 
 } // namespace memory
