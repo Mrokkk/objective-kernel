@@ -44,6 +44,8 @@ asmlinkage __noreturn void main() {
     vfs::initialize(ramfs);
     console::print("Boot command-line: ", boot::cmdline, "\n");
     console::print("Upper mem: ", (int)(boot::upper_mem / 1024), "MiB\n");
+    console::print("Nr of frames: ", (int)(memory::frames_size), "\n");
+    console::print("Frames: ", (uint32_t)(memory::frames), "\n");
     console::print("\nHello World!\n");
     switch_to_user();
     while (1);
