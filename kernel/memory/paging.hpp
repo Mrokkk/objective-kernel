@@ -11,10 +11,10 @@
 namespace memory {
 
 template <typename Type>
-inline Type *align(Type *address, uint32_t alignment) {
+inline Type align(Type address, uint32_t alignment) {
     auto mod = (uint32_t)address % alignment;
     if (mod != 0) {
-        return reinterpret_cast<Type *>((((uint32_t)address + alignment - 1) / 1024) * 1024);
+        return reinterpret_cast<Type >((((uint32_t)address + alignment - 1) / 1024) * 1024);
     }
     return address;
 }
