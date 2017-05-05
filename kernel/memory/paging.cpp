@@ -47,8 +47,12 @@ bool frame_is_free(uint32_t addr) {
     return !(frames[frame / 32] & (1 << (frame % 32)));
 }
 
-inline void page_set(int nr, unsigned int val) {
+inline void page_set(int nr, uint32_t val) {
     reinterpret_cast<uint32_t *>(page_tables)[nr] = val;
+}
+
+inline void page_table_set(int nr, uint32_t val) {
+    reinterpret_cast<uint32_t *>(page_dir)[nr] = val;
 }
 
 inline void frame_alloc(unsigned int i) {
@@ -84,7 +88,14 @@ void initialize() {
     for (auto i = 0u; i < count; i++)
         frames[i] = ~0UL;
     frames[count] = (~0UL >> (32 - bits));
-    paging::page_directory_reload();
+    for (uint32_t i = 0u, value = PAGE_INIT_FLAGS; value < reinterpret_cast<uint32_t>(align(phys_address(allocator_memory), 0x1000) + PAGE_INIT_FLAGS); value += 0x1000, ++i) {
+        paging::page_set(i, value);
+    }
+    //uint32_t i, j;
+    //for (i = 768, j = 0; j < (uint32_t)phys_address(allocator_memory) / 0x1000 / 1024; i++, j+=1024)
+        //paging::page_table_set(i, 0);
+    //}
+    //paging::page_directory_load(::page_dir);
 }
 
 } // namespace memory

@@ -60,7 +60,6 @@ ENTRY(_start)
 1:
     jmp 1b
 
-
 ALIGN(0x1000)
 ENTRY(page_dir)
     .long page_table0
@@ -77,5 +76,4 @@ SECTION(.bss)
 
 .skip 8192
 ENTRY(kernel_stack)
-
 

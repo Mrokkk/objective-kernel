@@ -53,6 +53,8 @@ asmlinkage __noreturn void main() {
         assert(not memory::paging::frame_is_free(reinterpret_cast<uint32_t>(i)));
     }
     assert(memory::paging::frame_is_free(reinterpret_cast<uint32_t>(memory::phys_address(memory::allocator_memory) + 0x1000)));
+    auto a = memory::virt_address((char *)0x140000);
+    *a = 0;
     switch_to_user();
     while (1);
 }
