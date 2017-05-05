@@ -58,6 +58,8 @@ struct page_table_entry final {
     uint32_t address : 20;
 } __packed;
 
+bool frame_is_free(uint32_t addr);
+
 } // namespace paging
 
 extern char *allocator_memory;
