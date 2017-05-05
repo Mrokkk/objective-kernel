@@ -49,9 +49,33 @@ void *page_alloc() {
     return (void *)(frame_nr * PAGE_SIZE + KERNEL_PAGE_OFFSET);
 }
 
+class page_allocator final {
+
+    char *_heap = nullptr;
+
+public:
+
+    explicit page_allocator(char *) {
+        _heap = (char *)page_alloc();
+        page_alloc(); // FIXME
+    }
+
+    void *grow_heap(size_t value) {
+        auto prev_heap = _heap;
+        auto prev_page = (uint32_t)prev_heap % PAGE_SIZE;
+        _heap += value;
+        auto new_page = (uint32_t)_heap % PAGE_SIZE;
+        if (new_page != prev_page) {
+            page_alloc();
+        }
+        return prev_heap;
+    }
+
+};
+
 }
 
-using allocator = utils::allocator<heap_allocator, 32>;
+using allocator = utils::allocator<paging::page_allocator, 32>;
 
 allocator *a = nullptr;
 char *allocator_memory = nullptr;
@@ -76,7 +100,7 @@ void initialize() {
 
     paging::page_tables = static_cast<paging::page_table_entry *>(paging::page_alloc());
 
-    utils::memcopy((const char *)temp_pgt, (char *)paging::page_tables, PAGE_SIZE * 4);
+    utils::copy(temp_pgt, paging::page_tables, PAGE_SIZE);
 
     for (i = 768, j = 0; i < PAGE_TABLES_NUMBER; i++, j+=1024)
         paging::page_table_set(i, phys_address((uint32_t)&paging::page_tables[j]) |
@@ -86,13 +110,10 @@ void initialize() {
         paging::page_alloc();
 
     allocator_memory = (char *)paging::page_alloc();
-    auto mem = (char *)paging::page_alloc();
-    a = new(allocator_memory) allocator(mem);
+    a = new(allocator_memory) allocator(0);
 
     paging::page_set(0, 0);
     paging::page_directory_reload();
-    paging::page_alloc();
-    paging::page_alloc();
 }
 
 } // namespace memory

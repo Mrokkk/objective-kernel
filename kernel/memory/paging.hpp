@@ -80,7 +80,7 @@ struct page_table_entry final {
 inline void page_directory_load(page_directory_entry *pgd) {
     asm volatile(
             "mov %0, %%cr3;"
-            :: "r" (pgd));
+            :: "r" (pgd) : "memory");
 }
 
 inline void page_directory_reload() {

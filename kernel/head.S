@@ -29,8 +29,8 @@ ENTRY(_start)
     movl $PAGE_INIT_FLAGS, %eax
 1:
     stosl
-    add $0x1000, %eax                        //FIXME
-    cmp $__heap_start - KERNEL_PAGE_OFFSET + 0x100000 + PAGE_INIT_FLAGS, %eax
+    add $0x1000, %eax                        // FIXME: problems with read_bootloader...
+    cmp $__heap_start - KERNEL_PAGE_OFFSET + 0x200000 + PAGE_INIT_FLAGS, %eax
     jne 1b
 
     mov $page_dir, %eax
