@@ -8,6 +8,25 @@
 
 #ifndef __ASSEMBLER__
 
+#define PGD_PRESENT     (1 << 0)
+#define PGD_WRITEABLE   (1 << 1)
+#define PGD_USER        (1 << 2)
+#define PGD_WRITETHR    (1 << 3)
+#define PGD_CACHEDIS    (1 << 4)
+#define PGD_ACCESSED    (1 << 5)
+#define PGD_RESERVED    (1 << 6)
+#define PGD_SIZE        (1 << 7)
+
+#define PGT_PRESENT     (1 << 0)
+#define PGT_WRITEABLE   (1 << 1)
+#define PGT_USER        (1 << 2)
+#define PGT_WRITETHR    (1 << 3)
+#define PGT_CACHEDIS    (1 << 4)
+#define PGT_ACCESSED    (1 << 5)
+#define PGT_DIRTY       (1 << 6)
+#define PGT_RESERVED    (1 << 7)
+#define PGT_GLOBAL      (1 << 8)
+
 namespace memory {
 
 template <typename Type>
@@ -57,6 +76,34 @@ struct page_table_entry final {
     uint32_t ignored : 3;
     uint32_t address : 20;
 } __packed;
+
+inline void page_directory_load(page_directory_entry *pgd) {
+    asm volatile(
+            "mov %0, %%cr3;"
+            "mov $1f, %0;"
+            "jmp *%0;"
+            "1:"
+            :: "r" (pgd) : "memory");
+}
+
+inline void page_directory_reload() {
+    int dummy = 0;
+    asm volatile(
+            "mov %%cr3, %0;"
+            "mov %0, %%cr3;"
+            : "=r" (dummy)
+            : "r" (dummy)
+            : "memory"
+    );
+}
+
+inline void invlpg(void *address) {
+    asm volatile(
+            "invlpg (%0);"
+            :: "r" (address)
+            : "memory"
+    );
+}
 
 bool frame_is_free(uint32_t addr);
 

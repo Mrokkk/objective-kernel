@@ -49,11 +49,10 @@ asmlinkage __noreturn void main() {
     console::print("Frames: ", (uint32_t)(memory::phys_address(memory::frames)), "\n");
     console::print("Allocator: ", (uint32_t)(memory::phys_address(memory::allocator_memory)), "\n");
     console::print("\nHello World!\n");
-    for (auto i = 0u; i < uint32_t(memory::allocator_memory); i += 0x1000) {
-        assert(not memory::paging::frame_is_free(reinterpret_cast<uint32_t>(0u)));
+    for (auto i = 0u; i <= uint32_t(memory::phys_address(memory::allocator_memory)); i += 0x1000) {
+        assert(not memory::paging::frame_is_free(reinterpret_cast<uint32_t>(i)));
     }
-    assert(
-        not memory::paging::frame_is_free(reinterpret_cast<uint32_t>(0x147000u)));
+    assert(memory::paging::frame_is_free(reinterpret_cast<uint32_t>(memory::phys_address(memory::allocator_memory) + 0x1000)));
     switch_to_user();
     while (1);
 }

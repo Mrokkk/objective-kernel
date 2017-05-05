@@ -47,6 +47,28 @@ bool frame_is_free(uint32_t addr) {
     return !(frames[frame / 32] & (1 << (frame % 32)));
 }
 
+inline void page_set(int nr, unsigned int val) {
+    reinterpret_cast<uint32_t *>(page_tables)[nr] = val;
+}
+
+inline void frame_alloc(unsigned int i) {
+    frames[i / 32] |= (1 << (i % 32));
+}
+
+void *page_alloc() {
+    uint32_t i, end = (uint32_t)::memory::allocator_memory - KERNEL_PAGE_OFFSET;
+    uint32_t frame_nr, address;
+    for (i = end / PAGE_SIZE; i < ::boot::upper_mem * 1024 / PAGE_SIZE; i++)
+        if (frame_is_free(i * PAGE_SIZE)) break;
+    frame_alloc(i);
+    frame_nr = i;
+    address = frame_nr * 4096;
+    page_set(i, address | PGT_PRESENT | PGT_WRITEABLE | PGT_USER);
+    assert(address >= end);
+    assert(page_tables[address / PAGE_SIZE].address != 0);
+    return (void *)virt_address(frame_nr * PAGE_SIZE);
+}
+
 }
 
 void initialize() {
@@ -62,7 +84,8 @@ void initialize() {
     for (auto i = 0u; i < count; i++)
         frames[i] = ~0UL;
     frames[count] = (~0UL >> (32 - bits));
+    paging::page_directory_reload();
 }
 
-} // namespacce memory
+} // namespace memory
 
