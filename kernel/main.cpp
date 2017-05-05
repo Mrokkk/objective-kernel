@@ -50,10 +50,6 @@ asmlinkage __noreturn void main() {
     console::print("Frames: ", (uint32_t)(memory::phys_address(memory::frames)), "\n");
     console::print("Allocator: ", (uint32_t)(memory::phys_address(memory::allocator_memory)), "\n");
     console::print("\nHello World!\n");
-    console::print(memory::paging::page_alloc(), "\n");
-    console::print(memory::paging::page_alloc(), "\n");
-    console::print(memory::paging::page_alloc(), "\n");
-    console::print(memory::paging::page_alloc(), "\n");
     ramfs::ramfs ramfs;
     vfs::initialize(ramfs);
     switch_to_user();

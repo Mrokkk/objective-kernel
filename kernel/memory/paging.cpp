@@ -39,32 +39,32 @@ inline void frame_alloc(unsigned int i) {
 void *page_alloc() {
     uint32_t i;
     uint32_t frame_nr, address;
-    for (i = 0; i < 32678 * 32; i++)
+    for (i = 0; i < 32678 * 32; i++) {
         if (frame_is_free(i * PAGE_SIZE)) break;
-
+    }
     frame_alloc(i);
     frame_nr = i;
     address = frame_nr * 4096;
     page_set(i, address | PGT_PRESENT | PGT_WRITEABLE | PGT_USER);
-    return (void *)(frame_nr * PAGE_SIZE + KERNEL_PAGE_OFFSET);
+    return reinterpret_cast<void *>(virt_address(frame_nr * PAGE_SIZE));
 }
 
 class page_allocator final {
 
-    char *_heap = nullptr;
+    char *_heap;
 
 public:
 
     explicit page_allocator(char *) {
-        _heap = (char *)page_alloc();
+        _heap = static_cast<char *>(page_alloc());
         page_alloc(); // FIXME
     }
 
     void *grow_heap(size_t value) {
         auto prev_heap = _heap;
-        auto prev_page = (uint32_t)prev_heap % PAGE_SIZE;
+        auto prev_page = reinterpret_cast<uint32_t>(prev_heap) % PAGE_SIZE;
         _heap += value;
-        auto new_page = (uint32_t)_heap % PAGE_SIZE;
+        auto new_page = reinterpret_cast<uint32_t>(_heap) % PAGE_SIZE;
         if (new_page != prev_page) {
             page_alloc();
         }
@@ -82,37 +82,30 @@ char *allocator_memory = nullptr;
 uint32_t frames[32768];
 
 void initialize() {
-    unsigned int end = (uint32_t)sections::__heap_start - KERNEL_PAGE_OFFSET,
+    // TODO: create only page tables for available RAM
+    unsigned int end = reinterpret_cast<uint32_t>(phys_address(sections::__heap_start)),
                  frame_count = end / PAGE_SIZE,
                  count = frame_count /  32,
                  bits = frame_count % 32,
                  i, j;
-
-    paging::page_table_entry *temp_pgt;
-
     paging::page_dir = virt_address(::page_dir);
-    temp_pgt = paging::page_tables = virt_address(::page0);
-
-    for (i = 0; i < count; i++)
+    paging::page_table_entry *temp_pgt = paging::page_tables = virt_address(::page0);
+    for (i = 0; i < count; i++) {
         frames[i] = ~0UL;
-
+    }
     frames[count] = (~0UL >> (32 - bits));
-
     paging::page_tables = static_cast<paging::page_table_entry *>(paging::page_alloc());
-
     utils::copy(temp_pgt, paging::page_tables, PAGE_SIZE);
-
-    for (i = 768, j = 0; i < PAGE_TABLES_NUMBER; i++, j+=1024)
-        paging::page_table_set(i, phys_address((uint32_t)&paging::page_tables[j]) |
+    for (i = 768, j = 0; i < PAGE_TABLES_NUMBER; i++, j += 1024) {
+        paging::page_table_set(i, phys_address(reinterpret_cast<uint32_t>(&paging::page_tables[j])) |
                 PGD_PRESENT | PGD_WRITEABLE | PGD_USER);
-
-    for (i = 1; i < 1024; i++)
+    }
+    for (i = 1; i < 1024; i++) {
         paging::page_alloc();
-
+    }
     allocator_memory = (char *)paging::page_alloc();
     a = new(allocator_memory) allocator(0);
-
-    paging::page_set(0, 0);
+    paging::page_table_set(0, 0);
     paging::page_directory_reload();
 }
 
