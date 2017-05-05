@@ -96,10 +96,13 @@ TEST(vfs, can_do_things) {
 
 } // namespace test_cases
 
+asmlinkage void _init();
+
 asmlinkage void main() {
     cpu::gdt::initialize();
     cpu::idt::initialize();
     memory::initialize();
+    _init();
     drivers::serial::initialize();
     console::initialize(drivers::serial::print);
     yatf::config config{true, false, false};

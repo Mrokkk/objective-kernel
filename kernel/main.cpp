@@ -34,27 +34,28 @@ utils::array<char, 2048> user_stack;
            "r" (&user_stack[2048])          \
     )
 
+
+asmlinkage void _init();
+
 asmlinkage __noreturn void main() {
+    memory::initialize();
+    _init();
     cpu::gdt::initialize();
     cpu::idt::initialize();
-    memory::initialize();
     scheduler::initialize();
     drivers::vga::initialize();
     console::initialize(drivers::vga::print);
-    ramfs::ramfs ramfs;
-    vfs::initialize(ramfs);
     console::print("Boot command-line: ", boot::cmdline, "\n");
     console::print("Upper mem: ", (int)(boot::upper_mem / 1024), "MiB\n");
-    console::print("Nr of frames: ", (int)(memory::frames_size), "\n");
     console::print("Frames: ", (uint32_t)(memory::phys_address(memory::frames)), "\n");
     console::print("Allocator: ", (uint32_t)(memory::phys_address(memory::allocator_memory)), "\n");
     console::print("\nHello World!\n");
-    for (auto i = 0u; i <= uint32_t(memory::phys_address(memory::allocator_memory)); i += 0x1000) {
-        assert(not memory::paging::frame_is_free(reinterpret_cast<uint32_t>(i)));
-    }
-    assert(memory::paging::frame_is_free(reinterpret_cast<uint32_t>(memory::phys_address(memory::allocator_memory) + 0x1000)));
-    auto a = memory::virt_address((char *)0x140000);
-    *a = 0;
+    console::print(memory::paging::page_alloc(), "\n");
+    console::print(memory::paging::page_alloc(), "\n");
+    console::print(memory::paging::page_alloc(), "\n");
+    console::print(memory::paging::page_alloc(), "\n");
+    ramfs::ramfs ramfs;
+    vfs::initialize(ramfs);
     switch_to_user();
     while (1);
 }

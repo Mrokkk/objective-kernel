@@ -30,7 +30,7 @@ ENTRY(_start)
 1:
     stosl
     add $0x1000, %eax                        //FIXME
-    cmp $__heap_start - KERNEL_PAGE_OFFSET + 0x40000 + PAGE_INIT_FLAGS, %eax
+    cmp $__heap_start - KERNEL_PAGE_OFFSET + 0x100000 + PAGE_INIT_FLAGS, %eax
     jne 1b
 
     mov $page_dir, %eax
@@ -54,7 +54,6 @@ ENTRY(_start)
     push %edx
     push %ebx
     call read_bootloader_data
-    call _init
     call main
 
 1:

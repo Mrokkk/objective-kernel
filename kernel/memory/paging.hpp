@@ -80,10 +80,7 @@ struct page_table_entry final {
 inline void page_directory_load(page_directory_entry *pgd) {
     asm volatile(
             "mov %0, %%cr3;"
-            "mov $1f, %0;"
-            "jmp *%0;"
-            "1:"
-            :: "r" (pgd) : "memory");
+            :: "r" (pgd));
 }
 
 inline void page_directory_reload() {
@@ -106,12 +103,12 @@ inline void invlpg(void *address) {
 }
 
 bool frame_is_free(uint32_t addr);
+void *page_alloc();
 
 } // namespace paging
 
 extern char *allocator_memory;
-extern uint32_t frames_size;
-extern uint32_t *frames;
+extern uint32_t frames[];
 
 void initialize();
 

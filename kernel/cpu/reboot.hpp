@@ -8,7 +8,7 @@ namespace cpu {
 
 inline void reboot() {
     auto lock = cpu::make_irq_lock();
-    cpu::gdt::gdtr *gdt = reinterpret_cast<cpu::gdt::gdtr *>(memory::virt_address(0u));
+    cpu::gdt::gdtr *gdt = reinterpret_cast<cpu::gdt::gdtr *>(memory::virt_address(0x1000u)); // FIXME
     gdt->load();
     while (1);
 }

@@ -3,7 +3,7 @@
 #include <kernel/cpu/io.hpp>
 #include <kernel/memory/paging.hpp>
 
-#define VIDEO_SEGMENT (0xb8000 + KERNEL_PAGE_OFFSET)
+#define VIDEO_SEGMENT (0xb8000)
 
 #define COLOR_BLACK         0
 #define COLOR_BLUE          1
@@ -33,12 +33,7 @@ namespace drivers {
 
 namespace vga {
 
-static unsigned short *pointer[4] = {
-        (unsigned short *)0xb8000,
-        (unsigned short *)(0xb8000 + 1 * 4096),
-        (unsigned short *)(0xb8000 + 2 * 4096),
-        (unsigned short *)(0xb8000 + 3 * 4096)
-};
+static unsigned short *pointer[4];
 
 static unsigned char default_attribute = forecolor(COLOR_GRAY) | backcolor(COLOR_BLACK);
 static unsigned char csr_x[4] = {0, 0, 0, 0};
@@ -173,7 +168,7 @@ int display_write(struct inode *, struct file *, const char *buffer, unsigned in
 }
 
 int initialize() {
-    pointer[0] = (unsigned short*)VIDEO_SEGMENT;
+    pointer[0] = memory::virt_address((unsigned short*)VIDEO_SEGMENT);
     cls();
     return 0;
 }
