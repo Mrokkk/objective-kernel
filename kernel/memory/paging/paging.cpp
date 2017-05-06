@@ -53,7 +53,7 @@ void initialize() {
     paging::page_table_entry *temp_pgt = paging::page_tables = virt_address(::page0);
     paging::allocate_frames();
     paging::page_tables = static_cast<paging::page_table_entry *>(paging::page_alloc());
-    utils::copy(temp_pgt, paging::page_tables, PAGE_SIZE);
+    utils::copy(temp_pgt, paging::page_tables, PAGE_SIZE / 4);
     paging::set_page_directory();
     page_tables_number = align(boot::upper_mem + 1023, 1024) / PAGE_SIZE;
     for (auto i = 1u; i < page_tables_number; i++) {

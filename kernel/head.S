@@ -16,9 +16,10 @@ SECTION(.text.boot)
 ENTRY(_start)
 
     mov $kernel_stack - KERNEL_PAGE_OFFSET, %esp
-    mov %eax, %edx
     pushl $0
     popfl
+    push %eax
+    push %ebx
 
     mov $KERNEL_DS, %eax
     mov %ax, %ds
@@ -32,15 +33,13 @@ ENTRY(_start)
     cld
     rep
 
-    push %edx
-    push %ebx
     call read_bootloader_data
 
     mov $page0, %edi
     movl $PAGE_INIT_FLAGS, %eax
 1:  stosl
-    add $PAGE_SIZE, %eax               // FIXME: problems with read_bootloader...
-    cmp $__heap_start - KERNEL_PAGE_OFFSET + 0x200000 + PAGE_INIT_FLAGS, %eax
+    add $PAGE_SIZE, %eax
+    cmp $__heap_start - KERNEL_PAGE_OFFSET + PAGE_INIT_FLAGS, %eax
     jne 1b
 
     mov $page_dir, %eax
@@ -52,9 +51,7 @@ ENTRY(_start)
     mov $1f, %eax
     jmp *%eax
 
-1:
-    mov $kernel_stack, %esp
-
+1:  mov $kernel_stack, %esp
     call main
 
 1:  jmp 1b
