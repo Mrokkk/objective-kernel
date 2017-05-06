@@ -8,7 +8,8 @@
 #include <kernel/vfs/file.hpp>
 #include <kernel/vfs/ramfs.hpp>
 #include <kernel/cpu/reboot.hpp>
-#include <kernel/memory/paging.hpp>
+#include <kernel/cpp_support.hpp>
+#include <kernel/memory/memory.hpp>
 #include <kernel/console/logger.hpp>
 #include <kernel/console/console.hpp>
 #include <kernel/scheduler/process.hpp>
@@ -35,26 +36,20 @@ utils::array<char, 2048> user_stack;
     )
 
 asmlinkage __noreturn void main() {
+    memory::initialize();
+    cpp_support::initialize();
     cpu::gdt::initialize();
     cpu::idt::initialize();
-    memory::initialize();
     scheduler::initialize();
     drivers::vga::initialize();
     console::initialize(drivers::vga::print);
-    ramfs::ramfs ramfs;
-    vfs::initialize(ramfs);
     console::print("Boot command-line: ", boot::cmdline, "\n");
     console::print("Upper mem: ", (int)(boot::upper_mem / 1024), "MiB\n");
-    console::print("Nr of frames: ", (int)(memory::frames_size), "\n");
-    console::print("Frames: ", (uint32_t)(memory::phys_address(memory::frames)), "\n");
     console::print("Allocator: ", (uint32_t)(memory::phys_address(memory::allocator_memory)), "\n");
+    console::print("Page tables: ", (int)memory::paging::page_tables_number, "\n");
     console::print("\nHello World!\n");
-    for (auto i = 0u; i <= uint32_t(memory::phys_address(memory::allocator_memory)); i += 0x1000) {
-        assert(not memory::paging::frame_is_free(reinterpret_cast<uint32_t>(i)));
-    }
-    assert(memory::paging::frame_is_free(reinterpret_cast<uint32_t>(memory::phys_address(memory::allocator_memory) + 0x1000)));
-    auto a = memory::virt_address((char *)0x140000);
-    *a = 0;
+    ramfs::ramfs ramfs;
+    vfs::initialize(ramfs);
     switch_to_user();
     while (1);
 }

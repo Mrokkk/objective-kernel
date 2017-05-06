@@ -1,6 +1,6 @@
 #include <kernel/cpu/gdt.hpp>
 #include <kernel/multiboot.hpp>
-#include <kernel/memory/paging.hpp>
+#include <kernel/memory/paging/paging.hpp>
 
 ALIGN(4)
 SECTION(.multiboot)
@@ -29,8 +29,8 @@ ENTRY(_start)
     movl $PAGE_INIT_FLAGS, %eax
 1:
     stosl
-    add $0x1000, %eax                        //FIXME
-    cmp $__heap_start - KERNEL_PAGE_OFFSET + 0x40000 + PAGE_INIT_FLAGS, %eax
+    add $0x1000, %eax                        // FIXME: problems with read_bootloader...
+    cmp $__heap_start - KERNEL_PAGE_OFFSET + 0x200000 + PAGE_INIT_FLAGS, %eax
     jne 1b
 
     mov $page_dir, %eax
@@ -54,7 +54,6 @@ ENTRY(_start)
     push %edx
     push %ebx
     call read_bootloader_data
-    call _init
     call main
 
 1:

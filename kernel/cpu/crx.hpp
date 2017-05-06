@@ -18,3 +18,9 @@ inline uint32_t cr2_get() {
     return rv;
 }
 
+inline uint32_t cr3_get() {
+    uint32_t rv;
+    asm volatile("mov %%cr3, %0" : "=r" (rv));
+    return rv;
+}
+

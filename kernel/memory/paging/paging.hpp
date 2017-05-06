@@ -1,13 +1,5 @@
 #pragma once
 
-#define PAGE_SIZE 0x1000
-#define PAGE_NUMBER 0x100000
-#define PAGE_TABLES_NUMBER 1024
-#define PAGE_INIT_FLAGS (0x7)
-#define KERNEL_PAGE_OFFSET (0xc0000000)
-
-#ifndef __ASSEMBLER__
-
 #define PGD_PRESENT     (1 << 0)
 #define PGD_WRITEABLE   (1 << 1)
 #define PGD_USER        (1 << 2)
@@ -26,6 +18,16 @@
 #define PGT_DIRTY       (1 << 6)
 #define PGT_RESERVED    (1 << 7)
 #define PGT_GLOBAL      (1 << 8)
+
+#define PAGE_SIZE 0x1000
+#define PAGE_NUMBER 0x100000
+#define PAGE_TABLES_NUMBER 1024
+#define PAGE_INIT_FLAGS (PGT_PRESENT | PGT_WRITEABLE | PGT_USER)
+#define KERNEL_PAGE_OFFSET (0xc0000000)
+
+#ifndef __ASSEMBLER__
+
+#include <kernel/new.hpp>
 
 namespace memory {
 
@@ -80,9 +82,6 @@ struct page_table_entry final {
 inline void page_directory_load(page_directory_entry *pgd) {
     asm volatile(
             "mov %0, %%cr3;"
-            "mov $1f, %0;"
-            "jmp *%0;"
-            "1:"
             :: "r" (pgd) : "memory");
 }
 
@@ -105,15 +104,49 @@ inline void invlpg(void *address) {
     );
 }
 
-bool frame_is_free(uint32_t addr);
+constexpr inline uint32_t frame_number(uint32_t address) {
+    return address / PAGE_SIZE;
+}
 
-} // namespace paging
+constexpr inline uint32_t frame_address(size_t index) {
+    return index * PAGE_SIZE;
+}
 
-extern char *allocator_memory;
-extern uint32_t frames_size;
-extern uint32_t *frames;
+constexpr inline uint32_t page_table_index(uint32_t address) {
+    return PAGE_TABLES_NUMBER * (address / PAGE_SIZE) / (((uint32_t)0 - 1) / PAGE_SIZE);
+}
 
 void initialize();
+bool frame_is_free(uint32_t addr);
+void *page_alloc();
+
+class page_allocator final {
+
+    char *heap_;
+
+public:
+
+    explicit page_allocator(char *) {
+        heap_ = static_cast<char *>(page_alloc());
+        page_alloc(); // FIXME
+    }
+
+    void *grow_heap(size_t value) {
+        auto prev_heap = heap_;
+        auto prev_page = reinterpret_cast<uint32_t>(prev_heap) % PAGE_SIZE;
+        heap_ += value;
+        auto new_page = reinterpret_cast<uint32_t>(heap_) % PAGE_SIZE;
+        if (new_page != prev_page) {
+            page_alloc();
+        }
+        return prev_heap;
+    }
+
+};
+
+extern uint32_t page_tables_number;
+
+} // namespace paging
 
 } // namespace memory
 

@@ -2,7 +2,7 @@
 
 #include <kernel/cpu/io.hpp>
 #include <kernel/cpu/gdt.hpp>
-#include <kernel/memory/paging.hpp>
+#include <kernel/memory/paging/paging.hpp>
 
 namespace cpu {
 

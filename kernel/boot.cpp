@@ -1,5 +1,7 @@
 #include <string.h>
 
+#include <kernel/memory/paging/paging.hpp>
+
 #include "boot.hpp"
 #include "multiboot.hpp"
 
@@ -9,7 +11,7 @@ char cmdline[128];
 uint32_t upper_mem = 0u;
 
 char *get_mb2_cmdline(mb2_tags_header *tag) {
-    for (auto temp = reinterpret_cast<mb2_tag *>(tag + 1); temp->type != 0;
+    for (auto temp = reinterpret_cast<mb2_tag *>(memory::virt_address(tag) + 1); temp->type != 0;
             temp = reinterpret_cast<mb2_tag *>(((char *)temp + ((temp->size + 7) & ~7)))) {
         if (temp->type == 1) {
             return (char *)++temp;
@@ -20,7 +22,7 @@ char *get_mb2_cmdline(mb2_tags_header *tag) {
 
 
 uint32_t get_mb2_upper_mem(mb2_tags_header *tag) {
-    for (auto temp = reinterpret_cast<mb2_tag *>(tag + 1); temp->type != 0;
+    for (auto temp = reinterpret_cast<mb2_tag *>(memory::virt_address(tag) + 1); temp->type != 0;
             temp = reinterpret_cast<mb2_tag *>(((uint8_t *)temp + ((temp->size + 7) & ~7)))) {
         if (temp->type == 4) {
             return ((uint32_t *)temp)[3];

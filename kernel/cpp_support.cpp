@@ -1,7 +1,6 @@
 #include <allocator.h>
-#include <kernel/memory/paging.hpp>
+#include <kernel/memory/paging/paging.hpp>
 #include <kernel/console/console.hpp>
-#include <kernel/memory/heap_allocator.hpp>
 
 asmlinkage {
 
@@ -29,24 +28,11 @@ void *memset(void *ptr, int value, unsigned n) {
     return ptr;
 }
 
-void _init() {
-    void (**preinit_constructor)() = &__preinit_array_start;
-    void (**init_constructor)() = &__init_array_start;
-    while (preinit_constructor != &__preinit_array_end) {
-        (*preinit_constructor)();
-        ++preinit_constructor;
-    }
-    while (init_constructor != &__init_array_end) {
-        (*init_constructor)();
-        ++init_constructor;
-    }
-}
-
 }
 
 namespace memory {
 
-extern utils::allocator<heap_allocator, 32> *a;
+extern utils::allocator<memory::paging::page_allocator, 32> *a;
 
 } // namespace memory
 
@@ -81,4 +67,21 @@ void operator delete[](void *address) noexcept {
 void operator delete[](void *address, size_t) noexcept {
     memory::a->free(address);
 }
+
+namespace cpp_support {
+
+void initialize() {
+    void (**preinit_constructor)() = &__preinit_array_start;
+    void (**init_constructor)() = &__init_array_start;
+    while (preinit_constructor != &__preinit_array_end) {
+        (*preinit_constructor)();
+        ++preinit_constructor;
+    }
+    while (init_constructor != &__init_array_end) {
+        (*init_constructor)();
+        ++init_constructor;
+    }
+}
+
+} // namespace cpp_support
 

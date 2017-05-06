@@ -1,3 +1,4 @@
 add_library(memory OBJECT
-    paging.cpp
+    memory.cpp
+    paging/paging.cpp
 )
