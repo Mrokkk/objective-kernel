@@ -1,9 +1,10 @@
 #include <allocator.h>
 #include <algorithm.h>
 #include <kernel/boot.hpp>
-#include <kernel/memory/paging.hpp>
 #include <kernel/memory/sections.hpp>
 #include <kernel/console/logger.hpp>
+
+#include "paging.hpp"
 
 asmlinkage memory::paging::page_directory_entry page_dir[];
 asmlinkage memory::paging::page_table_entry page0[];

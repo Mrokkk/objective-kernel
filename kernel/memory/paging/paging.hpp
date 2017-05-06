@@ -1,15 +1,5 @@
 #pragma once
 
-#define PAGE_SIZE 0x1000
-#define PAGE_NUMBER 0x100000
-#define PAGE_TABLES_NUMBER 1024
-#define PAGE_INIT_FLAGS (0x7)
-#define KERNEL_PAGE_OFFSET (0xc0000000)
-
-#ifndef __ASSEMBLER__
-
-#include <kernel/new.hpp>
-
 #define PGD_PRESENT     (1 << 0)
 #define PGD_WRITEABLE   (1 << 1)
 #define PGD_USER        (1 << 2)
@@ -28,6 +18,16 @@
 #define PGT_DIRTY       (1 << 6)
 #define PGT_RESERVED    (1 << 7)
 #define PGT_GLOBAL      (1 << 8)
+
+#define PAGE_SIZE 0x1000
+#define PAGE_NUMBER 0x100000
+#define PAGE_TABLES_NUMBER 1024
+#define PAGE_INIT_FLAGS (0x7)
+#define KERNEL_PAGE_OFFSET (0xc0000000)
+
+#ifndef __ASSEMBLER__
+
+#include <kernel/new.hpp>
 
 namespace memory {
 
@@ -135,10 +135,6 @@ public:
 extern uint32_t frames[];
 
 } // namespace paging
-
-extern char *allocator_memory;
-
-void initialize();
 
 } // namespace memory
 

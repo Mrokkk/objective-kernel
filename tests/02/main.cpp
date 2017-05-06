@@ -10,8 +10,8 @@
 #include <kernel/vfs/ramfs.hpp>
 #include <kernel/cpu/reboot.hpp>
 #include <kernel/cpp_support.hpp>
-#include <kernel/memory/paging.hpp>
 #include <kernel/console/console.hpp>
+#include <kernel/memory/memory.hpp>
 
 #define YATF_MAIN
 #include <yatf.h>

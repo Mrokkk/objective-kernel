@@ -1,5 +1,5 @@
 #include <allocator.h>
-#include <kernel/memory/paging.hpp>
+#include <kernel/memory/paging/paging.hpp>
 #include <kernel/console/console.hpp>
 
 asmlinkage {

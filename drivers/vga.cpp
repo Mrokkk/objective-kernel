@@ -1,7 +1,7 @@
 #include <string.h>
 #include <algorithm.h>
 #include <kernel/cpu/io.hpp>
-#include <kernel/memory/paging.hpp>
+#include <kernel/memory/paging/paging.hpp>
 
 #define VIDEO_SEGMENT (0xb8000)
 

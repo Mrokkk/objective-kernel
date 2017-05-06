@@ -1,6 +1,6 @@
 #include <string.h>
 
-#include <kernel/memory/paging.hpp>
+#include <kernel/memory/paging/paging.hpp>
 
 #include "boot.hpp"
 #include "multiboot.hpp"
