@@ -5,9 +5,6 @@
 #include <kernel/memory/sections.hpp>
 #include <kernel/console/logger.hpp>
 
-void *operator new(std::size_t, void *address);
-void *operator new[](std::size_t, void *address);
-
 asmlinkage memory::paging::page_directory_entry page_dir[];
 asmlinkage memory::paging::page_table_entry page0[];
 
@@ -58,33 +55,30 @@ void allocate_frames(size_t n) {
     frames[count] = (~0UL >> (32 - bits));
 }
 
+void set_page_directory() {
+    for (auto i = 768u, j = 0u; i < PAGE_TABLES_NUMBER; i++, j += 1024) {
+        paging::page_table_set(i, phys_address(reinterpret_cast<uint32_t>(&paging::page_tables[j])) |
+                PGD_PRESENT | PGD_WRITEABLE | PGD_USER);
+    }
 }
-
-using allocator = utils::allocator<paging::page_allocator, 32>;
-
-allocator *a = nullptr;
-char *allocator_memory = nullptr;
 
 void initialize() {
     // TODO: create only page tables for available RAM
     unsigned int end = reinterpret_cast<uint32_t>(phys_address(sections::__heap_start)),
-                 frame_count = end / PAGE_SIZE, i, j;
+                 frame_count = end / PAGE_SIZE;
     paging::page_dir = virt_address(::page_dir);
     paging::page_table_entry *temp_pgt = paging::page_tables = virt_address(::page0);
     paging::allocate_frames(frame_count);
     paging::page_tables = static_cast<paging::page_table_entry *>(paging::page_alloc());
     utils::copy(temp_pgt, paging::page_tables, PAGE_SIZE);
-    for (i = 768, j = 0; i < PAGE_TABLES_NUMBER; i++, j += 1024) {
-        paging::page_table_set(i, phys_address(reinterpret_cast<uint32_t>(&paging::page_tables[j])) |
-                PGD_PRESENT | PGD_WRITEABLE | PGD_USER);
-    }
-    for (i = 1; i < 1024; i++) {
+    paging::set_page_directory();
+    for (auto i = 1u; i < 1024; i++) {
         paging::page_alloc();
     }
-    allocator_memory = (char *)paging::page_alloc();
-    a = new(allocator_memory) allocator(0);
     paging::page_table_set(0, 0);
     paging::page_directory_reload();
+}
+
 }
 
 } // namespace memory

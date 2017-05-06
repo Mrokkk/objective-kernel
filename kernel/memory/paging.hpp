@@ -27,6 +27,9 @@
 #define PGT_RESERVED    (1 << 7)
 #define PGT_GLOBAL      (1 << 8)
 
+void *operator new(std::size_t, void *address);
+void *operator new[](std::size_t, void *address);
+
 namespace memory {
 
 template <typename Type>
@@ -102,6 +105,7 @@ inline void invlpg(void *address) {
     );
 }
 
+void initialize();
 bool frame_is_free(uint32_t addr);
 void *page_alloc();
 
