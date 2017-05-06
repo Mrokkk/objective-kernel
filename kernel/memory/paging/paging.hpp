@@ -22,7 +22,7 @@
 #define PAGE_SIZE 0x1000
 #define PAGE_NUMBER 0x100000
 #define PAGE_TABLES_NUMBER 1024
-#define PAGE_INIT_FLAGS (0x7)
+#define PAGE_INIT_FLAGS (PGT_PRESENT | PGT_WRITEABLE | PGT_USER)
 #define KERNEL_PAGE_OFFSET (0xc0000000)
 
 #ifndef __ASSEMBLER__
@@ -131,8 +131,6 @@ public:
     }
 
 };
-
-extern uint32_t frames[];
 
 } // namespace paging
 

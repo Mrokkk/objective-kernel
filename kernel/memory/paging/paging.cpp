@@ -5,6 +5,7 @@
 #include <kernel/console/logger.hpp>
 
 #include "paging.hpp"
+#include "frames_allocator.hpp"
 
 asmlinkage memory::paging::page_directory_entry page_dir[];
 asmlinkage memory::paging::page_table_entry page0[];
@@ -15,12 +16,8 @@ namespace paging {
 
 page_directory_entry *page_dir = nullptr;
 page_table_entry *page_tables = nullptr;
-uint32_t frames[32768];
-
-bool frame_is_free(uint32_t addr) {
-    uint32_t frame = addr / 4096;
-    return !(frames[frame / 32] & (1 << (frame % 32)));
-}
+uint32_t data[32768];
+frames_allocator frames;
 
 inline void page_set(int nr, uint32_t val) {
     reinterpret_cast<uint32_t *>(page_tables)[nr] = val;
@@ -30,30 +27,16 @@ inline void page_table_set(int nr, uint32_t val) {
     reinterpret_cast<uint32_t *>(page_dir)[nr] = val;
 }
 
-inline void frame_alloc(unsigned int i) {
-    frames[i / 32] |= (1 << (i % 32));
-}
-
 void *page_alloc() {
     uint32_t i;
-    uint32_t frame_nr, address;
-    for (i = 0; i < 32678 * 32; i++) {
-        if (frame_is_free(i * PAGE_SIZE)) break;
-    }
-    frame_alloc(i);
-    frame_nr = i;
-    address = frame_nr * 4096;
+    auto address = frames.allocate();
+    i = address / PAGE_SIZE;
     page_set(i, address | PGT_PRESENT | PGT_WRITEABLE | PGT_USER);
-    return reinterpret_cast<void *>(virt_address(frame_nr * PAGE_SIZE));
+    return reinterpret_cast<void *>(virt_address(address));
 }
 
 void allocate_frames(size_t n) {
-    auto count = n / 32;
-    auto bits = n % 32;
-    for (auto i = 0u; i < count; i++) {
-        frames[i] = ~0UL;
-    }
-    frames[count] = (~0UL >> (32 - bits));
+    frames.set(data, n);
 }
 
 void set_page_directory() {
