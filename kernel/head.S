@@ -27,9 +27,8 @@ ENTRY(_start)
 
     mov $page0, %edi
     movl $PAGE_INIT_FLAGS, %eax
-1:
-    stosl
-    add $0x1000, %eax                        // FIXME: problems with read_bootloader...
+1:  stosl
+    add $PAGE_SIZE, %eax               // FIXME: problems with read_bootloader...
     cmp $__heap_start - KERNEL_PAGE_OFFSET + 0x200000 + PAGE_INIT_FLAGS, %eax
     jne 1b
 
@@ -56,20 +55,19 @@ ENTRY(_start)
     call read_bootloader_data
     call main
 
-1:
-    jmp 1b
+1:  jmp 1b
 
-ALIGN(0x1000)
+ALIGN(PAGE_SIZE)
 ENTRY(page_dir)
     .long page_table0
     .fill KERNEL_PAGE_OFFSET / 0x400000 - 1, 4, 0
     .long page_table0
 
-ALIGN(0x1000)
+ALIGN(PAGE_SIZE)
 ENTRY(page0)
     .skip PAGE_INIT_FLAGS
 page_table0:
-    .skip 0x1000 - PAGE_INIT_FLAGS
+    .skip PAGE_SIZE - PAGE_INIT_FLAGS
 
 SECTION(.bss)
 
