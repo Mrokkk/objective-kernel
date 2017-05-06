@@ -54,19 +54,14 @@ public:
         data_[count] = (~0UL >> (32 - bits));
     }
 
-    bool operator[](size_t n) const {
-        return !(data_[n / 32] & (1 << (n % 32)));
-    }
-
-    bool is_free(uint32_t address) const {
-        uint32_t frame = address / 4096;
-        return !(data_[frame / 32] & (1 << (frame % 32)));
+    pointer operator[](size_t n) const {
+        return pointer(&data_[n / 32], n % 32);
     }
 
     uint32_t allocate() {
         auto i = 0u;
         for (i = 0; i < size_ * 32; i++) {
-            if (is_free(i * 0x1000)) break;
+            if (!this->operator[](i)) break;
         }
         data_[i / 32] |= (1 << (i % 32));
         return i * 0x1000;
