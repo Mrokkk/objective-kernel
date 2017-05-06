@@ -8,6 +8,8 @@
 
 #ifndef __ASSEMBLER__
 
+#include <kernel/new.hpp>
+
 #define PGD_PRESENT     (1 << 0)
 #define PGD_WRITEABLE   (1 << 1)
 #define PGD_USER        (1 << 2)
@@ -26,9 +28,6 @@
 #define PGT_DIRTY       (1 << 6)
 #define PGT_RESERVED    (1 << 7)
 #define PGT_GLOBAL      (1 << 8)
-
-void *operator new(std::size_t, void *address);
-void *operator new[](std::size_t, void *address);
 
 namespace memory {
 
