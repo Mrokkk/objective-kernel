@@ -107,20 +107,20 @@ void *page_alloc();
 
 class page_allocator final {
 
-    char *_heap;
+    char *heap_;
 
 public:
 
     explicit page_allocator(char *) {
-        _heap = static_cast<char *>(page_alloc());
+        heap_ = static_cast<char *>(page_alloc());
         page_alloc(); // FIXME
     }
 
     void *grow_heap(size_t value) {
-        auto prev_heap = _heap;
+        auto prev_heap = heap_;
         auto prev_page = reinterpret_cast<uint32_t>(prev_heap) % PAGE_SIZE;
-        _heap += value;
-        auto new_page = reinterpret_cast<uint32_t>(_heap) % PAGE_SIZE;
+        heap_ += value;
+        auto new_page = reinterpret_cast<uint32_t>(heap_) % PAGE_SIZE;
         if (new_page != prev_page) {
             page_alloc();
         }

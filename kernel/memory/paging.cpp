@@ -5,8 +5,8 @@
 #include <kernel/memory/sections.hpp>
 #include <kernel/console/logger.hpp>
 
-void * operator new(std::size_t, void *address);
-void * operator new[](std::size_t, void *address);
+void *operator new(std::size_t, void *address);
+void *operator new[](std::size_t, void *address);
 
 asmlinkage memory::paging::page_directory_entry page_dir[];
 asmlinkage memory::paging::page_table_entry page0[];
