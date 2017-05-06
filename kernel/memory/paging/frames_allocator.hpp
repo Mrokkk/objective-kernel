@@ -11,12 +11,41 @@ class frames_allocator {
 
 public:
 
+    class pointer {
+
+        uint32_t *ptr_ = nullptr;
+        uint32_t bit_ = 0;
+
+    public:
+
+        pointer() = default;
+
+        explicit pointer(uint32_t *ptr, uint32_t bit) : ptr_(ptr), bit_(bit) {
+        }
+
+        operator bool() const {
+            return *ptr_ & (1 << bit_);
+        }
+
+        bool operator=(bool v) {
+            if (v) {
+                *ptr_ |= 1 << bit_;
+            }
+            else {
+                *ptr_ &= ~(1 << bit_);
+            }
+            return true;
+        }
+
+    };
+
     frames_allocator() = default;
 
     template <typename Pointer>
-    void set(Pointer ptr, uint32_t available_mem, size_t to_set) {
+    void set(Pointer ptr, uint32_t available_mem, uint32_t memory_to_cover) {
         data_ = static_cast<uint32_t *>(ptr);
         size_ = available_mem / 0x1000;
+        auto to_set = memory_to_cover / 0x1000;
         auto count = to_set / 32;
         auto bits = to_set % 32;
         for (auto i = 0u; i < count; i++) {

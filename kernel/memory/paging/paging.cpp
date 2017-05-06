@@ -40,7 +40,7 @@ void *page_alloc() {
 
 void allocate_frames() {
     // TODO: allocate memory for frames
-    frames.set(data, align(boot::upper_mem, 1024) * 1024, __end / PAGE_SIZE);
+    frames.set(data, align(boot::upper_mem, 1024) * 1024, __end);
 }
 
 void set_page_directory() {
