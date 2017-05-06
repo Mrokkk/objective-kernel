@@ -132,6 +132,8 @@ public:
 
 };
 
+extern uint32_t page_tables_number;
+
 } // namespace paging
 
 } // namespace memory

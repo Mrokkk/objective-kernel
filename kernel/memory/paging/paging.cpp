@@ -12,10 +12,13 @@ asmlinkage memory::paging::page_table_entry page0[];
 
 namespace memory {
 
+uint32_t __end = 0u;
+
 namespace paging {
 
 page_directory_entry *page_dir = nullptr;
 page_table_entry *page_tables = nullptr;
+uint32_t page_tables_number = 0u;
 uint32_t data[32768];
 frames_allocator frames;
 
@@ -36,7 +39,8 @@ void *page_alloc() {
 }
 
 void allocate_frames(size_t n) {
-    frames.set(data, n);
+    // TODO: allocate memory for frames
+    frames.set(data, 32768, n);
 }
 
 void set_page_directory() {
@@ -47,16 +51,17 @@ void set_page_directory() {
 }
 
 void initialize() {
-    // TODO: create only page tables for available RAM
-    unsigned int end = reinterpret_cast<uint32_t>(phys_address(sections::__heap_start)),
-                 frame_count = end / PAGE_SIZE;
+    uint32_t end = reinterpret_cast<uint32_t>(phys_address(sections::__heap_start)),
+        frame_count = end / PAGE_SIZE;
+    __end = end;
     paging::page_dir = virt_address(::page_dir);
     paging::page_table_entry *temp_pgt = paging::page_tables = virt_address(::page0);
     paging::allocate_frames(frame_count);
     paging::page_tables = static_cast<paging::page_table_entry *>(paging::page_alloc());
     utils::copy(temp_pgt, paging::page_tables, PAGE_SIZE);
     paging::set_page_directory();
-    for (auto i = 1u; i < 1024; i++) {
+    page_tables_number = align(boot::upper_mem, 1024) / PAGE_SIZE;
+    for (auto i = 1u; i < page_tables_number; i++) {
         paging::page_alloc();
     }
     paging::page_table_set(0, 0);

@@ -14,11 +14,11 @@ public:
     frames_allocator() = default;
 
     template <typename Pointer>
-    void set(Pointer ptr, size_t size) {
+    void set(Pointer ptr, size_t size, size_t to_set) {
         data_ = static_cast<uint32_t *>(ptr);
         size_ = size;
-        auto count = size_ / 32;
-        auto bits = size_ % 32;
+        auto count = to_set / 32;
+        auto bits = to_set % 32;
         for (auto i = 0u; i < count; i++) {
             data_[i] = ~0UL;
         }
