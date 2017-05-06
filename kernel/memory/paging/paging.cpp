@@ -19,7 +19,6 @@ namespace paging {
 page_directory_entry *page_dir = nullptr;
 page_table_entry *page_tables = nullptr;
 uint32_t page_tables_number = 0u;
-uint32_t data[32768];
 frames_allocator frames;
 
 inline void page_set(int nr, uint32_t val) {
@@ -31,20 +30,18 @@ inline void page_table_set(int nr, uint32_t val) {
 }
 
 void *page_alloc() {
-    uint32_t i;
     auto address = frames.allocate();
-    i = address / PAGE_SIZE;
-    page_set(i, address | PGT_PRESENT | PGT_WRITEABLE | PGT_USER);
+    auto frame_index = frame_number(address);
+    page_set(frame_index, address | PGT_PRESENT | PGT_WRITEABLE | PGT_USER);
     return reinterpret_cast<void *>(virt_address(address));
 }
 
 void allocate_frames() {
-    // TODO: allocate memory for frames
-    frames.set(data, align(boot::upper_mem, 1024) * 1024, __end);
+    frames.set(align(boot::upper_mem, 1024) * 1024, __end);
 }
 
 void set_page_directory() {
-    for (auto i = 768u, j = 0u; i < PAGE_TABLES_NUMBER; i++, j += 1024) {
+    for (auto i = page_table_index(KERNEL_PAGE_OFFSET), j = 0u; i < PAGE_TABLES_NUMBER; i++, j += 1024) {
         paging::page_table_set(i, phys_address(reinterpret_cast<uint32_t>(&paging::page_tables[j])) |
                 PGD_PRESENT | PGD_WRITEABLE | PGD_USER);
     }
@@ -58,7 +55,7 @@ void initialize() {
     paging::page_tables = static_cast<paging::page_table_entry *>(paging::page_alloc());
     utils::copy(temp_pgt, paging::page_tables, PAGE_SIZE);
     paging::set_page_directory();
-    page_tables_number = align(boot::upper_mem, 1024) / PAGE_SIZE;
+    page_tables_number = align(boot::upper_mem + 1023, 1024) / PAGE_SIZE;
     for (auto i = 1u; i < page_tables_number; i++) {
         paging::page_alloc();
     }

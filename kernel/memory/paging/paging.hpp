@@ -104,6 +104,18 @@ inline void invlpg(void *address) {
     );
 }
 
+constexpr inline uint32_t frame_number(uint32_t address) {
+    return address / PAGE_SIZE;
+}
+
+constexpr inline uint32_t frame_address(size_t index) {
+    return index * PAGE_SIZE;
+}
+
+constexpr inline uint32_t page_table_index(uint32_t address) {
+    return PAGE_TABLES_NUMBER * (address / PAGE_SIZE) / (((uint32_t)0 - 1) / PAGE_SIZE);
+}
+
 void initialize();
 bool frame_is_free(uint32_t addr);
 void *page_alloc();
