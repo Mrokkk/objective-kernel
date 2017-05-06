@@ -129,10 +129,11 @@ public:
 
 };
 
+extern uint32_t frames[];
+
 } // namespace paging
 
 extern char *allocator_memory;
-extern uint32_t frames[];
 
 void initialize();
 

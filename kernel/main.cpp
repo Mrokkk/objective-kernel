@@ -47,7 +47,7 @@ asmlinkage __noreturn void main() {
     console::initialize(drivers::vga::print);
     console::print("Boot command-line: ", boot::cmdline, "\n");
     console::print("Upper mem: ", (int)(boot::upper_mem / 1024), "MiB\n");
-    console::print("Frames: ", (uint32_t)(memory::phys_address(memory::frames)), "\n");
+    console::print("Frames: ", (uint32_t)(memory::phys_address(memory::paging::frames)), "\n");
     console::print("Allocator: ", (uint32_t)(memory::phys_address(memory::allocator_memory)), "\n");
     console::print("\nHello World!\n");
     ramfs::ramfs ramfs;
