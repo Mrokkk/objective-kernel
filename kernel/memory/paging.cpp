@@ -3,7 +3,6 @@
 #include <kernel/boot.hpp>
 #include <kernel/memory/paging.hpp>
 #include <kernel/memory/sections.hpp>
-#include <kernel/memory/heap_allocator.hpp>
 #include <kernel/console/logger.hpp>
 
 void * operator new(std::size_t, void *address);
@@ -48,30 +47,6 @@ void *page_alloc() {
     page_set(i, address | PGT_PRESENT | PGT_WRITEABLE | PGT_USER);
     return reinterpret_cast<void *>(virt_address(frame_nr * PAGE_SIZE));
 }
-
-class page_allocator final {
-
-    char *_heap;
-
-public:
-
-    explicit page_allocator(char *) {
-        _heap = static_cast<char *>(page_alloc());
-        page_alloc(); // FIXME
-    }
-
-    void *grow_heap(size_t value) {
-        auto prev_heap = _heap;
-        auto prev_page = reinterpret_cast<uint32_t>(prev_heap) % PAGE_SIZE;
-        _heap += value;
-        auto new_page = reinterpret_cast<uint32_t>(_heap) % PAGE_SIZE;
-        if (new_page != prev_page) {
-            page_alloc();
-        }
-        return prev_heap;
-    }
-
-};
 
 }
 

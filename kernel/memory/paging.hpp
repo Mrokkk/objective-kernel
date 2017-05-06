@@ -105,6 +105,30 @@ inline void invlpg(void *address) {
 bool frame_is_free(uint32_t addr);
 void *page_alloc();
 
+class page_allocator final {
+
+    char *_heap;
+
+public:
+
+    explicit page_allocator(char *) {
+        _heap = static_cast<char *>(page_alloc());
+        page_alloc(); // FIXME
+    }
+
+    void *grow_heap(size_t value) {
+        auto prev_heap = _heap;
+        auto prev_page = reinterpret_cast<uint32_t>(prev_heap) % PAGE_SIZE;
+        _heap += value;
+        auto new_page = reinterpret_cast<uint32_t>(_heap) % PAGE_SIZE;
+        if (new_page != prev_page) {
+            page_alloc();
+        }
+        return prev_heap;
+    }
+
+};
+
 } // namespace paging
 
 extern char *allocator_memory;

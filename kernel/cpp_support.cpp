@@ -1,7 +1,6 @@
 #include <allocator.h>
 #include <kernel/memory/paging.hpp>
 #include <kernel/console/console.hpp>
-#include <kernel/memory/heap_allocator.hpp>
 
 asmlinkage {
 
@@ -46,7 +45,7 @@ void _init() {
 
 namespace memory {
 
-extern utils::allocator<heap_allocator, 32> *a;
+extern utils::allocator<memory::paging::page_allocator, 32> *a;
 
 } // namespace memory
 
