@@ -38,9 +38,9 @@ void *page_alloc() {
     return reinterpret_cast<void *>(virt_address(address));
 }
 
-void allocate_frames(size_t n) {
+void allocate_frames() {
     // TODO: allocate memory for frames
-    frames.set(data, 32768, n);
+    frames.set(data, align(boot::upper_mem, 1024) * 1024, __end / PAGE_SIZE);
 }
 
 void set_page_directory() {
@@ -51,12 +51,10 @@ void set_page_directory() {
 }
 
 void initialize() {
-    uint32_t end = reinterpret_cast<uint32_t>(phys_address(sections::__heap_start)),
-        frame_count = end / PAGE_SIZE;
-    __end = end;
+    __end = reinterpret_cast<uint32_t>(phys_address(sections::__heap_start));
     paging::page_dir = virt_address(::page_dir);
     paging::page_table_entry *temp_pgt = paging::page_tables = virt_address(::page0);
-    paging::allocate_frames(frame_count);
+    paging::allocate_frames();
     paging::page_tables = static_cast<paging::page_table_entry *>(paging::page_alloc());
     utils::copy(temp_pgt, paging::page_tables, PAGE_SIZE);
     paging::set_page_directory();
