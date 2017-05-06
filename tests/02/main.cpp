@@ -6,9 +6,10 @@
 #include <kernel/cpu/gdt.hpp>
 #include <kernel/cpu/idt.hpp>
 #include <kernel/vfs/vfs.hpp>
-#include <kernel/vfs/ramfs.hpp>
 #include <kernel/vfs/file.hpp>
+#include <kernel/vfs/ramfs.hpp>
 #include <kernel/cpu/reboot.hpp>
+#include <kernel/cpp_support.hpp>
 #include <kernel/memory/paging.hpp>
 #include <kernel/console/console.hpp>
 
@@ -96,13 +97,11 @@ TEST(vfs, can_do_things) {
 
 } // namespace test_cases
 
-asmlinkage void _init();
-
 asmlinkage void main() {
+    memory::initialize();
+    cpp_support::initialize();
     cpu::gdt::initialize();
     cpu::idt::initialize();
-    memory::initialize();
-    _init();
     drivers::serial::initialize();
     console::initialize(drivers::serial::print);
     yatf::config config{true, false, false};

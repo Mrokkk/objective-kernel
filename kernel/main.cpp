@@ -8,6 +8,7 @@
 #include <kernel/vfs/file.hpp>
 #include <kernel/vfs/ramfs.hpp>
 #include <kernel/cpu/reboot.hpp>
+#include <kernel/cpp_support.hpp>
 #include <kernel/memory/paging.hpp>
 #include <kernel/console/logger.hpp>
 #include <kernel/console/console.hpp>
@@ -34,12 +35,9 @@ utils::array<char, 2048> user_stack;
            "r" (&user_stack[2048])          \
     )
 
-
-asmlinkage void _init();
-
 asmlinkage __noreturn void main() {
     memory::initialize();
-    _init();
+    cpp_support::initialize();
     cpu::gdt::initialize();
     cpu::idt::initialize();
     scheduler::initialize();
