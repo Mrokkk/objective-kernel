@@ -15,6 +15,7 @@ SECTION(.text.boot)
 
 ENTRY(_start)
 
+    mov $kernel_stack - KERNEL_PAGE_OFFSET, %esp
     mov %eax, %edx
     pushl $0
     popfl
@@ -24,6 +25,16 @@ ENTRY(_start)
     mov %ax, %es
     mov %ax, %fs
     mov %ax, %gs
+
+    movl $__bss_start - KERNEL_PAGE_OFFSET, %edi
+    movl $__bss_end - KERNEL_PAGE_OFFSET, %ecx
+    subl %edi, %ecx
+    cld
+    rep
+
+    push %edx
+    push %ebx
+    call read_bootloader_data
 
     mov $page0, %edi
     movl $PAGE_INIT_FLAGS, %eax
@@ -44,15 +55,6 @@ ENTRY(_start)
 1:
     mov $kernel_stack, %esp
 
-    movl $__bss_start, %edi
-    movl $__bss_end, %ecx
-    subl %edi, %ecx
-    cld
-    rep
-
-    push %edx
-    push %ebx
-    call read_bootloader_data
     call main
 
 1:  jmp 1b
