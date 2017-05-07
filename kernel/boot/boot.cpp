@@ -9,7 +9,10 @@ namespace boot {
 
 char bootloader_name[128];
 char cmdline[128];
-uint32_t upper_mem = 0u;
+uint32_t upper_mem;
+module modules[4];
+uint32_t modules_start;
+uint32_t modules_end;
 
 namespace detail {
 
