@@ -1,8 +1,8 @@
 #include <allocator.h>
 #include <algorithm.h>
 #include <kernel/boot/boot.hpp>
-#include <kernel/memory/sections.hpp>
 #include <kernel/console/logger.hpp>
+#include <kernel/memory/sections.hpp>
 
 #include "paging.hpp"
 #include "frames_allocator.hpp"
@@ -58,6 +58,10 @@ void initialize() {
     page_tables_number = align(boot::upper_mem + 1023, 1024) / PAGE_SIZE;
     for (auto i = 1u; i < page_tables_number; i++) {
         paging::page_alloc();
+    }
+    // TODO: iterate through modules
+    if (boot::modules[0].start) {
+        page_set(frame_number(boot::modules[0].start), boot::modules[0].start | PGT_PRESENT | PGT_WRITEABLE | PGT_USER);
     }
     paging::page_table_set(0, 0);
     paging::page_directory_reload();
