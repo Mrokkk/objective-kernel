@@ -46,7 +46,8 @@ struct video_char {
     video_char() : c(' '), attr(forecolor(color::gray) | backcolor(color::black)) {
     }
 
-    video_char(uint8_t c, uint8_t attr) : c(c), attr(attr) {
+    video_char(uint8_t c, uint8_t attr = forecolor(color::gray) | backcolor(color::black))
+            : c(c), attr(attr) {
     }
 
 } __packed;
@@ -61,11 +62,10 @@ uint16_t current_offset_get() {
 }
 
 void scroll(void) {
-    video_char blank(' ', default_attribute << 8);
+    video_char blank;
     if(csr_y >= RESY) {
-        auto temp = static_cast<uint16_t>(csr_y - RESY + 1);
-        utils::memcopy(reinterpret_cast<const char *>(pointer + temp * RESX),
-            reinterpret_cast<char *>(pointer), (RESY - temp) * RESX * 2);
+        auto temp = csr_y - RESY + 1;
+        utils::copy(pointer + temp * RESX, pointer, (RESY - temp) * RESX);
         utils::fill(pointer + (RESY - temp) * RESX, RESX, blank);
         csr_y = RESY - 1;
     }
@@ -80,7 +80,7 @@ void move_csr(void) {
 }
 
 void cls() {
-    video_char blank(' ', default_attribute << 8);
+    video_char blank;
     utils::fill(pointer, RESX * RESY, blank);
     csr_x = 0u;
     csr_y = 0u;
@@ -104,7 +104,7 @@ void putch(unsigned char c) {
         csr_x = 0u;
         csr_y++;
     } else if (c >= ' ') {
-        pointer[current_offset_get()] = video_char(c, default_attribute);
+        pointer[current_offset_get()] = video_char(c);
         csr_x++;
     }
     if (csr_x >= RESX) {
