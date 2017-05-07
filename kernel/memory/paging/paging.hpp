@@ -28,6 +28,7 @@
 #ifndef __ASSEMBLER__
 
 #include <kernel/new.hpp>
+#include <kernel/cpu/registers.hpp>
 
 namespace memory {
 
@@ -80,20 +81,11 @@ struct page_table_entry final {
 } __packed;
 
 inline void page_directory_load(page_directory_entry *pgd) {
-    asm volatile(
-            "mov %0, %%cr3;"
-            :: "r" (pgd) : "memory");
+    registers::cr3_set(reinterpret_cast<uint32_t>(pgd));
 }
 
 inline void page_directory_reload() {
-    int dummy = 0;
-    asm volatile(
-            "mov %%cr3, %0;"
-            "mov %0, %%cr3;"
-            : "=r" (dummy)
-            : "r" (dummy)
-            : "memory"
-    );
+    registers::cr3_set(registers::cr3_get());
 }
 
 inline void invlpg(void *address) {
