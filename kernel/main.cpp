@@ -1,12 +1,12 @@
 #include <array.h>
 
 #include <drivers/vga.hpp>
-#include <kernel/boot.hpp>
 #include <kernel/cpu/gdt.hpp>
 #include <kernel/cpu/idt.hpp>
 #include <kernel/vfs/vfs.hpp>
 #include <kernel/vfs/file.hpp>
 #include <kernel/vfs/ramfs.hpp>
+#include <kernel/boot/boot.hpp>
 #include <kernel/cpu/reboot.hpp>
 #include <kernel/cpp_support.hpp>
 #include <kernel/memory/memory.hpp>
@@ -43,6 +43,7 @@ asmlinkage __noreturn void main() {
     scheduler::initialize();
     drivers::vga::initialize();
     console::initialize(drivers::vga::print);
+    console::print("Bootloader name: ", boot::bootloader_name, "\n");
     console::print("Boot command-line: ", boot::cmdline, "\n");
     console::print("Upper mem: ", (int)(boot::upper_mem / 1024), "MiB\n");
     console::print("Allocator: ", (uint32_t)(memory::phys_address(memory::allocator_memory)), "\n");

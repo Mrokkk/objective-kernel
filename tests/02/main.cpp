@@ -1,12 +1,12 @@
 #include <shared_ptr.h>
 #include <unique_ptr.h>
 
-#include <kernel/boot.hpp>
 #include <drivers/serial.hpp>
 #include <kernel/cpu/gdt.hpp>
 #include <kernel/cpu/idt.hpp>
 #include <kernel/vfs/vfs.hpp>
 #include <kernel/vfs/file.hpp>
+#include <kernel/boot/boot.hpp>
 #include <kernel/vfs/ramfs.hpp>
 #include <kernel/cpu/reboot.hpp>
 #include <kernel/cpp_support.hpp>

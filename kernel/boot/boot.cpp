@@ -7,8 +7,28 @@
 
 namespace boot {
 
+char bootloader_name[128];
 char cmdline[128];
 uint32_t upper_mem = 0u;
+
+__section(.text.boot)
+void strcpy(const char *from, char *to) {
+    while (*from) {
+        *to++ = *from++;
+    }
+    *to = 0;
+}
+
+__section(.text.boot)
+char *get_mb2_bootloader_name(mb2_tags_header *tag) {
+    for (auto temp = reinterpret_cast<mb2_tag *>(tag + 1); temp->type != 0;
+            temp = reinterpret_cast<mb2_tag *>(((char *)temp + ((temp->size + 7) & ~7)))) {
+        if (temp->type == 2) {
+            return reinterpret_cast<char *>(++temp);
+        }
+    }
+    return nullptr;
+}
 
 __section(.text.boot)
 char *get_mb2_cmdline(mb2_tags_header *tag) {
@@ -50,18 +70,24 @@ char *read_cmdline(void *data, uint32_t magic) {
     return nullptr;
 }
 
+__section(.text.boot)
+char *read_bootloader_name(void *data, uint32_t magic) {
+    if (magic == MULTIBOOT_BOOTLOADER_MAGIC)
+        return (char *)static_cast<multiboot_info *>(data)->bootloader_name;
+    else if (magic == MULTIBOOT2_BOOTLOADER_MAGIC)
+        return get_mb2_bootloader_name(static_cast<mb2_tags_header *>(data));
+    return nullptr;
+}
+
 asmlinkage __section(.text.boot)
 void read_bootloader_data(void *data, uint32_t magic) {
     auto cmdline_ptr = read_cmdline(data, magic);
-    if (cmdline_ptr == nullptr) {
-        cmdline[0] = 0;
+    if (cmdline_ptr) {
+        strcpy(cmdline_ptr, reinterpret_cast<char *>(reinterpret_cast<uint32_t>(cmdline - KERNEL_PAGE_OFFSET)));
     }
-    else {
-        auto ptr = reinterpret_cast<char *>(reinterpret_cast<uint32_t>(cmdline - KERNEL_PAGE_OFFSET));
-        while (*cmdline_ptr) {
-            *ptr++ = *cmdline_ptr++;
-        }
-        *ptr = 0;
+    auto bootloader_name_ptr = read_bootloader_name(data, magic);
+    if (bootloader_name_ptr) {
+        strcpy(bootloader_name_ptr, reinterpret_cast<char *>(reinterpret_cast<uint32_t>(bootloader_name - KERNEL_PAGE_OFFSET)));
     }
     *reinterpret_cast<uint32_t *>(reinterpret_cast<uint32_t>(&upper_mem) - KERNEL_PAGE_OFFSET)
         = read_upper_mem(data, magic);

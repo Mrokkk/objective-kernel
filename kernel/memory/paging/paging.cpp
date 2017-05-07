@@ -1,6 +1,6 @@
 #include <allocator.h>
 #include <algorithm.h>
-#include <kernel/boot.hpp>
+#include <kernel/boot/boot.hpp>
 #include <kernel/memory/sections.hpp>
 #include <kernel/console/logger.hpp>
 
