@@ -5,11 +5,7 @@
 ALIGN(4)
 SECTION(.multiboot)
 
-#ifdef MULTIBOOT2
-MULTIBOOT2_HEADER
-#else
-MULTIBOOT_HEADER
-#endif
+MULTIBOOT_HEADER()
 
 SECTION(.text.boot)
 

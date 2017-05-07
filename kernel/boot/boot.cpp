@@ -3,7 +3,6 @@
 #include <kernel/memory/paging/paging.hpp>
 
 #include "boot.hpp"
-#include "multiboot.hpp"
 
 namespace boot {
 
