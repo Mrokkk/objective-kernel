@@ -85,7 +85,7 @@ struct multiboot_info {
     unsigned long drives_length;
     unsigned long drives_addr;
     unsigned long config_table;
-    unsigned long bootloader_name;
+    char *bootloader_name;
     unsigned long apm_table;
     struct vbe_struct {
         unsigned long control_info;
@@ -159,6 +159,19 @@ struct mb2_tag {
     uint32_t type;
     uint32_t size;
 } __packed;
+
+
+#define MULTIBOOT_TAG_TYPE_END               0
+#define MULTIBOOT_TAG_TYPE_CMDLINE           1
+#define MULTIBOOT_TAG_TYPE_BOOT_LOADER_NAME  2
+#define MULTIBOOT_TAG_TYPE_MODULE            3
+#define MULTIBOOT_TAG_TYPE_BASIC_MEMINFO     4
+#define MULTIBOOT_TAG_TYPE_BOOTDEV           5
+#define MULTIBOOT_TAG_TYPE_MMAP              6
+#define MULTIBOOT_TAG_TYPE_VBE               7
+#define MULTIBOOT_TAG_TYPE_FRAMEBUFFER       8
+#define MULTIBOOT_TAG_TYPE_ELF_SECTIONS      9
+#define MULTIBOOT_TAG_TYPE_APM               10
 
 #endif /* __ASSEMBLER__ */
 

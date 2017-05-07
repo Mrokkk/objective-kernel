@@ -1,1 +1,6 @@
-add_library(boot OBJECT boot.cpp)
+if (MULTIBOOT2)
+    set(DETAIL_SRC detail/multiboot2.cpp)
+else()
+    set(DETAIL_SRC detail/multiboot1.cpp)
+endif()
+add_library(boot OBJECT boot.cpp ${DETAIL_SRC})
