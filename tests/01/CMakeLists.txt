@@ -3,16 +3,16 @@ include(../cmake-utils/sanitizers.cmake)
 include(../cmake-utils/coverage.cmake)
 
 option(SANITIZERS "Use sanitizers" OFF)
-message(STATUS "Use sanitizers: ${SANITIZERS}")
+message(STATUS "[SANITIZERS] Use sanitizers: ${SANITIZERS}")
 
 option(COVERAGE "Generate coverage report" OFF)
-message(STATUS "Generate coverage report: ${COVERAGE}")
+message(STATUS "[COVERAGE] Generate coverage report: ${COVERAGE}")
 
 set(CMAKE_EXE_LINKER_FLAGS "")
 
 set(CMAKE_CXX_FLAGS "-fdiagnostics-color=always -std=c++1z -Wall -Wextra \
 -fno-exceptions -fno-rtti -fno-stack-protector -mno-sse -mno-sse2 \
--mno-sse3 -mno-sse4 -mno-avx ${SANITIZERS_FLAGS} -g3")
+-mno-sse3 -mno-sse4 -mno-avx -g3")
 
 if(SANITIZERS)
     add_sanitizers_flags()

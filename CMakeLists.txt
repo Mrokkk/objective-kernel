@@ -2,13 +2,13 @@ project(os C CXX)
 cmake_minimum_required(VERSION 3.0)
 
 option(CROSS_COMPILER_PREFIX "Use GNU cross-compiler" OFF)
-message(STATUS "Use GNU cross-compiler: ${CROSS_COMPILER_PREFIX}")
+message(STATUS "[CROSS_COMPILER_PREFIX] Use GNU cross-compiler: ${CROSS_COMPILER_PREFIX}")
 
 option(OPTIMIZE "Use compile optimizer" OFF)
-message(STATUS "Use compile optimizer: ${OPTIMIZE}")
+message(STATUS "[OPTIMIZE] Use compile optimizer: ${OPTIMIZE}")
 
 option(MULTIBOOT2 "Use Multiboot2" OFF)
-message(STATUS "Use Multiboot2: ${MULTIBOOT2}")
+message(STATUS "[MULTIBOOT2] Use Multiboot2: ${MULTIBOOT2}")
 
 if(CROSS_COMPILER_PREFIX)
     set(CMAKE_C_COMPILER_WORKS 1)
