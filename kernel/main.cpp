@@ -48,6 +48,9 @@ asmlinkage __noreturn void main() {
     console::print("Upper mem: ", (int)(boot::upper_mem / 1024), "MiB\n");
     console::print("Allocator: ", (uint32_t)(memory::phys_address(memory::allocator_memory)), "\n");
     console::print("Page tables: ", (int)memory::paging::page_tables_number, "\n");
+    for (auto i = 0u; boot::modules[i].end != 0; ++i) {
+        console::print("Module: ", (const char *)boot::modules[i].name, " @ ", boot::modules[i].start, " - ", boot::modules[i].end, "\n");
+    }
     console::print("\nHello World!\n");
     ramfs::ramfs ramfs;
     vfs::initialize(ramfs);

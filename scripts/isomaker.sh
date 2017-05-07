@@ -3,6 +3,7 @@
 set -e
 
 base_dir=$(dirname $0)
+modules=()
 
 while [[ $# -gt 0 ]]; do
     arg="$1"
@@ -20,6 +21,9 @@ while [[ $# -gt 0 ]]; do
         --args)
             args="$2"
             shift ;;
+        --module)
+            modules+=("$(readlink -e ${2})")
+            shift ;;
         *)
             break ;;
     esac
@@ -36,11 +40,18 @@ else
     multiboot_command="multiboot"
 fi
 
+modules_load=""
+for mod in "${modules[@]}"; do
+    modules_load+="module /$(basename ${mod}) $(basename ${mod})
+    "
+done
+
 # For debug: set debug=all
 menu_entry="set timeout=0
 set default=0
 menuentry "${binary}" {
     if ! ${multiboot_command} /kernel ${args}; then reboot; fi
+    ${modules_load}
     boot
 }"
 
@@ -54,6 +65,10 @@ echo "${menu_entry}" >${name}.d/boot/grub/grub.cfg
 if [ "${serial}" ]; then
     echo "${serial_set}" >>${name}.d/boot/grub/grub.cfg
 fi
+
+for mod in "${modules[@]}"; do
+    cp ${mod} ${name}.d
+done
 
 cp ${binary} ${name}.d/kernel
 grub-mkrescue -o ${name}.iso ${name}.d 2>/dev/null

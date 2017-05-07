@@ -101,7 +101,7 @@ struct multiboot_info {
 struct module {
     unsigned long mod_start;
     unsigned long mod_end;
-    unsigned long string;
+    char *string;
     unsigned long reserved;
 };
 
