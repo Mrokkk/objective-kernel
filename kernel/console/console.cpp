@@ -1,3 +1,4 @@
+#include <cstdarg>
 #include "console.hpp"
 
 namespace console {
@@ -44,8 +45,8 @@ void print(uint8_t a) {
 }
 
 void print(char c) {
-    char buf[2];
-    sprintf(buf, "%c", c);
+    char buf[2]{};
+    *buf = c;
     _printer(buf);
 }
 

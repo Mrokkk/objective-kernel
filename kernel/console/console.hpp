@@ -1,6 +1,6 @@
 #pragma once
 
-#include <cstdarg>
+#include <types.h>
 
 namespace console {
 
@@ -18,16 +18,19 @@ void print(char c);
 void print(char *c);
 
 template <typename T>
-inline void print(T *a) {
+inline typename utils::enable_if<
+    !utils::is_same<
+        typename utils::remove_const<T>::type, char
+    >::value
+>::type print(T *a) {
     char buf[12];
     sprintf(buf, "0x%08x", reinterpret_cast<uint32_t>(a));
     _printer(buf);
 }
 
-template<typename First, typename... Rest>
-inline void print(const First &first, const Rest &... rest) {
-    print(first);
-    print(rest...);
+template<typename... Rest>
+inline void print(const Rest &... rest) {
+    (print(rest), ...);
 }
 
 } // namespace console
