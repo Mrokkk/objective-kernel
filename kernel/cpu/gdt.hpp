@@ -1,24 +1,23 @@
 #pragma once
 
-#ifdef __ASSEMBLER__
-
 #define KERNEL_CS 0x08
 #define KERNEL_DS 0x10
 #define USER_CS 0x1b
 #define USER_DS 0x23
+#define FIRST_TSS 0x28
 
-#else
+#ifndef __ASSEMBLER__
 
 #include <algorithm.h>
 
 namespace cpu {
 
 enum segment {
-    kernel_cs = 0x08,
-    kernel_ds = 0x10,
-    user_cs = 0x1b,
-    user_ds = 0x23,
-    tss = 0x28
+    kernel_cs = KERNEL_CS,
+    kernel_ds = KERNEL_DS,
+    user_cs = USER_CS,
+    user_ds = USER_DS,
+    tss = FIRST_TSS
 };
 
 namespace gdt {
@@ -31,6 +30,10 @@ struct gdt_entry final {
     uint8_t access;
     uint8_t granularity;
     uint8_t base_high;
+
+    constexpr gdt_entry(uint16_t ll, uint16_t bl, uint8_t bm, uint8_t a, uint8_t g, uint8_t bh)
+            : limit_low(ll), base_low(bl), base_middle(bm), access(a), granularity(g), base_high(bh) {
+    }
 
     uint32_t limit() const {
         return limit_low | (granularity & 0xf) << 16;
@@ -118,45 +121,44 @@ void initialize();
 
 namespace detail {
 
-constexpr inline auto gdt_low_limit(uint32_t limit) {
+constexpr inline uint16_t gdt_low_limit(uint32_t limit) {
     return limit & 0xffff;
 }
 
-constexpr inline auto gdt_hi_limit(uint32_t limit) {
+constexpr inline uint32_t gdt_hi_limit(uint32_t limit) {
     return (limit >> 16) & 0xf;
 }
 
-constexpr inline auto gdt_low_base(uint32_t base) {
+constexpr inline uint16_t gdt_low_base(uint32_t base) {
     return base & 0xffff;
 }
 
-constexpr inline auto gdt_mid_base(uint32_t base) {
+constexpr inline uint8_t gdt_mid_base(uint32_t base) {
     return (base >> 16) & 0xff;
 }
 
-constexpr inline auto gdt_hi_base(uint32_t base) {
+constexpr inline uint8_t gdt_hi_base(uint32_t base) {
     return (base >> 24) & 0xff;
 }
 
-constexpr inline auto gdt_low_flags(uint32_t flags) {
+constexpr inline uint8_t gdt_low_flags(uint32_t flags) {
     return (flags & 0x7f) & 0xff;
 }
 
-constexpr inline auto gdt_hi_flags(uint32_t flags) {
+constexpr inline uint8_t gdt_hi_flags(uint32_t flags) {
     return (flags >> 1) & 0xf0;
 }
 
 } // namespace detail
 
-#define descriptor_entry(flags, base, limit) \
-    { \
-        detail::gdt_low_limit(limit), \
-        detail::gdt_low_base(base), \
-        detail::gdt_mid_base(base), \
-        detail::gdt_low_flags(flags) | (1 << 7), \
-        detail::gdt_hi_limit(limit) | detail::gdt_hi_flags(flags), \
-        detail::gdt_hi_base(base) \
-    }
+constexpr inline gdt_entry descriptor_entry(uint32_t flags, uint32_t base, uint32_t limit) {
+    return gdt_entry(detail::gdt_low_limit(limit),
+        detail::gdt_low_base(base),
+        detail::gdt_mid_base(base),
+        detail::gdt_low_flags(flags) | (1 << 7),
+        detail::gdt_hi_limit(limit) | detail::gdt_hi_flags(flags),
+        detail::gdt_hi_base(base));
+}
 
 namespace flags {
 
