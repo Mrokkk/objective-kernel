@@ -30,12 +30,6 @@ SECTIONS {
         *(.rodata)
     }
 
-    .preinit_array : AT(ADDR(.preinit_array) - __kernel_offset) {
-        PROVIDE_HIDDEN (__preinit_array_start = .);
-        KEEP (*(.preinit_array))
-        PROVIDE_HIDDEN (__preinit_array_end = .);
-    }
-
     .init_array : AT(ADDR(.init_array) - __kernel_offset) {
         PROVIDE_HIDDEN (__init_array_start = .);
         KEEP (*(SORT_BY_INIT_PRIORITY(.init_array.*) SORT_BY_INIT_PRIORITY(.ctors.*)))
