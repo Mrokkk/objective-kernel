@@ -16,7 +16,7 @@ int __cxa_atexit(void (*)(void *), void *, void *) {
 }
 
 void __cxa_pure_virtual() {
-    console::print("PANIC: called pure virtual method\n");
+    console::cout << "PANIC: called pure virtual method\n";
     while (1);
 }
 

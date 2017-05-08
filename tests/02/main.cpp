@@ -105,8 +105,8 @@ asmlinkage void main() {
     drivers::serial::initialize();
     console::initialize(drivers::serial::print);
     yatf::config config{true, false, false};
-    console::print("Boot command-line: ", boot::cmdline, "\n");
-    yatf::run_one(console::print, boot::cmdline, config);
+    console::cout << "Boot command-line: " << boot::cmdline << "\n";
+    yatf::run_one(console::printf, boot::cmdline, config);
     cpu::reboot();
     while (1);
 }

@@ -6,32 +6,85 @@ namespace console {
 
 using printer_function = void (*)(const char *);
 
-extern printer_function _printer;
-
 void initialize(printer_function);
-int print(const char *fmt, ...);
-void print(int a);
-void print(uint32_t a);
-void print(uint16_t a);
-void print(uint8_t a);
-void print(char c);
-void print(char *c);
+int printf(const char *fmt, ...);
 
-template <typename T>
-inline typename utils::enable_if<
-    !utils::is_same<
-        typename utils::remove_const<T>::type, char
-    >::value
->::type print(T *a) {
-    char buf[12];
-    sprintf(buf, "0x%08x", reinterpret_cast<uint32_t>(a));
-    _printer(buf);
-}
+class console final {
 
-template<typename... Rest>
-inline void print(const Rest &... rest) {
-    (print(rest), ...);
-}
+    printer_function print_ = nullptr;
+
+public:
+
+    console() = default;
+
+    console(const printer_function &fn) : print_(fn) {
+    }
+
+    console &operator=(const printer_function &fn) {
+        print_ = fn;
+        return *this;
+    }
+
+    template <typename T>
+    typename utils::enable_if<
+        !utils::is_same<
+            typename utils::remove_const<T>::type, char
+        >::value, console &
+    >::type operator<<(T *a) {
+        char buf[12];
+        sprintf(buf, "0x%08x", reinterpret_cast<uint32_t>(a));
+        print_(buf);
+        return *this;
+    }
+
+    console &operator<<(const char *str) {
+        print_(str);
+        return *this;
+    }
+
+    console &operator<<(char str[]) {
+        print_(str);
+        return *this;
+    }
+
+    console &operator<<(int a) {
+        char buf[32];
+        sprintf(buf, "%d", a);
+        print_(buf);
+        return *this;
+    }
+
+    console &operator<<(uint32_t a) {
+        char buf[12];
+        sprintf(buf, "0x%08x", a);
+        print_(buf);
+        return *this;
+    }
+
+    console &operator<<(uint16_t a) {
+        char buf[12];
+        sprintf(buf, "0x%04x", a);
+        print_(buf);
+        return *this;
+    }
+
+    console &operator<<(uint8_t a) {
+        char buf[12];
+        sprintf(buf, "0x%02x", a);
+        print_(buf);
+        return *this;
+    }
+
+    console &operator<<(char c) {
+        char buf[2]{};
+        *buf = c;
+        print_(buf);
+        return *this;
+    }
+
+};
+
+extern console cout;
 
 } // namespace console
 

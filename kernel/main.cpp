@@ -36,16 +36,16 @@ utils::array<char, 2048> user_stack;
     )
 
 void print_info() {
-    console::print("Bootloader name: ", boot::bootloader_name, "\n");
-    console::print("Boot command-line: ", boot::cmdline, "\n");
-    console::print("Upper mem: ", (int)(boot::upper_mem / 1024), "MiB\n");
-    console::print("Allocator: ", (uint32_t)(memory::phys_address(memory::allocator_memory)), "\n");
-    console::print("Page tables: ", (int)memory::paging::page_tables_number, "\n");
+    console::cout << "Bootloader name: " << boot::bootloader_name << "\n";
+    console::cout << "Boot command-line: " << boot::cmdline << "\n";
+    console::cout << "Upper mem: " << (int)(boot::upper_mem / 1024) << "MiB\n";
+    console::cout << "Allocator: " << (uint32_t)(memory::phys_address(memory::allocator_memory)) << "\n";
+    console::cout << "Page tables: " << (int)memory::paging::page_tables_number << "\n";
     for (auto i = 0u; boot::modules[i].end != 0; ++i) {
-        console::print("Module: ", boot::modules[i].name, " @ ", boot::modules[i].start, " - ", boot::modules[i].end, "\n");
-        console::print("Module content: ", (char *)memory::virt_address(boot::modules[0].start));
+        console::cout << "Module: " << boot::modules[i].name << " @ " << boot::modules[i].start << " - " << boot::modules[i].end << "\n";
+        console::cout << "Module content: " << (char *)memory::virt_address(boot::modules[0].start);
     }
-    console::print("\nHello World!\n");
+    console::cout << "\nHello World!\n";
 }
 
 asmlinkage __noreturn void main() {
