@@ -4,6 +4,8 @@ namespace cpu {
 
 namespace gdt {
 
+asmlinkage char *kernel_stack;
+
 gdt_entry gdt_entries[] = {
 
     // Null segment
@@ -26,17 +28,11 @@ gdt_entry gdt_entries[] = {
 
 };
 
-gdtr gdt = {4096 * 8 - 1, gdt_entries};
+gdtr gdt{sizeof(gdt_entries) - 1, gdt_entries};
+tss tss(&kernel_stack);
 
-asmlinkage char *kernel_stack;
-
-tss _tss(&kernel_stack);
-
-void tss_load(unsigned short sel) {
-    asm volatile(
-        "ltr %%ax;"
-        :: "a" (sel)
-    );
+void tss_load(uint16_t sel) {
+    asm volatile("ltr %%ax" :: "a" (sel));
 }
 
 void initialize() {
@@ -47,7 +43,7 @@ void initialize() {
         mov %0, %%fs
         mov %0, %%gs
     )" :: "r" (cpu::segment::kernel_ds));
-    gdt_entries[5].base(reinterpret_cast<uint32_t>(&_tss));
+    gdt_entries[5].base(reinterpret_cast<uint32_t>(&tss));
     gdt_entries[5].limit(sizeof(tss) - 128);
     tss_load(segment::tss);
 }
