@@ -16,26 +16,6 @@
 
 utils::array<char, 2048> user_stack;
 
-void switch_to_user() {
-    asm volatile(R"(
-        pushl %0
-        pushl %2
-        pushl $0x0
-        pushl %1
-        push $1f
-        iret
-        1:
-        mov %0, %%eax
-        mov %%ax, %%ds
-        mov %%ax, %%es
-        mov %%ax, %%fs
-        mov %%ax, %%gs)"
-        :: "i" (cpu::segment::user_ds),
-           "i" (cpu::segment::user_cs),
-           "r" (&user_stack[2048])
-    );
-}
-
 void print_info() {
     console::cout << "Bootloader name: " << boot::bootloader_name << "\n";
     console::cout << "Boot command-line: " << boot::cmdline << "\n";
@@ -60,7 +40,23 @@ asmlinkage void main() {
     ramfs::ramfs ramfs;
     vfs::initialize(ramfs);
     print_info();
-    switch_to_user();
+    asm volatile(R"(
+        pushl %0
+        pushl %2
+        pushl $0x0
+        pushl %1
+        push $1f
+        iret
+        1:
+        mov %0, %%ds
+        mov %0, %%es
+        mov %0, %%fs
+        mov %0, %%gs)"
+        :: "a" (cpu::segment::user_ds),
+           "i" (cpu::segment::user_cs),
+           "r" (&user_stack[2048])
+        : "memory"
+    );
     while (1);
 }
 
