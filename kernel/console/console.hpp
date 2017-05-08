@@ -17,9 +17,6 @@ public:
 
     console() = default;
 
-    console(const printer_function &fn) : print_(fn) {
-    }
-
     console &operator=(const printer_function &fn) {
         print_ = fn;
         return *this;
