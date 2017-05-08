@@ -17,10 +17,14 @@ public:
 
     console() = default;
 
-    console &operator=(const printer_function &fn) {
-        print_ = fn;
-        return *this;
-    }
+    console &operator=(const printer_function &fn);
+    console &operator<<(const char *str);
+    console &operator<<(char str[]);
+    console &operator<<(int a);
+    console &operator<<(uint32_t a);
+    console &operator<<(uint16_t a);
+    console &operator<<(uint8_t a);
+    console &operator<<(char c);
 
     template <typename T>
     typename utils::enable_if<
@@ -30,51 +34,6 @@ public:
     >::type operator<<(T *a) {
         char buf[32];
         sprintf(buf, "0x%08x", reinterpret_cast<uint32_t>(a));
-        print_(buf);
-        return *this;
-    }
-
-    console &operator<<(const char *str) {
-        print_(str);
-        return *this;
-    }
-
-    console &operator<<(char str[]) {
-        print_(str);
-        return *this;
-    }
-
-    console &operator<<(int a) {
-        char buf[32];
-        sprintf(buf, "%d", a);
-        print_(buf);
-        return *this;
-    }
-
-    console &operator<<(uint32_t a) {
-        char buf[32];
-        sprintf(buf, "0x%08x", a);
-        print_(buf);
-        return *this;
-    }
-
-    console &operator<<(uint16_t a) {
-        char buf[32];
-        sprintf(buf, "0x%04x", a);
-        print_(buf);
-        return *this;
-    }
-
-    console &operator<<(uint8_t a) {
-        char buf[32];
-        sprintf(buf, "0x%02x", a);
-        print_(buf);
-        return *this;
-    }
-
-    console &operator<<(char c) {
-        char buf[3]{};
-        *buf = c;
         print_(buf);
         return *this;
     }

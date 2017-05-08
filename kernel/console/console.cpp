@@ -22,5 +22,55 @@ int printf(const char *fmt, ...) {
     return 0;
 }
 
+console &console::operator=(const printer_function &fn) {
+    print_ = fn;
+    return *this;
+}
+
+console &console::operator<<(const char *str) {
+    print_(str);
+    return *this;
+}
+
+console &console::operator<<(char str[]) {
+    print_(str);
+    return *this;
+}
+
+console &console::operator<<(int a) {
+    char buf[32];
+    sprintf(buf, "%d", a);
+    print_(buf);
+    return *this;
+}
+
+console &console::operator<<(uint32_t a) {
+    char buf[32];
+    sprintf(buf, "0x%08x", a);
+    print_(buf);
+    return *this;
+}
+
+console &console::operator<<(uint16_t a) {
+    char buf[32];
+    sprintf(buf, "0x%04x", a);
+    print_(buf);
+    return *this;
+}
+
+console &console::operator<<(uint8_t a) {
+    char buf[32];
+    sprintf(buf, "0x%02x", a);
+    print_(buf);
+    return *this;
+}
+
+console &console::operator<<(char c) {
+    char buf[3]{};
+    *buf = c;
+    print_(buf);
+    return *this;
+}
+
 } // namespace console
 
