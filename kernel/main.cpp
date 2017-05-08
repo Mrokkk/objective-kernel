@@ -39,7 +39,7 @@ void print_info() {
     console::cout << "Bootloader name: " << boot::bootloader_name << "\n";
     console::cout << "Boot command-line: " << boot::cmdline << "\n";
     console::cout << "Upper mem: " << (int)(boot::upper_mem / 1024) << "MiB\n";
-    console::cout << "Allocator: " << (uint32_t)(memory::phys_address(memory::allocator_memory)) << "\n";
+    console::cout << "Allocator: " << (uint32_t)(memory::__end) << "\n";
     console::cout << "Page tables: " << (int)memory::paging::page_tables_number << "\n";
     for (auto i = 0u; boot::modules[i].end != 0; ++i) {
         console::cout << "Module: " << boot::modules[i].name << " @ " << boot::modules[i].start << " - " << boot::modules[i].end << "\n";

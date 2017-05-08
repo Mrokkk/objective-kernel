@@ -2,7 +2,7 @@
 
 namespace memory {
 
-extern char *allocator_memory;
+extern uint32_t __end;
 void initialize();
 
 } // namespace memory

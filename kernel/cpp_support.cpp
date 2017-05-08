@@ -32,12 +32,12 @@ void *memset(void *ptr, int value, unsigned n) {
 
 namespace memory {
 
-extern utils::allocator<memory::paging::page_allocator, 32> *kernel_allocator;
+extern utils::allocator<memory::paging::page_allocator, 32> kernel_allocator;
 
 } // namespace memory
 
 void *operator new(size_t size) {
-    return memory::kernel_allocator->allocate(size);
+    return memory::kernel_allocator.allocate(size);
 }
 
 void *operator new(size_t, void *address) {
@@ -49,23 +49,23 @@ void * operator new[] (std::size_t, void *address) {
 }
 
 void operator delete(void *address) noexcept {
-    memory::kernel_allocator->free(address);
+    memory::kernel_allocator.free(address);
 }
 
 void operator delete(void *address, size_t) noexcept {
-    memory::kernel_allocator->free(address);
+    memory::kernel_allocator.free(address);
 }
 
 void *operator new[](size_t size) {
-    return memory::kernel_allocator->allocate(size);
+    return memory::kernel_allocator.allocate(size);
 }
 
 void operator delete[](void *address) noexcept {
-    memory::kernel_allocator->free(address);
+    memory::kernel_allocator.free(address);
 }
 
 void operator delete[](void *address, size_t) noexcept {
-    memory::kernel_allocator->free(address);
+    memory::kernel_allocator.free(address);
 }
 
 namespace cpp_support {
