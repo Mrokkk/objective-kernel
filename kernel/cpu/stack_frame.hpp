@@ -1,5 +1,7 @@
 #pragma once
 
+#include <kernel/console/console.hpp>
+
 namespace cpu {
 
 struct stack_frame {
@@ -21,7 +23,7 @@ struct stack_frame {
     uint32_t esp;
     uint16_t ss, __ss;
 
-    void print();
+    friend console::console &operator<<(console::console &c, const stack_frame &s);
 
 };
 

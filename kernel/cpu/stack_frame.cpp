@@ -3,16 +3,17 @@
 
 namespace cpu {
 
-void stack_frame::print() {
-    console::cout << "EAX=" << eax << "; ";
-    console::cout << "EBX=" << ebx << "; ";
-    console::cout << "ECX=" << ecx << "; ";
-    console::cout << "EDX=" << edx << "\n";
-    console::cout << "ESP=" << ss << ':' << esp << "\n";
-    console::cout << "EIP=" << cs << ':' << eip << "\n";
-    console::cout << "DS=" << ds << "; ES=" << es << "; FS=" << fs << "; GS=" << gs << "\n";
-    console::cout << "EFLAGS=" << eflags << " ";
-    console::cout << "IOPL=" << ((eflags >> 12) & 0x3) << "\n";
+console::console &operator<<(console::console &c, const stack_frame &s) {
+    c << "EAX=" << s.eax << "; ";
+    c << "EBX=" << s.ebx << "; ";
+    c << "ECX=" << s.ecx << "; ";
+    c << "EDX=" << s.edx << "\n";
+    c << "ESP=" << s.ss << ':' << s.esp << "\n";
+    c << "EIP=" << s.cs << ':' << s.eip << "\n";
+    c << "DS=" << s.ds << "; ES=" << s.es << "; FS=" << s.fs << "; GS=" << s.gs << "\n";
+    c << "EFLAGS=" << s.eflags << " ";
+    c << "IOPL=" << ((s.eflags >> 12) & 0x3) << "\n";
+    return c;
 }
 
 } // namespace cpu
