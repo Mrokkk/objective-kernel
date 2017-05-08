@@ -31,10 +31,6 @@ gdt_entry gdt_entries[] = {
 gdtr gdt{sizeof(gdt_entries) - 1, gdt_entries};
 tss tss(&kernel_stack);
 
-void tss_load(uint16_t sel) {
-    asm volatile("ltr %%ax" :: "a" (sel));
-}
-
 void initialize() {
     gdt.load();
     asm volatile(R"(
@@ -45,7 +41,7 @@ void initialize() {
     )" :: "r" (cpu::segment::kernel_ds));
     gdt_entries[5].base(reinterpret_cast<uint32_t>(&tss));
     gdt_entries[5].limit(sizeof(tss) - 128);
-    tss_load(segment::tss);
+    tss.load();
 }
 
 } // namespace gdt

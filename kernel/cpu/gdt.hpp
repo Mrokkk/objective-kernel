@@ -65,7 +65,7 @@ struct gdtr final {
     uint16_t limit;
     gdt_entry *base;
 
-    void load() {
+    void load() const {
         asm volatile(R"(
                 lgdt (%%eax)
                 ljmp $0x08, $1f
@@ -113,6 +113,10 @@ struct tss final {
         iomap_offset = 104;
         ss0 = segment::kernel_ds;
         esp0 = reinterpret_cast<uint32_t>(kernel_stack);
+    }
+
+    void load() const {
+        asm volatile("ltr %%ax" :: "a" (segment::tss));
     }
 
 } __packed;
