@@ -16,24 +16,25 @@
 
 utils::array<char, 2048> user_stack;
 
-#define switch_to_user() \
-    asm volatile(                           \
-        "pushl %0;"                         \
-        "pushl %2;"                         \
-        "pushl $0x0;"                       \
-        "pushl %1;"                         \
-        "push $1f;"                         \
-        "iret;"                             \
-        "1:"                                \
-        "mov %0, %%eax;"                    \
-        "mov %%ax, %%ds;"                   \
-        "mov %%ax, %%es;"                   \
-        "mov %%ax, %%fs;"                   \
-        "mov %%ax, %%gs;"                   \
-        :: "i" (cpu::segment::user_ds),     \
-           "i" (cpu::segment::user_cs),     \
-           "r" (&user_stack[2048])          \
-    )
+void switch_to_user() {
+    asm volatile(R"(
+        pushl %0
+        pushl %2
+        pushl $0x0
+        pushl %1
+        push $1f
+        iret
+        1:
+        mov %0, %%eax
+        mov %%ax, %%ds
+        mov %%ax, %%es
+        mov %%ax, %%fs
+        mov %%ax, %%gs)"
+        :: "i" (cpu::segment::user_ds),
+           "i" (cpu::segment::user_cs),
+           "r" (&user_stack[2048])
+    );
+}
 
 void print_info() {
     console::cout << "Bootloader name: " << boot::bootloader_name << "\n";
@@ -48,7 +49,7 @@ void print_info() {
     console::cout << "\nHello World!\n";
 }
 
-asmlinkage __noreturn void main() {
+asmlinkage void main() {
     memory::initialize();
     cpp_support::initialize();
     cpu::gdt::initialize();
