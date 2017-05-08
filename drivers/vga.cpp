@@ -38,16 +38,18 @@ constexpr uint8_t backcolor(color c) {
     return (static_cast<uint8_t>(c) << 4) & 0x7f;
 }
 
-struct video_char {
+class video_char final {
 
-    uint8_t c;
-    uint8_t attr;
+    uint8_t char_;
+    uint8_t attr_;
 
-    video_char() : c(' '), attr(forecolor(color::gray) | backcolor(color::black)) {
+public:
+
+    video_char() : char_(' '), attr_(forecolor(color::gray) | backcolor(color::black)) {
     }
 
     video_char(uint8_t c, uint8_t attr = forecolor(color::gray) | backcolor(color::black))
-            : c(c), attr(attr) {
+            : char_(c), attr_(attr) {
     }
 
 } __packed;
@@ -61,7 +63,7 @@ uint16_t current_offset_get() {
     return csr_y * RESX + csr_x;
 }
 
-void scroll(void) {
+void scroll() {
     video_char blank;
     if(csr_y >= RESY) {
         auto temp = csr_y - RESY + 1;
@@ -71,7 +73,7 @@ void scroll(void) {
     }
 }
 
-void move_csr(void) {
+void move_csr() {
     auto off = current_offset_get();
     cpu::io::outb(14, 0x3D4);
     cpu::io::outb(static_cast<uint8_t>(off >> 8), 0x3D5);
