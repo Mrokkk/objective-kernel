@@ -28,7 +28,7 @@ public:
             typename utils::remove_const<T>::type, char
         >::value, console &
     >::type operator<<(T *a) {
-        char buf[12];
+        char buf[32];
         sprintf(buf, "0x%08x", reinterpret_cast<uint32_t>(a));
         print_(buf);
         return *this;
@@ -52,28 +52,28 @@ public:
     }
 
     console &operator<<(uint32_t a) {
-        char buf[12];
+        char buf[32];
         sprintf(buf, "0x%08x", a);
         print_(buf);
         return *this;
     }
 
     console &operator<<(uint16_t a) {
-        char buf[12];
+        char buf[32];
         sprintf(buf, "0x%04x", a);
         print_(buf);
         return *this;
     }
 
     console &operator<<(uint8_t a) {
-        char buf[12];
+        char buf[32];
         sprintf(buf, "0x%02x", a);
         print_(buf);
         return *this;
     }
 
     console &operator<<(char c) {
-        char buf[2]{};
+        char buf[3]{};
         *buf = c;
         print_(buf);
         return *this;
