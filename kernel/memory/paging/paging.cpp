@@ -61,7 +61,7 @@ void initialize() {
     }
     // TODO: iterate through modules
     if (boot::modules[0].start) {
-        page_set(frame_number(boot::modules[0].start), boot::modules[0].start | PGT_PRESENT | PGT_WRITEABLE | PGT_USER);
+        page_set(frame_number(boot::modules[0].start), boot::modules[0].start | PGT_PRESENT);
     }
     paging::page_table_set(0, 0);
     paging::page_directory_reload();
