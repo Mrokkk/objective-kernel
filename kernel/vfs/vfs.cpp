@@ -1,5 +1,5 @@
-#include <list.h>
-#include <shared_ptr.h>
+#include <list.hpp>
+#include <shared_ptr.hpp>
 
 #include <kernel/console/logger.hpp>
 

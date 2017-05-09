@@ -1,4 +1,4 @@
-#include <array.h>
+#include <array.hpp>
 
 #include <drivers/vga.hpp>
 #include <kernel/cpu/gdt.hpp>

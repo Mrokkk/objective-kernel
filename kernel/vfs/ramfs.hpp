@@ -1,7 +1,7 @@
 #pragma once
 
-#include <list.h>
-#include <string.h>
+#include <list.hpp>
+#include <string.hpp>
 
 #include "vnode.hpp"
 #include "definitions.hpp"

@@ -1,4 +1,4 @@
-#include <allocator.h>
+#include <allocator.hpp>
 #include <kernel/console/logger.hpp>
 
 #include "paging/paging.hpp"

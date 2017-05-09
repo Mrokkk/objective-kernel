@@ -1,5 +1,5 @@
-#include <allocator.h>
-#include <algorithm.h>
+#include <allocator.hpp>
+#include <algorithm.hpp>
 #include <kernel/boot/boot.hpp>
 #include <kernel/console/logger.hpp>
 #include <kernel/memory/sections.hpp>

@@ -1,8 +1,8 @@
 #pragma once
 
-#include <list.h>
-#include <path.h>
-#include <shared_ptr.h>
+#include <list.hpp>
+#include <path.hpp>
+#include <shared_ptr.hpp>
 
 namespace vfs {
 

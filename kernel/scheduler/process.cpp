@@ -1,5 +1,5 @@
 #include <kernel/scheduler/process.hpp>
-#include <shared_ptr.h>
+#include <shared_ptr.hpp>
 
 namespace scheduler {
 

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <bitset.h>
+#include <bitset.hpp>
 #include "paging.hpp"
 
 namespace memory {

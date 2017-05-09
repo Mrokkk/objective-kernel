@@ -6,7 +6,7 @@
 #include <kernel/vfs/ramfs.hpp>
 #include <kernel/vfs/cache.hpp>
 
-#include <yatf.h>
+#include <yatf.hpp>
 
 TEST(cache, new_cache_is_empty) {
     vfs::cache c;

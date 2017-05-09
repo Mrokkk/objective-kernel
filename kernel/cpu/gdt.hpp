@@ -8,7 +8,7 @@
 
 #ifndef __ASSEMBLER__
 
-#include <algorithm.h>
+#include <algorithm.hpp>
 
 namespace cpu {
 

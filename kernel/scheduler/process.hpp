@@ -1,9 +1,9 @@
 #pragma once
 
-#include <initializer_list.h>
-#include <list.h>
-#include <kernel_list.h>
-#include <shared_ptr.h>
+#include <initializer_list.hpp>
+#include <list.hpp>
+#include <kernel_list.hpp>
+#include <shared_ptr.hpp>
 #include <kernel/cpu/gdt.hpp>
 
 namespace scheduler {

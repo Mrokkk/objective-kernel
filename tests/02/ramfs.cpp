@@ -1,5 +1,5 @@
 #include <kernel/vfs/ramfs.hpp>
-#include <yatf.h>
+#include <yatf.hpp>
 
 namespace {
 

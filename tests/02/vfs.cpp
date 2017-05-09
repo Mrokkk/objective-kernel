@@ -3,7 +3,7 @@
 #include <kernel/vfs/ramfs.hpp>
 #include <kernel/vfs/cache.hpp>
 
-#include <yatf.h>
+#include <yatf.hpp>
 
 namespace test_cases {
 

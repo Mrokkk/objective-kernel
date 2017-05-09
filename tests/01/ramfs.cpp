@@ -6,7 +6,7 @@
 #include <kernel/vfs/ramfs.hpp>
 #include <kernel/vfs/cache.hpp>
 
-#include <yatf.h>
+#include <yatf.hpp>
 
 TEST(ramfs, can_create) {
     ramfs::ramfs fs;

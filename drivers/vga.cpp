@@ -1,5 +1,5 @@
-#include <string.h>
-#include <algorithm.h>
+#include <string.hpp>
+#include <algorithm.hpp>
 #include <kernel/cpu/io.hpp>
 #include <kernel/memory/paging/paging.hpp>
 

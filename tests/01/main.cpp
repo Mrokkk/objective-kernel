@@ -1,5 +1,5 @@
 #define YATF_MAIN
-#include <yatf.h>
+#include <yatf.hpp>
 #include <cstdio>
 
 void console_init();

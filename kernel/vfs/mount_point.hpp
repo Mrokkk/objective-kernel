@@ -1,6 +1,6 @@
 #pragma once
 
-#include <hash_map.h>
+#include <hash_map.hpp>
 #include "definitions.hpp"
 #include "block_device.hpp"
 

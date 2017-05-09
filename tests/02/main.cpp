@@ -1,5 +1,5 @@
-#include <shared_ptr.h>
-#include <unique_ptr.h>
+#include <shared_ptr.hpp>
+#include <unique_ptr.hpp>
 
 #include <drivers/serial.hpp>
 #include <kernel/cpu/gdt.hpp>
@@ -14,7 +14,7 @@
 #include <kernel/memory/memory.hpp>
 
 #define YATF_MAIN
-#include <yatf.h>
+#include <yatf.hpp>
 
 namespace {
 

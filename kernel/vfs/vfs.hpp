@@ -1,7 +1,7 @@
 #pragma once
 
-#include <list.h>
-#include <array.h>
+#include <list.hpp>
+#include <array.hpp>
 
 #include <kernel/error.hpp>
 
