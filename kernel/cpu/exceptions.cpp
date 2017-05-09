@@ -1,7 +1,7 @@
-#include <kernel/cpu/exceptions.h>
-#include <kernel/cpu/stack_frame.hpp>
 #include <kernel/console/console.hpp>
+#include "exceptions.h"
 #include "registers.hpp"
+#include "stack_frame.hpp"
 
 const char *exception_names[] = {
     exception_name(divide_error),

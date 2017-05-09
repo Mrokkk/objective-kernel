@@ -1,8 +1,8 @@
 #pragma once
 
-#include <kernel/cpu/io.hpp>
-#include <kernel/cpu/gdt.hpp>
 #include <kernel/memory/paging/paging.hpp>
+#include "io.hpp"
+#include "gdt.hpp"
 
 namespace cpu {
 

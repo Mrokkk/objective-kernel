@@ -1,6 +1,6 @@
 #pragma once
 
-#include <kernel/cpu/asm.h>
+#include "asm.h"
 
 #define __NR_divide_error           0
 #define __NR_debug                  1

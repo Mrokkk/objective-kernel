@@ -1,4 +1,4 @@
-#include <kernel/cpu/gdt.hpp>
+#include "gdt.hpp"
 
 namespace cpu {
 

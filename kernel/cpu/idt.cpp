@@ -1,6 +1,6 @@
-#include <kernel/cpu/idt.hpp>
-#include <kernel/cpu/gdt.hpp>
-#include <kernel/cpu/exceptions.h>
+#include "idt.hpp"
+#include "gdt.hpp"
+#include "exceptions.h"
 
 namespace cpu {
 
