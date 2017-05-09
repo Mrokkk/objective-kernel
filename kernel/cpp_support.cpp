@@ -4,9 +4,6 @@
 
 asmlinkage {
 
-extern void (*__init_array_start)();
-extern void (*__init_array_end)();
-
 void * __dso_handle = 0;
 
 int __cxa_atexit(void (*)(void *), void *, void *) {
@@ -68,11 +65,13 @@ void operator delete[](void *address, size_t) noexcept {
 
 namespace cpp_support {
 
+using init_fn = void (*)();
+asmlinkage init_fn __init_array_start[];
+asmlinkage init_fn __init_array_end[];
+
 void initialize() {
-    void (**init_constructor)() = &__init_array_start;
-    while (init_constructor != &__init_array_end) {
+    for (auto init_constructor = __init_array_start; init_constructor != __init_array_end; ++init_constructor) {
         (*init_constructor)();
-        ++init_constructor;
     }
 }
 
