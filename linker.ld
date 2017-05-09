@@ -13,6 +13,7 @@ SECTIONS {
         __unpagged_start = .;
         KEEP(*(.multiboot))
         KEEP(*(.text.boot))
+        *multiboot[1-2].cpp.o(.rodata)
         __unpagged_end = .;
     }
 
