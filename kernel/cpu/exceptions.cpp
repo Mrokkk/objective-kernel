@@ -22,10 +22,8 @@ const char *exception_names[] = {
 };
 
 asmlinkage void exception_handler(uint32_t nr, uint32_t error_code, cpu::stack_frame frame) {
-    console::cout << "Exception: " << exception_names[nr] << " #" << static_cast<int>(error_code) << "\n";
-    console::cout << frame;
-    auto cr2 = registers::cr2_get();
-    console::cout << "CR2 = " << cr2 << "\n";
+    console::cout << "Exception: " << exception_names[nr] << " #" << static_cast<int>(error_code) << "\n"
+                  << frame << "CR2 = " << registers::cr2_get() << "\n";
     while (1);
 }
 
