@@ -28,10 +28,7 @@ int sprintf(char *buf, const char *fmt, ...);
 #endif
 
 #define __packed __attribute__((packed))
-#define __noreturn __attribute__((noreturn))
-#define __naked __attribute__ ((naked))
 #define __section(x) __attribute__ ((section(#x)))
-#define __optimize(x) __attribute__ ((optimize(#x)))
 
 #define expand(x) x
 #define paste(a, b) a##b
@@ -43,7 +40,8 @@ namespace yacppl {}
 
 namespace utils = yacppl;
 
-using off_t = size_t;
+#define __off_t_defined
+using off_t = int;
 
 #endif
 
