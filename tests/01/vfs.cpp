@@ -236,29 +236,29 @@ TEST(vfs, can_read_write_to_file) {
     vfs::vfs vfs(ramfs, vfs::null_bd_);
     auto file = vfs.open("/file", vfs::file::mode::read_write);
     REQUIRE(file);
-    REQUIRE_EQ(file->position(), 0u);
+    REQUIRE_EQ(file->position(), 0);
     file->write("some text", 10);
     REQUIRE_EQ(file->size(), 10u);
-    REQUIRE_EQ(file->position(), 10u);
+    REQUIRE_EQ(file->position(), 10);
     file->seek(0u);
-    REQUIRE_EQ(file->position(), 0u);
+    REQUIRE_EQ(file->position(), 0);
     char buffer[32];
     file->read(buffer, 10);
-    REQUIRE_EQ(file->position(), 10u);
+    REQUIRE_EQ(file->position(), 10);
     REQUIRE_EQ((const char *)buffer, "some text");
     file->seek(5);
-    REQUIRE_EQ(file->position(), 5u);
+    REQUIRE_EQ(file->position(), 5);
     file->read(buffer, 5);
-    REQUIRE_EQ(file->position(), 10u);
+    REQUIRE_EQ(file->position(), 10);
     REQUIRE_EQ((const char *)buffer, "text");
     file->seek(5);
     file->write("testing", 8);
     REQUIRE_EQ(file->size(), 13u);
     file->seek(0);
-    REQUIRE_EQ(file->position(), 0u);
+    REQUIRE_EQ(file->position(), 0);
     file->read(buffer, 13);
     REQUIRE_EQ((const char *)buffer, "some testing");
-    REQUIRE_EQ(file->position(), 13u);
+    REQUIRE_EQ(file->position(), 13);
     file->seek(12u);
     file->write(" for kernel", 12u);
     file->seek(0);
@@ -273,10 +273,10 @@ TEST(vfs, cannot_write_to_read_open_file) {
     auto file = vfs.open("/file", vfs::file::mode::read);
     REQUIRE(file);
     REQUIRE(file->mode_ == vfs::file::mode::read);
-    REQUIRE_EQ(file->position(), 0u);
+    REQUIRE_EQ(file->position(), 0);
     auto res = file->write("some text", 10);
     REQUIRE(res < 0);
-    REQUIRE_EQ(file->position(), 0u);
+    REQUIRE_EQ(file->position(), 0);
 }
 
 TEST(vfs, cannot_read_from_write_open_file) {
@@ -285,10 +285,10 @@ TEST(vfs, cannot_read_from_write_open_file) {
     auto file = vfs.open("/file", vfs::file::mode::write);
     REQUIRE(file);
     REQUIRE(file->mode_ == vfs::file::mode::write);
-    REQUIRE_EQ(file->position(), 0u);
+    REQUIRE_EQ(file->position(), 0);
     auto res = file->write("some text", 10);
     REQUIRE(res == 10);
-    REQUIRE_EQ(file->position(), 10u);
+    REQUIRE_EQ(file->position(), 10);
     char buffer[32];
     utils::fill(buffer, 32, 0);
     res = file->read(buffer, 10);
