@@ -23,7 +23,7 @@ void *memset(void *ptr, int value, unsigned n) {
     return ptr;
 }
 
-}
+} // asmlinkage
 
 namespace memory {
 
@@ -39,7 +39,7 @@ void *operator new(size_t, void *address) {
     return address;
 }
 
-void * operator new[] (std::size_t, void *address) {
+void * operator new[](std::size_t, void *address) {
     return address;
 }
 
