@@ -1,6 +1,7 @@
 #pragma once
 
 #include <types.hpp>
+#include <function.hpp>
 
 namespace console {
 
@@ -11,13 +12,13 @@ int printf(const char *fmt, ...);
 
 class console final {
 
-    printer_function print_ = nullptr;
+    utils::function<void(const char *)> print_;
 
 public:
 
     console() = default;
 
-    console &operator=(const printer_function &fn);
+    console &operator=(printer_function fn);
     console &operator<<(const char *str);
     console &operator<<(char str[]);
     console &operator<<(int a);

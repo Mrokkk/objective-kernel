@@ -1,9 +1,10 @@
 #include <cstdarg>
+#include <function.hpp>
 #include "console.hpp"
 
 namespace console {
 
-printer_function _printer = nullptr;
+utils::function<void(const char *)> _printer;
 console cout;
 
 void initialize(printer_function func) {
@@ -22,7 +23,7 @@ int printf(const char *fmt, ...) {
     return 0;
 }
 
-console &console::operator=(const printer_function &fn) {
+console &console::operator=(printer_function fn) {
     print_ = fn;
     return *this;
 }
