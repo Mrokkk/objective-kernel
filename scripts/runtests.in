@@ -52,7 +52,7 @@ function main() {
     if [[ "${test_case}" == "" ]]; then
         IFS=$'\n'
         tests=(`strings @CMAKE_CURRENT_BINARY_DIR@/@PROJECT_NAME@-tests | grep test_cases | c++filt | \
-            grep "()" | sed 's/test_cases:://g;s/__/\./g;s/()//g; /yacppl/d; /{/d; /<lambda/d'`)
+            grep "()" | sed 's/test_cases:://g;s/__/\./g;s/()//g; /yacppl/d; /{/d; /<lambda/d; s/::call//g; /::/d' | sort | uniq`)
         unset IFS
     else
         tests=(${test_case})

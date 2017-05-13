@@ -8,14 +8,16 @@
 
 #include <yatf.hpp>
 
-TEST(cache, new_cache_is_empty) {
+struct cache_fixture {
     vfs::cache c;
+};
+
+TEST(cache, new_cache_is_empty, cache_fixture) {
     REQUIRE(c.empty());
     REQUIRE_FALSE(c.find("/", nullptr));
 }
 
-TEST(cache, can_add_root_element) {
-    vfs::cache c;
+TEST(cache, can_add_root_element, cache_fixture) {
     auto root_node = utils::make_shared<vfs::vnode>(1u, 0u, 0u, nullptr, vfs::vnode::type::dir);
     c.add("/", root_node, nullptr);
     auto cached_node = c.find("/")->node;
