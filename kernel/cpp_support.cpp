@@ -63,6 +63,14 @@ void operator delete[](void *address, size_t) noexcept {
     memory::kernel_allocator.free(address);
 }
 
+void atomic_increment(void *addr) {
+    asm volatile("lock incl (%0)" :: "r" (addr));
+}
+
+void atomic_decrement(void *addr) {
+    asm volatile("lock decl (%0)" :: "r" (addr));
+}
+
 namespace cpp_support {
 
 using init_fn = void (*)();
