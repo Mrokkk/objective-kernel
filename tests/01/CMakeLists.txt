@@ -22,6 +22,8 @@ if(COVERAGE)
     add_coverage_flags()
 endif()
 
+set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,-Map=tests.map")
+
 include_directories(
     ${CMAKE_SOURCE_DIR}/yacppl/include
     ${CMAKE_SOURCE_DIR}

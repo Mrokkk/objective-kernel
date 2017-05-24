@@ -71,13 +71,40 @@ void atomic_decrement(void *addr) {
     asm volatile("lock decl (%0)" :: "r" (addr));
 }
 
+void spinlock_lock(volatile size_t *lock) {
+    size_t dummy = SPINLOCK_LOCKED;
+    asm volatile(R"(
+        1: lock xchg %0, %1
+        test %1, %1
+        jnz 1b)"
+        : "=m" (*lock)
+        : "r" (dummy)
+        : "memory");
+}
+
+void spinlock_unlock(volatile size_t *lock) {
+    size_t dummy = SPINLOCK_UNLOCKED;
+    asm volatile(
+        "lock xchg %0, %1"
+        : "=m" (*lock)
+        : "r" (dummy)
+        : "memory");
+}
+
 namespace cpp_support {
 
 using init_fn = void (*)();
+
 asmlinkage init_fn __init_array_start[];
 asmlinkage init_fn __init_array_end[];
 
+asmlinkage init_fn __preinit_array_start[];
+asmlinkage init_fn __preinit_array_end[];
+
 void initialize() {
+    for (auto init_constructor = __preinit_array_start; init_constructor != __preinit_array_end; ++init_constructor) {
+        (*init_constructor)();
+    }
     for (auto init_constructor = __init_array_start; init_constructor != __init_array_end; ++init_constructor) {
         (*init_constructor)();
     }

@@ -28,9 +28,18 @@ SECTIONS {
 
     . = ALIGN(4K);
     .rodata BLOCK(4K) : AT(ADDR(.rodata) - __kernel_offset) {
-        *(.rodata)
+        KEEP (*(.rodata))
+        KEEP (*(.rodata.*))
     }
 
+    . = ALIGN(4);
+    .preinit_array : AT(ADDR(.preinit_array) - __kernel_offset) {
+        PROVIDE_HIDDEN (__preinit_array_start = .);
+        KEEP (*(.preinit_array))
+        PROVIDE_HIDDEN (__preinit_array_end = .);
+    }
+
+    . = ALIGN(4);
     .init_array : AT(ADDR(.init_array) - __kernel_offset) {
         __init_array_start = .;
         KEEP (*(SORT_BY_INIT_PRIORITY(.init_array.*) SORT_BY_INIT_PRIORITY(.ctors.*)))
@@ -41,7 +50,8 @@ SECTIONS {
     . = ALIGN(4K);
     .data BLOCK(4K) : AT(ADDR(.data) - __kernel_offset) {
         __data_start = .;
-        *(.data)
+        KEEP (*(.data))
+        KEEP (*(.data.*))
         __data_end = .;
     }
 
@@ -50,6 +60,7 @@ SECTIONS {
         __bss_start = .;
         *(COMMON)
         *(.bss)
+        *(.bss.*)
         *(.stack)
         __bss_end = .;
     }
