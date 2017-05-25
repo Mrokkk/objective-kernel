@@ -1,18 +1,15 @@
 #pragma once
 
-#include <initializer_list.hpp>
 #include <list.hpp>
-#include <kernel_list.hpp>
 #include <shared_ptr.hpp>
+#include <kernel_list.hpp>
 #include <kernel/cpu/gdt.hpp>
 
 namespace scheduler {
 
-using pid_t = unsigned int;
+using pid_t = size_t;
 
-class process {
-
-public:
+struct process {
 
     enum class state {
         running,
@@ -25,12 +22,6 @@ public:
     cpu::gdt::tss context;
     void *stack;
     state stat = state::stopped;
-    utils::kernel_list<process> children;
-    utils::kernel_list<process> siblings;
-
-    process()
-            : children(&process::children), siblings(&process::siblings) {
-    }
 
 };
 
