@@ -1,5 +1,6 @@
 set_property(SOURCE exceptions.S PROPERTY LANGUAGE C)
 add_library(cpu OBJECT
+    cpu.cpp
     stack_frame.cpp
     gdt.cpp
     exceptions.cpp

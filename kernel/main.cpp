@@ -1,8 +1,7 @@
 #include <array.hpp>
 
 #include <drivers/vga.hpp>
-#include <kernel/cpu/gdt.hpp>
-#include <kernel/cpu/idt.hpp>
+#include <kernel/cpu/cpu.hpp>
 #include <kernel/vfs/vfs.hpp>
 #include <kernel/vfs/file.hpp>
 #include <kernel/vfs/ramfs.hpp>
@@ -32,8 +31,7 @@ void print_info() {
 asmlinkage void main() {
     memory::initialize();
     cpp_support::initialize();
-    cpu::gdt::initialize();
-    cpu::idt::initialize();
+    cpu::initialize();
     scheduler::initialize();
     drivers::vga::initialize();
     console::initialize(drivers::vga::print);
