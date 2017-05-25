@@ -18,8 +18,19 @@
 #include <cstdint>
 #include <cstdarg>
 
+using std::uint8_t;
+using std::uint16_t;
+using std::uint32_t;
+using std::int8_t;
+using std::int16_t;
+using std::int32_t;
+using std::size_t;
+
 int vsprintf(char *buf, const char *fmt, va_list args);
 int sprintf(char *buf, const char *fmt, ...);
+
+void *operator new(std::size_t, void *address);
+void *operator new[](std::size_t, void *address);
 
 #ifdef __cplusplus
 #define asmlinkage extern "C"

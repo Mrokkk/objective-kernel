@@ -28,7 +28,6 @@
 
 #ifndef __ASSEMBLER__
 
-#include <kernel/new.hpp>
 #include <kernel/cpu/registers.hpp>
 
 namespace memory {
