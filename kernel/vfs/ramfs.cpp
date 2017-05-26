@@ -1,8 +1,6 @@
 #include "file.hpp"
 #include "ramfs.hpp"
 
-#include <kernel/console/logger.hpp>
-
 namespace ramfs {
 
 ramfs::dir_entry *ramfs::lookup_in_dir(utils::list<dir_entry *> &dir, const utils::string &name) {

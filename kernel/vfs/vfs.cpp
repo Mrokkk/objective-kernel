@@ -1,8 +1,6 @@
 #include <list.hpp>
 #include <shared_ptr.hpp>
 
-#include <kernel/console/logger.hpp>
-
 #include "vfs.hpp"
 #include "file.hpp"
 #include "vnode.hpp"

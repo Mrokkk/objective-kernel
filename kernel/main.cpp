@@ -10,9 +10,8 @@
 #include <kernel/cpu/reboot.hpp>
 #include <kernel/cpp_support.hpp>
 #include <kernel/memory/memory.hpp>
-#include <kernel/console/logger.hpp>
-#include <kernel/console/console.hpp>
 #include <kernel/logger/logger.hpp>
+#include <kernel/console/console.hpp>
 #include <kernel/scheduler/process.hpp>
 
 utils::array<char, 2048> user_stack;

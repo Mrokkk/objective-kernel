@@ -7,8 +7,6 @@
 #include "definitions.hpp"
 #include "file_system.hpp"
 
-#include <kernel/console/logger.hpp>
-
 namespace ramfs {
 
 class ramfs final : public vfs::file_system {

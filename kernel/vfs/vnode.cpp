@@ -1,8 +1,6 @@
 #include <list.hpp>
 #include <unique_ptr.hpp>
 
-#include <kernel/console/logger.hpp>
-
 #include "vfs.hpp"
 #include "vnode.hpp"
 #include "cache.hpp"

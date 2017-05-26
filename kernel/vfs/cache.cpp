@@ -1,4 +1,3 @@
-#include <kernel/console/logger.hpp>
 #include "cache.hpp"
 
 namespace vfs {
