@@ -2,6 +2,8 @@
 
 namespace time {
 
+size_t jiffies;
+
 void initialize() {
 }
 
