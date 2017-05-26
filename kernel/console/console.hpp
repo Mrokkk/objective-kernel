@@ -22,6 +22,7 @@ public:
     console &operator<<(const char *str);
     console &operator<<(char str[]);
     console &operator<<(int a);
+    console &operator<<(uint64_t a);
     console &operator<<(uint32_t a);
     console &operator<<(uint16_t a);
     console &operator<<(uint8_t a);

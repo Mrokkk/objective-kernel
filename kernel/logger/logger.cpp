@@ -26,30 +26,32 @@ void logger::set_console(console::console &console) {
 }
 
 logger::line_wrapper logger::operator<<(log_level l) {
-    *console_ << "[" << time::jiffies << "]: " << component_ << ": ";
-    switch (l) {
-        case log_level::debug: {
-            *console_ << "DBG";
-            break;
+    if (console_) {
+        *console_ << "[" << time::jiffies << "]: " << component_ << ": ";
+        switch (l) {
+            case log_level::debug: {
+                *console_ << "DBG";
+                break;
+            }
+            case log_level::info: {
+                *console_ << "INF";
+                break;
+            }
+            case log_level::warning: {
+                *console_ << "WRN";
+                break;
+            }
+            case log_level::error: {
+                *console_ << "ERR";
+                break;
+            }
+            default: {
+                *console_ << "DBG";
+                break;
+            }
         }
-        case log_level::info: {
-            *console_ << "INF";
-            break;
-        }
-        case log_level::warning: {
-            *console_ << "WRN";
-            break;
-        }
-        case log_level::error: {
-            *console_ << "ERR";
-            break;
-        }
-        default: {
-            *console_ << "DBG";
-            break;
-        }
+        *console_ << " : ";
     }
-    *console_ << " : ";
     return line_wrapper(*this);
 }
 

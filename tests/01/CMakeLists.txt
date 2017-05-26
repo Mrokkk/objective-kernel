@@ -46,6 +46,7 @@ set_target_properties(ut-common PROPERTIES
     COMPILE_FLAGS "-Werror -include ${CMAKE_SOURCE_DIR}/kernel/definitions.hpp -include ${CMAKE_SOURCE_DIR}/kernel/cpu/common.hpp")
 
 add_library(ut-vfs
+    ${CMAKE_SOURCE_DIR}/kernel/time/time.cpp
     ${CMAKE_SOURCE_DIR}/kernel/logger/logger.cpp
     ${CMAKE_SOURCE_DIR}/kernel/vfs/vfs.cpp
     ${CMAKE_SOURCE_DIR}/kernel/vfs/vnode.cpp

@@ -52,6 +52,13 @@ console &console::operator<<(uint32_t a) {
     return *this;
 }
 
+console &console::operator<<(uint64_t a) {
+    char buf[32];
+    sprintf(buf, "0x%08x", a);
+    print_(buf);
+    return *this;
+}
+
 console &console::operator<<(uint16_t a) {
     char buf[32];
     sprintf(buf, "0x%04x", a);
