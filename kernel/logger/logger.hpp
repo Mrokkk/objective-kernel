@@ -13,6 +13,7 @@ struct logger {
 private:
 
     static logger instance_;
+    static utils::spinlock spinlock_;
     utils::string component_;
     console::console *console_ = nullptr;
 
@@ -22,6 +23,7 @@ private:
 
     template <typename T>
     logger &operator<<(T t) {
+        utils::scoped_lock l(spinlock_);
         if (console_) {
             *console_ << t;
         }
@@ -33,8 +35,14 @@ private:
             case log_level::debug: {
                 return "DBG";
             }
+            case log_level::info: {
+                return "INF";
+            }
             case log_level::warning: {
                 return "WRN";
+            }
+            case log_level::error: {
+                return "ERR";
             }
             default: {
                 return "DBG";
