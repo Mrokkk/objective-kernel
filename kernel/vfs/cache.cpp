@@ -3,6 +3,10 @@
 
 namespace vfs {
 
+cache::cache() {
+    logger_.initialize("vfs.cache");
+}
+
 cache::dir_entry *cache::find(const utils::string &name, const dir_entry *parent) {
     if (not parent) {
         if (not root_) {
@@ -34,32 +38,32 @@ cache::dir_entry *cache::find(const vnode_t &node, utils::list<dir_entry *> *lis
         list = &root_->dir_entries;
     }
     for (auto entry : *list) {
-        console::cout << debug << "looking at " << entry->name << "\n";
+        logger_ << logger::log_level::debug << "looking at " << entry->name << "\n";
         if (entry->node == nullptr) {
-            console::cout << warning << "cache entry is null\n";
+            logger_ << logger::log_level::warning << "cache entry is null\n";
             continue; // FIXME
         }
         if (entry->node == node.get()) {
-            console::cout << debug << "\"" << entry->name << "\" found in cache" << "\n";
+            logger_ << logger::log_level::debug << "\"" << entry->name << "\" found in cache" << "\n";
             return entry;
         }
         if (entry->node->node_type == vnode::type::dir) {
-            console::cout << debug << "going to dir " << entry->name << "\n";
+            logger_ << logger::log_level::debug << "going to dir " << entry->name << "\n";
             auto result = find(node, &entry->dir_entries);
             if (result) {
                 return result;
             }
         }
         else {
-            console::cout << debug << entry->name << " is a file" << "\n";
+            logger_ << logger::log_level::debug << entry->name << " is a file" << "\n";
         }
     }
-    console::cout << warning << "no cache for node\n";
+    logger_ << logger::log_level::warning << "no cache for node\n";
     return nullptr;
 }
 
 cache::dir_entry *cache::add(const utils::string &name, vnode_t &vnode, dir_entry *parent) {
-    console::cout << debug << "adding " << name << "\n";
+    logger_ << logger::log_level::debug << "adding " << name << "\n";
     if (parent == nullptr) {
         root_ = new cache::dir_entry("/", vnode);
         return root_;

@@ -7,13 +7,10 @@
 
 namespace console {
 
-#define debug "DEBUG: "
-#define warning "WARNING: "
-
 #define assert(cond) \
     do { \
         if (!(cond)) { \
-            ::console::cout << (utils::last_occurrence(__FILE__, '/') + 1) << ":" << __LINE__ << warning << "assertion failed: " << #cond << "\n"; \
+            ::console::cout << (utils::last_occurrence(__FILE__, '/') + 1) << ":" << __LINE__ << "WRN:" << "assertion failed: " << #cond << "\n"; \
         } \
     } while (0)
 

@@ -9,7 +9,7 @@ logger log;
 
 void initialize() {
     log.initialize("scheduler");
-    log << "Initializing...\n";
+    log << logger::log_level::debug << "Initializing...";
     auto init_process = utils::make_shared<process>();
     processes.push_front(init_process);
 }

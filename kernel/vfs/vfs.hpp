@@ -4,6 +4,7 @@
 #include <array.hpp>
 
 #include <kernel/error.hpp>
+#include <kernel/logger/logger.hpp>
 
 #include "file.hpp"
 #include "cache.hpp"
@@ -16,6 +17,7 @@ namespace vfs {
 class vfs {
 
     static null_block_device null_bd_;
+    logger logger_;
 
     utils::array<block_device *, 32> block_devices_;
     unsigned bd_index_ = 0;

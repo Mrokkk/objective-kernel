@@ -3,6 +3,7 @@
 #include <list.hpp>
 #include <string.hpp>
 #include <unique_ptr.hpp>
+#include <kernel/logger/logger.hpp>
 
 #include "vnode.hpp"
 
@@ -32,9 +33,11 @@ struct cache {
 private:
 
     utils::unique_ptr<dir_entry> root_;
+    logger logger_;
 
 public:
 
+    cache();
     dir_entry *add(const utils::string &name, vnode_t &vnode, dir_entry *parent = nullptr);
     dir_entry *find(const utils::string &name, const dir_entry *parent = nullptr);
     dir_entry *find(const vnode_t &node, utils::list<dir_entry *> *list = nullptr);

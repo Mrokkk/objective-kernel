@@ -14,6 +14,7 @@ namespace vfs {
 null_block_device vfs::null_bd_;
 
 vfs::vfs(file_system &rootfs, block_device &bd) {
+    logger_.initialize("vfs");
     block_devices_[0] = &null_bd_;
     register_device(null_bd_); // FIXME
     auto dev = get_device_id(bd);
@@ -48,7 +49,7 @@ maybe<vnode_t> vfs::lookup(const path_t &path) {
         if (child_entry == nullptr) {
             node = mount_point->fs->lookup(utils::path(name), node);
             if (not node) {
-                console::cout << warning << "no such file " << path << "\n";
+                logger_ << logger::log_level::warning << "no such file " << path << "\n";
                 return error::err_no_such_file;
             }
             node->mount_point = mount_point;
@@ -58,12 +59,12 @@ maybe<vnode_t> vfs::lookup(const path_t &path) {
         else {
             node = child_entry->node;
             if (not node) {
-                console::cout << warning << "node is null\n";
+                logger_ << logger::log_level::warning << "node is null\n";
             }
         }
         if (node->mount_point != mount_point) {
             if (node->mount_point == nullptr) {
-                console::cout << warning << "no fs pointer for " << path << "\n";
+                logger_ << logger::log_level::warning << "no fs pointer for " << path << "\n";
                 return error::err_no_root;
             }
             mount_point = node->mount_point;
@@ -85,10 +86,10 @@ maybe<vnode_t> vfs::create(const path_t &path, vnode::type type) {
     }
     utils::path filename(path.basename());
     if (node_exists(filename, *dir_node)) {
-        console::cout << warning << to_string(type) << " " << path << " exists\n";
+        logger_ << logger::log_level::warning << to_string(type) << " " << path << " exists\n";
         return error::err_exists;
     }
-    console::cout << debug << "creating " << to_string(type) << " " << path.get() << "\n";
+    logger_ << logger::log_level::debug << "creating " << to_string(type) << " " << path.get() << "\n";
     auto new_node = dir_node->mount_point->fs->create(filename, *dir_node, type);
     if (not new_node) {
         return error::err_cannot_create;
@@ -98,7 +99,7 @@ maybe<vnode_t> vfs::create(const path_t &path, vnode::type type) {
     dir_node->mount_point->vnodes_.push_back(new_node);
     auto cache_parent = cache_.find(*dir_node);
     if (not cache_parent) {
-        console::cout << warning << "parent node for " << path << " isn\'t cached\n";
+        logger_ << logger::log_level::warning << "parent node for " << path << " isn\'t cached\n";
         return new_node;
     }
     cache_.add(filename.get(), new_node, cache_parent);
