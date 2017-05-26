@@ -37,17 +37,17 @@ add_executable(${PROJECT_NAME}-ut
     ramfs.cpp
 )
 
-add_library(ut-common
+add_library(ut-common SHARED
     ${CMAKE_SOURCE_DIR}/kernel/printf.cpp
+    ${CMAKE_SOURCE_DIR}/kernel/time/time.cpp
+    ${CMAKE_SOURCE_DIR}/kernel/logger/logger.cpp
     ${CMAKE_SOURCE_DIR}/kernel/console/console.cpp
 )
 
 set_target_properties(ut-common PROPERTIES
     COMPILE_FLAGS "-Werror -include ${CMAKE_SOURCE_DIR}/kernel/definitions.hpp -include ${CMAKE_SOURCE_DIR}/kernel/cpu/common.hpp")
 
-add_library(ut-vfs
-    ${CMAKE_SOURCE_DIR}/kernel/time/time.cpp
-    ${CMAKE_SOURCE_DIR}/kernel/logger/logger.cpp
+add_library(ut-vfs SHARED
     ${CMAKE_SOURCE_DIR}/kernel/vfs/vfs.cpp
     ${CMAKE_SOURCE_DIR}/kernel/vfs/vnode.cpp
     ${CMAKE_SOURCE_DIR}/kernel/vfs/cache.cpp
@@ -68,6 +68,9 @@ if(COVERAGE)
     add_coverage_targets(${PROJECT_NAME}-ut ut-run ut ${CMAKE_SOURCE_DIR}/kernel
         # Excluded files
         ${CMAKE_SOURCE_DIR}/kernel/printf.cpp
+        ${CMAKE_SOURCE_DIR}/kernel/time/time.cpp
+        ${CMAKE_SOURCE_DIR}/kernel/logger/logger.cpp
+        ${CMAKE_SOURCE_DIR}/kernel/logger/logger.hpp
         ${CMAKE_SOURCE_DIR}/kernel/console/console.cpp
         ${CMAKE_SOURCE_DIR}/kernel/console/console.hpp)
 endif()
