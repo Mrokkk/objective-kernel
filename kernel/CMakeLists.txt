@@ -4,6 +4,7 @@ add_subdirectory(cpu)
 add_subdirectory(memory)
 add_subdirectory(logger)
 add_subdirectory(scheduler)
+add_subdirectory(time)
 add_subdirectory(vfs)
 
 set_property(SOURCE head.S PROPERTY LANGUAGE C)
@@ -14,6 +15,7 @@ add_library(kernel head.S cpp_support.cpp printf.cpp
     $<TARGET_OBJECTS:memory>
     $<TARGET_OBJECTS:logger>
     $<TARGET_OBJECTS:scheduler>
+    $<TARGET_OBJECTS:time>
     $<TARGET_OBJECTS:vfs>
 )
 

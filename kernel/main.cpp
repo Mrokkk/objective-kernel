@@ -4,6 +4,7 @@
 #include <kernel/cpu/cpu.hpp>
 #include <kernel/vfs/vfs.hpp>
 #include <kernel/vfs/file.hpp>
+#include <kernel/time/time.hpp>
 #include <kernel/vfs/ramfs.hpp>
 #include <kernel/boot/boot.hpp>
 #include <kernel/cpu/reboot.hpp>
@@ -33,6 +34,7 @@ asmlinkage void main() {
     memory::initialize();
     cpp_support::initialize();
     cpu::initialize();
+    time::initialize();
     drivers::vga::initialize();
     console::initialize(drivers::vga::print);
     logger::set_console(console::cout);
