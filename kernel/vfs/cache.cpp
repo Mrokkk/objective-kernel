@@ -38,32 +38,32 @@ cache::dir_entry *cache::find(const vnode_t &node, utils::list<dir_entry *> *lis
         list = &root_->dir_entries;
     }
     for (auto entry : *list) {
-        logger_ << logger::log_level::debug << "looking at " << entry->name << "\n";
+        logger_ << logger::log_level::debug << "looking at " << entry->name;
         if (entry->node == nullptr) {
-            logger_ << logger::log_level::warning << "cache entry is null\n";
+            logger_ << logger::log_level::warning << "cache entry is null";
             continue; // FIXME
         }
         if (entry->node == node.get()) {
-            logger_ << logger::log_level::debug << "\"" << entry->name << "\" found in cache" << "\n";
+            logger_ << logger::log_level::debug << "\"" << entry->name << "\" found in cache";
             return entry;
         }
         if (entry->node->node_type == vnode::type::dir) {
-            logger_ << logger::log_level::debug << "going to dir " << entry->name << "\n";
+            logger_ << logger::log_level::debug << "going to dir " << entry->name;
             auto result = find(node, &entry->dir_entries);
             if (result) {
                 return result;
             }
         }
         else {
-            logger_ << logger::log_level::debug << entry->name << " is a file" << "\n";
+            logger_ << logger::log_level::debug << entry->name << " is a file";
         }
     }
-    logger_ << logger::log_level::warning << "no cache for node\n";
+    logger_ << logger::log_level::warning << "no cache for node";
     return nullptr;
 }
 
 cache::dir_entry *cache::add(const utils::string &name, vnode_t &vnode, dir_entry *parent) {
-    logger_ << logger::log_level::debug << "adding " << name << "\n";
+    logger_ << logger::log_level::debug << "adding " << name;
     if (parent == nullptr) {
         root_ = new cache::dir_entry("/", vnode);
         return root_;
