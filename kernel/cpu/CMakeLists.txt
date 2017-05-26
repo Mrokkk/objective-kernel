@@ -6,4 +6,6 @@ add_library(cpu OBJECT
     exceptions.cpp
     exceptions.S
     idt.cpp
+    irq.cpp
+    pit.cpp
 )

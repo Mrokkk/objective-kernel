@@ -37,3 +37,10 @@
     popl %fs; \
     popl %gs;
 
+#define PIC_EOI(nr) \
+    mov $0x20, %al; \
+    .if nr > 7; \
+        outb %al, $0xa0; \
+    .endif; \
+    outb %al, $0x20
+

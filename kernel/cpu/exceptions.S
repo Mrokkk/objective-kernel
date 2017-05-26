@@ -17,3 +17,10 @@ define_exception_errno(stack_segment)
 define_exception_errno(general_protection)
 define_exception_errno(page_fault)
 
+ENTRY(systick_handler)
+    incl jiffies
+    SAVE_ALL
+    PIC_EOI(0)
+    RESTORE_ALL
+    iret
+

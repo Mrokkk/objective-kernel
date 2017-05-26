@@ -29,8 +29,13 @@ declare_extern_exception(stack_segment);
 declare_extern_exception(general_protection);
 declare_extern_exception(page_fault);
 
+asmlinkage void systick_handler();
+
 #define exception_initialize(x) \
     idt_entries[__NR_##x].set_gate(reinterpret_cast<uint32_t>(exc_##x##_handler), segment::kernel_cs, gdt::flags::type::trap_gate_32)
+
+#define __timer_isr(x) \
+    idt_entries[x].set_gate(reinterpret_cast<uint32_t>(systick_handler), segment::kernel_cs, gdt::flags::type::trap_gate_32)
 
 void initialize() {
     exception_initialize(divide_error);
@@ -48,6 +53,7 @@ void initialize() {
     exception_initialize(stack_segment);
     exception_initialize(general_protection);
     exception_initialize(page_fault);
+    __timer_isr(32);
     idt.load();
 }
 
