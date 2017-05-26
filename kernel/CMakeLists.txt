@@ -2,6 +2,7 @@ add_subdirectory(boot)
 add_subdirectory(console)
 add_subdirectory(cpu)
 add_subdirectory(memory)
+add_subdirectory(logger)
 add_subdirectory(scheduler)
 add_subdirectory(vfs)
 
@@ -11,6 +12,7 @@ add_library(kernel head.S cpp_support.cpp printf.cpp
     $<TARGET_OBJECTS:console>
     $<TARGET_OBJECTS:cpu>
     $<TARGET_OBJECTS:memory>
+    $<TARGET_OBJECTS:logger>
     $<TARGET_OBJECTS:scheduler>
     $<TARGET_OBJECTS:vfs>
 )

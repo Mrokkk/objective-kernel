@@ -11,6 +11,7 @@
 #include <kernel/memory/memory.hpp>
 #include <kernel/console/logger.hpp>
 #include <kernel/console/console.hpp>
+#include <kernel/logger/logger.hpp>
 #include <kernel/scheduler/process.hpp>
 
 utils::array<char, 2048> user_stack;
@@ -32,9 +33,10 @@ asmlinkage void main() {
     memory::initialize();
     cpp_support::initialize();
     cpu::initialize();
-    scheduler::initialize();
     drivers::vga::initialize();
     console::initialize(drivers::vga::print);
+    logger::set_console(console::cout);
+    scheduler::initialize();
     ramfs::ramfs ramfs;
     vfs::initialize(ramfs);
     print_info();
