@@ -36,7 +36,7 @@ function run_test() {
     timeout --foreground ${timeout} \
         ${qemu} -cdrom ${image} -display none -serial stdio -no-reboot -cpu core2duo 2>>log \
                 | sed -u '/.*Booting/d' | tee -a log | \
-                    grep "RUN\|PASS\|FAIL\|failed\|error\|WARNING${grep_patterns}"
+                    grep "RUN\|PASS\|FAIL\|failed\|INF\|DBG\|ERR\|WRN${grep_patterns}"
     if [[ ${PIPESTATUS[0]} -eq 124 ]]; then
         fail_message "$(sed 's/.*-//g; s/\.iso//g' <<<${test}) timed out (${timeout}s)" | tee -a log
     fi
