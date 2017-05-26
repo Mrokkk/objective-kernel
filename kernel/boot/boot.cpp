@@ -1,7 +1,5 @@
 #include <string.hpp>
 
-#include <kernel/memory/paging/paging.hpp>
-
 #include "boot.hpp"
 #include "detail/common.hpp"
 
@@ -14,11 +12,10 @@ module modules[4];
 uint32_t modules_start;
 uint32_t modules_end;
 
-
 asmlinkage __section(.text.boot)
 void read_bootloader_data(void *data, uint32_t) {
     detail::read_bootloader(data);
 }
 
-} // namespace bootloader
+} // namespace boot
 

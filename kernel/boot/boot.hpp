@@ -15,5 +15,5 @@ extern module modules[];
 extern uint32_t modules_start;
 extern uint32_t modules_end;
 
-} // namespace bootloader
+} // namespace boot
 
