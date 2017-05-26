@@ -46,18 +46,19 @@ private:
 
 public:
 
-    logger() = default;
+    logger();
     void initialize(const utils::string &name);
     static void set_console(console::console &console);
+    static logger &get_logger();
     line_wrapper operator<<(log_level l);
 
     friend line_wrapper;
 
 };
 
-#define assert(cond) \
+#define ASSERT(cond) \
     do { \
         if (!(cond)) { \
-            ::console::cout << (utils::last_occurrence(__FILE__, '/') + 1) << ":" << __LINE__ << "WRN:" << "assertion failed: " << #cond << "\n"; \
+            ::logger::get_logger() << ::logger::log_level::error << (utils::last_occurrence(__FILE__, '/') + 1) << ":" << __LINE__ << ": assertion failed: " << #cond << "\n"; \
         } \
     } while (0)

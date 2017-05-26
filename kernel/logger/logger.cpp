@@ -11,6 +11,8 @@ logger::line_wrapper::~line_wrapper() {
     logger_ << "\n";
 }
 
+logger::logger() : component_("") {
+}
 
 logger::logger(logger &log, const utils::string &component) : component_(component),
         console_(log.console_) {
@@ -25,9 +27,13 @@ void logger::set_console(console::console &console) {
     instance_.console_ = &console;
 }
 
+logger &logger::get_logger() {
+    return instance_;
+}
+
 logger::line_wrapper logger::operator<<(log_level l) {
     if (console_) {
-        *console_ << "[" << time::jiffies << "]: " << component_ << ": ";
+        *console_ << "[" << time::jiffies << "]:[";
         switch (l) {
             case log_level::debug: {
                 *console_ << "DBG";
@@ -50,7 +56,7 @@ logger::line_wrapper logger::operator<<(log_level l) {
                 break;
             }
         }
-        *console_ << " : ";
+        *console_ << "]:" << component_ << ": ";
     }
     return line_wrapper(*this);
 }
