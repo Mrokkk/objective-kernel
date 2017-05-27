@@ -8,12 +8,12 @@
 #include <drivers/keyboard.hpp>
 #include <kernel/vfs/ramfs.hpp>
 #include <kernel/boot/boot.hpp>
-#include <kernel/cpu/reboot.hpp>
 #include <kernel/cpp_support.hpp>
 #include <kernel/memory/memory.hpp>
 #include <kernel/logger/logger.hpp>
 #include <kernel/console/console.hpp>
 #include <kernel/scheduler/process.hpp>
+#include <kernel/memory/paging/paging.hpp>
 
 utils::array<char, 2048> user_stack;
 

@@ -2,13 +2,11 @@
 #include <unique_ptr.hpp>
 
 #include <drivers/serial.hpp>
-#include <kernel/cpu/gdt.hpp>
-#include <kernel/cpu/idt.hpp>
+#include <kernel/cpu/cpu.hpp>
 #include <kernel/vfs/vfs.hpp>
 #include <kernel/vfs/file.hpp>
 #include <kernel/boot/boot.hpp>
 #include <kernel/vfs/ramfs.hpp>
-#include <kernel/cpu/reboot.hpp>
 #include <kernel/cpp_support.hpp>
 #include <kernel/memory/memory.hpp>
 #include <kernel/logger/logger.hpp>
@@ -101,8 +99,7 @@ TEST(vfs, can_do_things) {
 asmlinkage void main() {
     memory::initialize();
     cpp_support::initialize();
-    cpu::gdt::initialize();
-    cpu::idt::initialize();
+    cpu::initialize();
     drivers::serial::initialize();
     console::initialize(drivers::serial::print);
     logger::set_console(console::cout);
