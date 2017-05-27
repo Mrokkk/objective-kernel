@@ -41,7 +41,6 @@ asmlinkage void main() {
     ramfs::ramfs ramfs;
     vfs::initialize(ramfs);
     print_info();
-    asm volatile("sti");
     asm volatile(R"(
         pushl %0
         pushl %2

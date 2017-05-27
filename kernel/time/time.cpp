@@ -3,7 +3,7 @@
 
 namespace time {
 
-size_t jiffies;
+volatile size_t jiffies;
 
 void initialize() {
     cpu::pit::initialize();

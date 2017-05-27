@@ -31,6 +31,15 @@ void spinlock_unlock(volatile size_t *lock) {
         : "memory");
 }
 
+namespace cpu {
+namespace pit {
+
+void initialize() {
+}
+
+} // namespace pit
+} // namespace cpu
+
 void console_init();
 
 int main(int argc, const char *argv[]) {

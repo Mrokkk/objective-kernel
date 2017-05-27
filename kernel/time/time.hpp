@@ -4,7 +4,7 @@
 
 namespace time {
 
-asmlinkage size_t jiffies;
+asmlinkage volatile size_t jiffies;
 void initialize();
 
 } // namespace time
