@@ -32,13 +32,6 @@
 #define __STRING_general_protection "General Protection Fault"
 #define __STRING_page_fault         "Page Fault"
 
-#ifndef __ASSEMBLER__
-
-#define exception_name(x) \
-    __STRING_##x
-
-#endif
-
 #ifndef exception_errno
 #define exception_errno(...)
 #endif

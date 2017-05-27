@@ -77,8 +77,8 @@
         RESTORE_ALL; \
         iret;
 
-#include "irqs.h"
-#include "exceptions.h"
+#include "irqs.hpp"
+#include "exceptions.hpp"
 
 ENTRY(systick_handler)
     incl jiffies

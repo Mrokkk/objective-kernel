@@ -24,8 +24,8 @@ asmlinkage void syscall_handler();
 #define exception_noerrno(x) \
     asmlinkage void exc_##x##_handler();
 
-#include "irqs.h"
-#include "exceptions.h"
+#include "irqs.hpp"
+#include "exceptions.hpp"
 
 #undef timer_isr
 #undef pic_isr
@@ -49,8 +49,8 @@ asmlinkage void syscall_handler();
     idt_entries[__NR_##x].set_gate(reinterpret_cast<uint32_t>(exc_##x##_handler), segment::kernel_cs, gdt::flags::type::trap_gate_32)
 
 void initialize() {
-    #include "irqs.h"
-    #include "exceptions.h"
+    #include "irqs.hpp"
+    #include "exceptions.hpp"
     idt.load();
 }
 
