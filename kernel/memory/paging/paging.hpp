@@ -81,11 +81,11 @@ struct page_table_entry final {
 } __packed;
 
 inline void page_directory_load(page_directory_entry *pgd) {
-    registers::cr3_set(reinterpret_cast<uint32_t>(pgd));
+    cpu::registers::cr3_set(reinterpret_cast<uint32_t>(pgd));
 }
 
 inline void page_directory_reload() {
-    registers::cr3_set(registers::cr3_get());
+    cpu::registers::cr3_set(cpu::registers::cr3_get());
 }
 
 inline void invlpg(void *address) {

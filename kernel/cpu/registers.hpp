@@ -1,5 +1,7 @@
 #pragma once
 
+namespace cpu {
+
 namespace registers {
 
 inline uint32_t cr0_get() {
@@ -31,4 +33,6 @@ inline void cr3_set(uint32_t val) {
 }
 
 } // namespace registers
+
+} // namespace cpu
 
