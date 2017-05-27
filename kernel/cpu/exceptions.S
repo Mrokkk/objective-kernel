@@ -1,21 +1,5 @@
-#include "exceptions.h"
+#include "asm.h"
 #include "gdt.hpp"
-
-define_exception_noerrno(divide_error)
-define_exception_noerrno(debug)
-define_exception_noerrno(nmi)
-define_exception_noerrno(breakpoint)
-define_exception_noerrno(overflow)
-define_exception_noerrno(bound_range)
-define_exception_noerrno(invalid_opcode)
-define_exception_noerrno(device_na)
-define_exception_errno(double_fault)
-define_exception_noerrno(coprocessor)
-define_exception_errno(invalid_tss)
-define_exception_errno(segment_np)
-define_exception_errno(stack_segment)
-define_exception_errno(general_protection)
-define_exception_errno(page_fault)
 
 #define pic_isr(x) \
     ENTRY(isr_##x) \
@@ -28,7 +12,30 @@ define_exception_errno(page_fault)
         RESTORE_ALL; \
         iret; \
 
+#define exception_noerrno(x) \
+    ENTRY(exc_##x##_handler) \
+        SAVE_ALL; \
+        push $0; \
+        push $__NR_##x; \
+        call exception_handler; \
+        add $12, %esp; \
+        RESTORE_ALL; \
+        iret;
+
+#define exception_errno(x) \
+    ENTRY(exc_##x##_handler) \
+        mov (%esp), %eax; \
+        add $4, %esp; \
+        SAVE_ALL; \
+        push %eax; \
+        push $__NR_##x; \
+        call exception_handler; \
+        add $12, %esp; \
+        RESTORE_ALL; \
+        iret;
+
 #include "irqs.h"
+#include "exceptions.h"
 
 ENTRY(systick_handler)
     incl jiffies

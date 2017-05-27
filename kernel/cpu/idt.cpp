@@ -1,6 +1,5 @@
 #include "idt.hpp"
 #include "gdt.hpp"
-#include "exceptions.h"
 
 namespace cpu {
 
@@ -13,36 +12,26 @@ idtr idt = {
         idt_entries
 };
 
-declare_extern_exception(divide_error);
-declare_extern_exception(debug);
-declare_extern_exception(nmi);
-declare_extern_exception(breakpoint);
-declare_extern_exception(overflow);
-declare_extern_exception(bound_range);
-declare_extern_exception(invalid_opcode);
-declare_extern_exception(device_na);
-declare_extern_exception(double_fault);
-declare_extern_exception(coprocessor);
-declare_extern_exception(invalid_tss);
-declare_extern_exception(segment_np);
-declare_extern_exception(stack_segment);
-declare_extern_exception(general_protection);
-declare_extern_exception(page_fault);
-
 asmlinkage void systick_handler();
 asmlinkage void syscall_handler();
 
 #define pic_isr(x) \
     asmlinkage void isr_##x();
 
+#define exception_errno(x) \
+    asmlinkage void exc_##x##_handler();
+
+#define exception_noerrno(x) \
+    asmlinkage void exc_##x##_handler();
+
 #include "irqs.h"
+#include "exceptions.h"
 
 #undef timer_isr
 #undef pic_isr
 #undef syscall_isr
-
-#define exception_initialize(x) \
-    idt_entries[__NR_##x].set_gate(reinterpret_cast<uint32_t>(exc_##x##_handler), segment::kernel_cs, gdt::flags::type::trap_gate_32)
+#undef exception_errno
+#undef exception_noerrno
 
 #define timer_isr(x) \
     idt_entries[x].set_gate(reinterpret_cast<uint32_t>(systick_handler), segment::kernel_cs, gdt::flags::type::trap_gate_32);
@@ -53,23 +42,15 @@ asmlinkage void syscall_handler();
 #define syscall_isr(x) \
     idt_entries[x].set_gate(reinterpret_cast<uint32_t>(syscall_handler), segment::kernel_cs, gdt::flags::type::trap_gate_32 | gdt::flags::ring3);
 
+#define exception_errno(x) \
+    idt_entries[__NR_##x].set_gate(reinterpret_cast<uint32_t>(exc_##x##_handler), segment::kernel_cs, gdt::flags::type::trap_gate_32)
+
+#define exception_noerrno(x) \
+    idt_entries[__NR_##x].set_gate(reinterpret_cast<uint32_t>(exc_##x##_handler), segment::kernel_cs, gdt::flags::type::trap_gate_32)
+
 void initialize() {
-    exception_initialize(divide_error);
-    exception_initialize(debug);
-    exception_initialize(nmi);
-    exception_initialize(breakpoint);
-    exception_initialize(overflow);
-    exception_initialize(bound_range);
-    exception_initialize(invalid_opcode);
-    exception_initialize(device_na);
-    exception_initialize(double_fault);
-    exception_initialize(coprocessor);
-    exception_initialize(invalid_tss);
-    exception_initialize(segment_np);
-    exception_initialize(stack_segment);
-    exception_initialize(general_protection);
-    exception_initialize(page_fault);
     #include "irqs.h"
+    #include "exceptions.h"
     idt.load();
 }
 

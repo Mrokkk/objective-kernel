@@ -1,7 +1,5 @@
 #pragma once
 
-#include "asm.h"
-
 #define __NR_divide_error           0
 #define __NR_debug                  1
 #define __NR_nmi                    2
@@ -34,37 +32,34 @@
 #define __STRING_general_protection "General Protection Fault"
 #define __STRING_page_fault         "Page Fault"
 
-#ifdef __ASSEMBLER__
-
-#define define_exception_noerrno(x) \
-    ENTRY(exc_##x##_handler) \
-        SAVE_ALL; \
-        push $0; \
-        push $__NR_##x; \
-        call exception_handler; \
-        add $12, %esp; \
-        RESTORE_ALL; \
-        iret;
-
-#define define_exception_errno(x) \
-    ENTRY(exc_##x##_handler) \
-        mov (%esp), %eax; \
-        add $4, %esp; \
-        SAVE_ALL; \
-        push %eax; \
-        push $__NR_##x; \
-        call exception_handler; \
-        add $12, %esp; \
-        RESTORE_ALL; \
-        iret;
-
-#else
+#ifndef __ASSEMBLER__
 
 #define exception_name(x) \
     __STRING_##x
 
-#define declare_extern_exception(x) \
-    asmlinkage void exc_##x##_handler(void)
-
 #endif
+
+#ifndef exception_errno
+#define exception_errno(...)
+#endif
+
+#ifndef exception_noerrno
+#define exception_noerrno(...)
+#endif
+
+exception_noerrno(divide_error)
+exception_noerrno(debug)
+exception_noerrno(nmi)
+exception_noerrno(breakpoint)
+exception_noerrno(overflow)
+exception_noerrno(bound_range)
+exception_noerrno(invalid_opcode)
+exception_noerrno(device_na)
+exception_errno(double_fault)
+exception_noerrno(coprocessor)
+exception_errno(invalid_tss)
+exception_errno(segment_np)
+exception_errno(stack_segment)
+exception_errno(general_protection)
+exception_errno(page_fault)
 
