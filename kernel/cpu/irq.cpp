@@ -23,12 +23,12 @@ irq irqs[32];
 
 using namespace io;
 
-asmlinkage void do_irq(uint32_t nr, struct stack_frame *) {
+asmlinkage void do_irq(uint32_t nr, stack_frame *frame) {
     if (irqs[nr].handler_) {
-        irqs[nr].handler_(nr);
+        irqs[nr].handler_(nr, frame);
         return;
     }
-    logger::get_logger() << logger::log_level::error << "Not handled INT" << nr;
+    logger::get_logger() << logger::log_level::error << "Not handled INT " << (int)nr;
 }
 
 void enable(uint32_t irq) {
@@ -79,7 +79,7 @@ inline void icw4_send() {
     outb(1, PIC2 + 1);
 }
 
-void empty_isr(uint32_t) {
+void empty_isr(uint32_t, stack_frame *) {
 }
 
 } // namespace

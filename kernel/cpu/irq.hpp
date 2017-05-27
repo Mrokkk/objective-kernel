@@ -1,12 +1,14 @@
 #pragma once
 
+#include "stack_frame.hpp"
+
 namespace cpu {
 
 namespace irq {
 
 struct irq {
 
-    using handler = void(*)(uint32_t);
+    using handler = void(*)(uint32_t, stack_frame *);
 
     handler handler_;
     const char *name_;

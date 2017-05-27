@@ -5,6 +5,7 @@
 #include <kernel/vfs/vfs.hpp>
 #include <kernel/vfs/file.hpp>
 #include <kernel/time/time.hpp>
+#include <drivers/keyboard.hpp>
 #include <kernel/vfs/ramfs.hpp>
 #include <kernel/boot/boot.hpp>
 #include <kernel/cpu/reboot.hpp>
@@ -34,6 +35,7 @@ asmlinkage void main() {
     cpp_support::initialize();
     cpu::initialize();
     drivers::vga::initialize();
+    drivers::keyboard::initialize();
     console::initialize(drivers::vga::print);
     logger::set_console(console::cout);
     time::initialize();
@@ -43,7 +45,7 @@ asmlinkage void main() {
     print_info();
     cpu::sti();
     while (1) {
-        cpu::halt();
+        //cpu::halt();
     }
 }
 
