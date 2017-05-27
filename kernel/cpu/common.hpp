@@ -22,5 +22,17 @@ inline irq_lock make_irq_lock() {
     return {};
 }
 
+inline void halt() {
+    asm volatile("hlt");
+}
+
+inline void cli() {
+    asm volatile("cli");
+}
+
+inline void sti() {
+    asm volatile("sti");
+}
+
 } // namespace cpu
 

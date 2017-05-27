@@ -33,31 +33,17 @@ asmlinkage void main() {
     memory::initialize();
     cpp_support::initialize();
     cpu::initialize();
-    time::initialize();
     drivers::vga::initialize();
     console::initialize(drivers::vga::print);
     logger::set_console(console::cout);
+    time::initialize();
     scheduler::initialize();
     ramfs::ramfs ramfs;
     vfs::initialize(ramfs);
     print_info();
-    asm volatile(R"(
-        pushl %0
-        pushl %2
-        pushl $0x200
-        pushl %1
-        push $1f
-        iret
-        1:
-        mov %0, %%ds
-        mov %0, %%es
-        mov %0, %%fs
-        mov %0, %%gs)"
-        :: "a" (cpu::segment::user_ds),
-           "i" (cpu::segment::user_cs),
-           "r" (&user_stack[2048])
-        : "memory"
-    );
-    while (1);
+    cpu::sti();
+    while (1) {
+        cpu::halt();
+    }
 }
 
