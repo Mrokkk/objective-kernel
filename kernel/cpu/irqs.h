@@ -1,34 +1,34 @@
-#ifndef __isr
-#define __isr(x)
+#ifndef isr
+#define isr(x)
 #endif
 
-#ifndef __pic_isr
-#define __pic_isr(x)
+#ifndef pic_isr
+#define pic_isr(x)
 #endif
 
-#ifndef __timer_isr
-#define __timer_isr(x)
+#ifndef timer_isr
+#define timer_isr(x)
 #endif
 
-#ifndef __syscall_handler
-#define __syscall_handler(x)
+#ifndef syscall_isr
+#define syscall_isr(x)
 #endif
 
-__timer_isr(32)
-__pic_isr(33)
-__pic_isr(34)
-__pic_isr(35)
-__pic_isr(36)
-__pic_isr(37)
-__pic_isr(38)
-__pic_isr(39)
-__pic_isr(40)
-__pic_isr(41)
-__pic_isr(42)
-__pic_isr(43)
-__pic_isr(44)
-__pic_isr(45)
-__pic_isr(46)
-__pic_isr(47)
-__syscall_handler(128)
+timer_isr(32)
+pic_isr(33)
+pic_isr(34)
+pic_isr(35)
+pic_isr(36)
+pic_isr(37)
+pic_isr(38)
+pic_isr(39)
+pic_isr(40)
+pic_isr(41)
+pic_isr(42)
+pic_isr(43)
+pic_isr(44)
+pic_isr(45)
+pic_isr(46)
+pic_isr(47)
+syscall_isr(128)
 

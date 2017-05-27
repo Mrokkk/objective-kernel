@@ -30,12 +30,28 @@ declare_extern_exception(general_protection);
 declare_extern_exception(page_fault);
 
 asmlinkage void systick_handler();
+asmlinkage void syscall_handler();
+
+#define pic_isr(x) \
+    asmlinkage void isr_##x();
+
+#include "irqs.h"
+
+#undef timer_isr
+#undef pic_isr
+#undef syscall_isr
 
 #define exception_initialize(x) \
     idt_entries[__NR_##x].set_gate(reinterpret_cast<uint32_t>(exc_##x##_handler), segment::kernel_cs, gdt::flags::type::trap_gate_32)
 
-#define __timer_isr(x) \
-    idt_entries[x].set_gate(reinterpret_cast<uint32_t>(systick_handler), segment::kernel_cs, gdt::flags::type::trap_gate_32)
+#define timer_isr(x) \
+    idt_entries[x].set_gate(reinterpret_cast<uint32_t>(systick_handler), segment::kernel_cs, gdt::flags::type::trap_gate_32);
+
+#define pic_isr(x) \
+    idt_entries[x].set_gate(reinterpret_cast<uint32_t>(isr_##x), segment::kernel_cs, gdt::flags::type::trap_gate_32);
+
+#define syscall_isr(x) \
+    idt_entries[x].set_gate(reinterpret_cast<uint32_t>(syscall_handler), segment::kernel_cs, gdt::flags::type::trap_gate_32 | gdt::flags::ring3);
 
 void initialize() {
     exception_initialize(divide_error);
@@ -53,7 +69,7 @@ void initialize() {
     exception_initialize(stack_segment);
     exception_initialize(general_protection);
     exception_initialize(page_fault);
-    __timer_isr(32);
+    #include "irqs.h"
     idt.load();
 }
 

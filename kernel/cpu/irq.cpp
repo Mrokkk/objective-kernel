@@ -1,6 +1,7 @@
 #include "io.hpp"
 #include "irq.hpp"
 #include "pit.hpp"
+#include "stack_frame.hpp"
 
 namespace cpu {
 
@@ -15,6 +16,9 @@ static uint16_t mask = 0xffff;
 #define ICW2_PIC2   0x28
 
 using namespace io;
+
+asmlinkage void do_irq(uint32_t, struct stack_frame *) {
+}
 
 void irq_enable(uint32_t irq) {
     mask &= ~(1 << irq);
