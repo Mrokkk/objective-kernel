@@ -45,7 +45,7 @@ asmlinkage void main() {
     print_info();
     cpu::sti();
     while (1) {
-        //cpu::halt();
+        cpu::halt();
     }
 }
 

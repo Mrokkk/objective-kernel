@@ -111,10 +111,9 @@ uint8_t keyboard_receive() {
     return cpu::io::inb(DATA_PORT);
 }
 
-void keyboard_irs(uint32_t, cpu::stack_frame *) {
-    // FIXME
-    auto _ = cpu::make_irq_lock();
+void irs(uint32_t, cpu::stack_frame *) {
     auto scan_code = keyboard_receive();
+    if (scan_code > 0x39) return;
     keyboard_disable();
     auto character = scancodes[scan_code][0];
     console::printf("%c", character);
@@ -157,7 +156,7 @@ void initialize() {
 
     keyboard_enable();
 
-    cpu::irq::register_handler(0x01, keyboard_irs, "keyboard");
+    cpu::irq::register_handler(0x01, &irs, "keyboard");
 }
 
 } // namespace keyboard
