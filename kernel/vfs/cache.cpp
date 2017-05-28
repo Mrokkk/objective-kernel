@@ -2,8 +2,7 @@
 
 namespace vfs {
 
-cache::cache() {
-    logger_.initialize("vfs.cache");
+cache::cache() : logger_("vfs.cache") {
 }
 
 cache::dir_entry *cache::find(const utils::string &name, const dir_entry *parent) {

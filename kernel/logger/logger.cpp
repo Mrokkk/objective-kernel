@@ -1,7 +1,8 @@
 #include <kernel/time/time.hpp>
 #include "logger.hpp"
 
-logger logger::instance_;
+logger logger::instance_("");
+console::console *logger::console_;
 utils::spinlock logger::spinlock_;
 
 logger::line_wrapper::line_wrapper(logger &logger) : logger_(logger) {
@@ -11,16 +12,7 @@ logger::line_wrapper::~line_wrapper() {
     logger_ << "\n";
 }
 
-logger::logger() : component_("") {
-}
-
-logger::logger(logger &log, const utils::string &component) : component_(component),
-        console_(log.console_) {
-}
-
-void logger::initialize(const utils::string &name) {
-    component_ = name;
-    console_ = instance_.console_;
+logger::logger(const utils::string &component) : component_(component) {
 }
 
 void logger::set_console(console::console &console) {

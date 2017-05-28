@@ -14,9 +14,7 @@ private:
     static logger instance_;
     static utils::spinlock spinlock_;
     utils::string component_;
-    console::console *console_ = nullptr;
-
-    logger(logger &log, const utils::string &component);
+    static console::console *console_;
 
     template <typename T>
     logger &operator<<(T t) {
@@ -46,8 +44,8 @@ private:
 
 public:
 
-    logger();
-    void initialize(const utils::string &name);
+    logger(const utils::string &component);
+
     static void set_console(console::console &console);
     static logger &get_logger();
     line_wrapper operator<<(log_level l);
@@ -62,3 +60,4 @@ public:
             ::logger::get_logger() << ::logger::log_level::error << (utils::last_occurrence(__FILE__, '/') + 1) << ":" << __LINE__ << ": assertion failed: " << #cond << "\n"; \
         } \
     } while (0)
+
