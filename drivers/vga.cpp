@@ -52,7 +52,7 @@ public:
             : char_(c), attr_(attr) {
     }
 
-} __packed;
+} PACKED;
 
 video_char *pointer = reinterpret_cast<video_char *>(memory::virt_address(0xb8000u));
 uint8_t default_attribute = forecolor(color::gray) | backcolor(color::black);

@@ -38,14 +38,14 @@ void *operator new[](std::size_t, void *address);
 #define asmlinkage
 #endif
 
-#define __packed __attribute__((packed))
-#define __section(x) __attribute__ ((section(#x)))
+#define PACKED __attribute__((packed))
+#define SECTION(x) __attribute__ ((section(#x)))
 
-#define expand(x) x
-#define paste(a, b) a##b
+#define EXPAND(x) x
+#define PASTE(a, b) a##b
 
-#define __stringify(x) #x
-#define stringify(x) __stringify(x)
+#define __STRINGIFY(x) #x
+#define STRINGIFY(x) __STRINGIFY(x)
 
 namespace yacppl {}
 

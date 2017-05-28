@@ -5,7 +5,7 @@ namespace boot {
 
 namespace detail {
 
-__section(.boot)
+SECTION(.boot)
 void strcpy(const char *from, char *to) {
     while (*from) {
         *to++ = *from++;
@@ -13,12 +13,12 @@ void strcpy(const char *from, char *to) {
     *to = 0;
 }
 
-__section(.boot)
+SECTION(.boot)
 uint32_t *phys_address(uint32_t *a) {
     return reinterpret_cast<uint32_t *>(reinterpret_cast<uint32_t>(a) - KERNEL_PAGE_OFFSET);
 }
 
-__section(.boot)
+SECTION(.boot)
 char *phys_address(char *a) {
     return reinterpret_cast<char *>(reinterpret_cast<uint32_t>(a) - KERNEL_PAGE_OFFSET);
 }

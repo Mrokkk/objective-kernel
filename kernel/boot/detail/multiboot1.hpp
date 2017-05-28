@@ -58,7 +58,7 @@ struct multiboot_info {
         uint32_t interface_off;
         uint32_t interface_len;
     } vbe;
-} __packed;
+} PACKED;
 
 /* The module structure. */
 struct module {

@@ -8,7 +8,7 @@ namespace boot {
 
 namespace detail {
 
-__section(.boot)
+SECTION(.boot)
 void read_bootloader(void *tag) {
     auto mb_data = static_cast<multiboot_info *>(tag);
     strcpy(mb_data->cmdline, phys_address(::boot::cmdline));

@@ -8,7 +8,7 @@ namespace boot {
 
 namespace detail {
 
-__section(.boot)
+SECTION(.boot)
 void read_bootloader(void *tag) {
     auto module_index = 0u;
     for (auto temp = reinterpret_cast<mb2_tag *>(static_cast<mb2_tags_header *>(tag) + 1); temp->type != 0;

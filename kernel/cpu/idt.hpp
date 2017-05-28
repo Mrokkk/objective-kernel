@@ -20,7 +20,7 @@ struct idt_entry {
         flags = f | 0x80;
     }
 
-} __packed;
+} PACKED;
 
 struct idtr {
 
@@ -34,7 +34,7 @@ struct idtr {
         );
     }
 
-} __packed;
+} PACKED;
 
 void initialize();
 

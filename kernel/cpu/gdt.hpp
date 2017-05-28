@@ -58,7 +58,7 @@ struct gdt_entry final {
         return access & 0x1e;
     }
 
-} __packed;
+} PACKED;
 
 struct gdtr final {
 
@@ -73,7 +73,7 @@ struct gdtr final {
         )" :: "a" (this));
     }
 
-} __packed;
+} PACKED;
 
 struct tss final {
 
@@ -119,7 +119,7 @@ struct tss final {
         asm volatile("ltr %%ax" :: "a" (segment::tss));
     }
 
-} __packed;
+} PACKED;
 
 void initialize();
 

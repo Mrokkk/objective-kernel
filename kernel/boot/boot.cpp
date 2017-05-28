@@ -12,7 +12,7 @@ module modules[4];
 uint32_t modules_start;
 uint32_t modules_end;
 
-asmlinkage __section(.boot)
+asmlinkage SECTION(.boot)
 void read_bootloader_data(void *data, uint32_t) {
     detail::read_bootloader(data);
 }

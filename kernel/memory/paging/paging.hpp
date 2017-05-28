@@ -64,7 +64,7 @@ struct page_directory_entry final {
     uint32_t size : 1;
     uint32_t ignored : 4;
     uint32_t address : 20;
-} __packed;
+} PACKED;
 
 struct page_table_entry final {
     uint32_t present : 1;
@@ -78,7 +78,7 @@ struct page_table_entry final {
     uint32_t global : 1;
     uint32_t ignored : 3;
     uint32_t address : 20;
-} __packed;
+} PACKED;
 
 inline void page_directory_load(page_directory_entry *pgd) {
     cpu::registers::cr3_set(reinterpret_cast<uint32_t>(pgd));

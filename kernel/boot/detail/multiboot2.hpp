@@ -5,12 +5,12 @@
 struct mb2_tags_header {
     uint32_t size;
     uint32_t reserved;
-} __packed;
+} PACKED;
 
 struct mb2_tag {
     uint32_t type;
     uint32_t size;
-} __packed;
+} PACKED;
 
 struct mb2_module_tag {
     uint32_t type;
@@ -18,7 +18,7 @@ struct mb2_module_tag {
     uint32_t mod_start;
     uint32_t mod_end;
     char *name;
-} __packed;
+} PACKED;
 
 #endif
 
