@@ -17,12 +17,6 @@ ENTRY(_start)
     push %eax
     push %ebx
 
-    mov $KERNEL_DS, %eax
-    mov %ax, %ds
-    mov %ax, %es
-    mov %ax, %fs
-    mov %ax, %gs
-
     movl $__bss_start - KERNEL_PAGE_OFFSET, %edi
     movl $__bss_end - KERNEL_PAGE_OFFSET, %ecx
     subl %edi, %ecx
