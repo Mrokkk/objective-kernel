@@ -7,7 +7,7 @@ SECTION(.multiboot)
 
 MULTIBOOT_HEADER()
 
-SECTION(.text.boot)
+SECTION(.boot)
 
 ENTRY(_start)
 

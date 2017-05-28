@@ -12,7 +12,7 @@ SECTIONS {
     .unpagged BLOCK(4K) : ALIGN(4K) {
         __unpagged_start = .;
         KEEP(*(.multiboot))
-        KEEP(*(.text.boot))
+        KEEP(*(.boot))
         *multiboot[1-2].cpp.o(.rodata)
         __unpagged_end = .;
     }
@@ -22,14 +22,14 @@ SECTIONS {
     . = ALIGN(4K);
     .text BLOCK(4K) : AT(ADDR(.text) - __kernel_offset) {
         __text_start = .;
-        *(.text)
+        *(.text*)
+        *(.gnu.linkonce.*)
         __text_end = .;
     }
 
     . = ALIGN(4K);
     .rodata BLOCK(4K) : AT(ADDR(.rodata) - __kernel_offset) {
-        KEEP (*(.rodata))
-        KEEP (*(.rodata.*))
+        KEEP (*(.rodata*))
     }
 
     . = ALIGN(4);
@@ -59,9 +59,7 @@ SECTIONS {
     .bss BLOCK(4K) : AT(ADDR(.bss) - __kernel_offset) {
         __bss_start = .;
         *(COMMON)
-        *(.bss)
-        *(.bss.*)
-        *(.stack)
+        *(.bss*)
         __bss_end = .;
     }
 
@@ -69,5 +67,12 @@ SECTIONS {
 
     __heap_start = .;
 
+    /DISCARD/ : {
+        /**(.dynstr)*/
+        /**(.dynsym)*/
+        *(.eh_frame)
+        *(.note)
+        *(.comment)
+    }
 }
 
