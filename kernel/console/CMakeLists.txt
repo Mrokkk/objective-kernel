@@ -1,1 +1,1 @@
-add_library(console OBJECT console.cpp)
+add_library(console OBJECT console.cpp printf.cpp)

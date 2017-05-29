@@ -38,9 +38,9 @@ add_executable(${PROJECT_NAME}-ut
 )
 
 add_library(ut-common SHARED
-    ${CMAKE_SOURCE_DIR}/kernel/printf.cpp
     ${CMAKE_SOURCE_DIR}/kernel/time/time.cpp
     ${CMAKE_SOURCE_DIR}/kernel/logger/logger.cpp
+    ${CMAKE_SOURCE_DIR}/kernel/console/printf.cpp
     ${CMAKE_SOURCE_DIR}/kernel/console/console.cpp
 )
 

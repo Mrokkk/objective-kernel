@@ -8,7 +8,7 @@ add_subdirectory(time)
 add_subdirectory(vfs)
 
 set_property(SOURCE head.S PROPERTY LANGUAGE C)
-add_library(kernel head.S cxx.cpp printf.cpp
+add_library(kernel head.S cxx.cpp
     $<TARGET_OBJECTS:boot>
     $<TARGET_OBJECTS:console>
     $<TARGET_OBJECTS:cpu>
