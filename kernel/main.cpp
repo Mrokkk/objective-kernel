@@ -1,5 +1,6 @@
 #include <array.hpp>
 
+#include <kernel/cxx.hpp>
 #include <drivers/vga.hpp>
 #include <kernel/cpu/cpu.hpp>
 #include <kernel/vfs/vfs.hpp>
@@ -8,7 +9,6 @@
 #include <drivers/keyboard.hpp>
 #include <kernel/vfs/ramfs.hpp>
 #include <kernel/boot/boot.hpp>
-#include <kernel/cpp_support.hpp>
 #include <kernel/memory/memory.hpp>
 #include <kernel/logger/logger.hpp>
 #include <kernel/console/console.hpp>
@@ -32,7 +32,7 @@ void print_info() {
 
 asmlinkage void main() {
     memory::initialize();
-    cpp_support::initialize();
+    cxx::initialize();
     cpu::initialize();
     drivers::vga::initialize();
     drivers::keyboard::initialize();

@@ -91,7 +91,7 @@ void spinlock_unlock(volatile size_t *lock) {
         : "memory");
 }
 
-namespace cpp_support {
+namespace cxx {
 
 using init_fn = void (*)();
 
@@ -110,5 +110,5 @@ void initialize() {
     }
 }
 
-} // namespace cpp_support
+} // namespace cxx
 

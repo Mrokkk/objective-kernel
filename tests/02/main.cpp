@@ -1,13 +1,13 @@
 #include <shared_ptr.hpp>
 #include <unique_ptr.hpp>
 
+#include <kernel/cxx.hpp>
 #include <drivers/serial.hpp>
 #include <kernel/cpu/cpu.hpp>
 #include <kernel/vfs/vfs.hpp>
 #include <kernel/vfs/file.hpp>
 #include <kernel/boot/boot.hpp>
 #include <kernel/vfs/ramfs.hpp>
-#include <kernel/cpp_support.hpp>
 #include <kernel/memory/memory.hpp>
 #include <kernel/logger/logger.hpp>
 #include <kernel/console/console.hpp>
@@ -98,7 +98,7 @@ TEST(vfs, can_do_things) {
 
 asmlinkage void main() {
     memory::initialize();
-    cpp_support::initialize();
+    cxx::initialize();
     cpu::initialize();
     drivers::serial::initialize();
     console::initialize(drivers::serial::print);
