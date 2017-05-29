@@ -23,7 +23,7 @@ bool vfs::node_exists(const path_t &filename, const vnode_t &parent) const {
     return static_cast<bool>(n);
 }
 
-maybe<vnode_t> vfs::mount(const path_t &path, file_system &fs, block_device &bd) {
+utils::maybe<vnode_t> vfs::mount(const path_t &path, file_system &fs, block_device &bd) {
     auto dev = get_device_id(bd);
     auto dir_node = lookup(path);
     if (not dir_node) {
@@ -35,7 +35,7 @@ maybe<vnode_t> vfs::mount(const path_t &path, file_system &fs, block_device &bd)
     return dir_node;
 }
 
-maybe<vnode_t> vfs::lookup(const path_t &path) {
+utils::maybe<vnode_t> vfs::lookup(const path_t &path) {
     class mount_point *mount_point = mount_points_.front().get();
     auto path_it = path.begin();
     vnode_t node;
@@ -47,7 +47,7 @@ maybe<vnode_t> vfs::lookup(const path_t &path) {
             node = mount_point->fs->lookup(utils::path(name), node);
             if (not node) {
                 logger_ << logger::log_level::warning << "no such file " << path;
-                return error::err_no_such_file;
+                return utils::error(errno::err_no_such_file);
             }
             node->mount_point = mount_point;
             mount_point->vnodes_.push_back(node);
@@ -62,7 +62,7 @@ maybe<vnode_t> vfs::lookup(const path_t &path) {
         if (node->mount_point != mount_point) {
             if (node->mount_point == nullptr) {
                 logger_ << logger::log_level::warning << "no fs pointer for " << path;
-                return error::err_no_root;
+                return utils::error(errno::err_no_root);
             }
             mount_point = node->mount_point;
         }
@@ -72,24 +72,24 @@ maybe<vnode_t> vfs::lookup(const path_t &path) {
     return node;
 }
 
-maybe<vnode_t> vfs::create(const path_t &path, vnode::type type) {
+utils::maybe<vnode_t> vfs::create(const path_t &path, vnode::type type) {
     auto dirname = utils::path(path.dirname());
     auto dir_node = lookup(dirname);
     if (not dir_node) {
-        return dir_node.get_error();
+        return utils::error(dir_node.get_error());
     }
     if (dir_node->node_type != vnode::type::dir) {
-        return error::err_no_such_file;
+        return utils::error(errno::err_no_such_file);
     }
     utils::path filename(path.basename());
     if (node_exists(filename, *dir_node)) {
         logger_ << logger::log_level::warning << to_string(type) << " " << path << " exists";
-        return error::err_exists;
+        return utils::error(errno::err_exists);
     }
     logger_ << logger::log_level::debug << "creating " << to_string(type) << " " << path.get();
     auto new_node = dir_node->mount_point->fs->create(filename, *dir_node, type);
     if (not new_node) {
-        return error::err_cannot_create;
+        return utils::error(errno::err_cannot_create);
     }
     new_node->node_type = type;
     new_node->mount_point = dir_node->mount_point;
@@ -103,16 +103,16 @@ maybe<vnode_t> vfs::create(const path_t &path, vnode::type type) {
     return new_node;
 }
 
-maybe<file_t> vfs::open(const path_t &path, file::mode mode) {
+utils::maybe<file_t> vfs::open(const path_t &path, file::mode mode) {
     auto node = lookup(path);
     if (not node) {
         node = create(path, vnode::type::file);
         if (not node) {
-            return node.get_error();
+            return utils::error(node.get_error());
         }
     }
     if (node->node_type != vnode::type::file) {
-        return error::err_is_a_dir;
+        return utils::error(errno::err_is_a_dir);
     }
     return utils::make_shared<file>(*node, mode);
 }

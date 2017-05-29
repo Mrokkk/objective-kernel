@@ -2,7 +2,6 @@
 
 #include "definitions.hpp"
 #include "mount_point.hpp"
-#include <kernel/error.hpp>
 
 namespace vfs {
 

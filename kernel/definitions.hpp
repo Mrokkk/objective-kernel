@@ -54,5 +54,14 @@ namespace utils = yacppl;
 #define __off_t_defined
 using off_t = int;
 
+enum errno {
+    err_no_error = 0,
+    err_no_such_file,
+    err_is_a_dir,
+    err_exists,
+    err_cannot_create,
+    err_no_root,
+};
+
 #endif
 

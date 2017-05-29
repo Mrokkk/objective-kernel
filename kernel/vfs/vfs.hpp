@@ -2,8 +2,8 @@
 
 #include <list.hpp>
 #include <array.hpp>
+#include <maybe.hpp>
 
-#include <kernel/error.hpp>
 #include <kernel/logger/logger.hpp>
 
 #include "file.hpp"
@@ -35,10 +35,10 @@ public:
     };
 
     vfs(file_system &rootfs, block_device &bd);
-    maybe<vnode_t> mount(const path_t &path, file_system &fs, block_device &bd);
-    maybe<vnode_t> lookup(const path_t &path);
-    maybe<vnode_t> create(const path_t &path, vnode::type type);
-    maybe<file_t> open(const path_t &path, file::mode mode);
+    utils::maybe<vnode_t> mount(const path_t &path, file_system &fs, block_device &bd);
+    utils::maybe<vnode_t> lookup(const path_t &path);
+    utils::maybe<vnode_t> create(const path_t &path, vnode::type type);
+    utils::maybe<file_t> open(const path_t &path, file::mode mode);
     cache &get_cache();
 
     int register_device(block_device &dev);
