@@ -24,3 +24,35 @@ void initialize() {
 
 } // namespace memory
 
+void *operator new(size_t size) {
+    return memory::kernel_allocator.allocate(size);
+}
+
+void *operator new(size_t, void *address) {
+    return address;
+}
+
+void * operator new[](std::size_t, void *address) {
+    return address;
+}
+
+void operator delete(void *address) noexcept {
+    memory::kernel_allocator.free(address);
+}
+
+void operator delete(void *address, size_t) noexcept {
+    memory::kernel_allocator.free(address);
+}
+
+void *operator new[](size_t size) {
+    return memory::kernel_allocator.allocate(size);
+}
+
+void operator delete[](void *address) noexcept {
+    memory::kernel_allocator.free(address);
+}
+
+void operator delete[](void *address, size_t) noexcept {
+    memory::kernel_allocator.free(address);
+}
+

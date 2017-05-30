@@ -1,6 +1,12 @@
 #include <allocator.hpp>
+#include <kernel/logger/logger.hpp>
 #include <kernel/memory/paging/paging.hpp>
-#include <kernel/console/console.hpp>
+
+namespace {
+
+logger log;
+
+} // namespace
 
 asmlinkage {
 
@@ -11,7 +17,7 @@ int __cxa_atexit(void (*)(void *), void *, void *) {
 }
 
 void __cxa_pure_virtual() {
-    console::cout << "PANIC: called pure virtual method\n";
+    log << logger::log_level::error << "PANIC: called pure virtual method\n";
     while (1);
 }
 
@@ -24,44 +30,6 @@ void *memset(void *ptr, int value, unsigned n) {
 }
 
 } // asmlinkage
-
-namespace memory {
-
-extern utils::allocator<memory::paging::page_allocator, 32> kernel_allocator;
-
-} // namespace memory
-
-void *operator new(size_t size) {
-    return memory::kernel_allocator.allocate(size);
-}
-
-void *operator new(size_t, void *address) {
-    return address;
-}
-
-void * operator new[](std::size_t, void *address) {
-    return address;
-}
-
-void operator delete(void *address) noexcept {
-    memory::kernel_allocator.free(address);
-}
-
-void operator delete(void *address, size_t) noexcept {
-    memory::kernel_allocator.free(address);
-}
-
-void *operator new[](size_t size) {
-    return memory::kernel_allocator.allocate(size);
-}
-
-void operator delete[](void *address) noexcept {
-    memory::kernel_allocator.free(address);
-}
-
-void operator delete[](void *address, size_t) noexcept {
-    memory::kernel_allocator.free(address);
-}
 
 void atomic_increment(void *addr) {
     asm volatile("lock incl (%0)" :: "r" (addr));
@@ -102,6 +70,7 @@ asmlinkage init_fn __preinit_array_start[];
 asmlinkage init_fn __preinit_array_end[];
 
 void initialize() {
+    log.set_name("cxx");
     for (auto init_constructor = __preinit_array_start; init_constructor != __preinit_array_end; ++init_constructor) {
         (*init_constructor)();
     }
