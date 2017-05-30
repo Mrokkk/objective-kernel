@@ -12,6 +12,7 @@ namespace {
 
 uint16_t mask = 0xffff;
 irq irqs[32];
+logger log;
 
 } // namespace
 
@@ -28,7 +29,7 @@ asmlinkage void do_irq(uint32_t nr, stack_frame *frame) {
         irqs[nr].handler_(nr, frame);
         return;
     }
-    logger::get_logger() << logger::log_level::error << "Not handled INT " << (int)nr;
+    log << logger::log_level::error << "Not handled INT " << (int)nr;
 }
 
 void enable(uint32_t irq) {
@@ -42,13 +43,13 @@ void enable(uint32_t irq) {
 
 void register_handler(uint32_t nr, irq::handler handler, const char *name) {
     if (irqs[nr].handler_) {
-        logger::get_logger() << logger::log_level::error << "Cannot register IRQ " << nr;
+        log << logger::log_level::error << "Cannot register IRQ " << nr;
         return;
     }
     irqs[nr].handler_ = handler;
     irqs[nr].name_ = name;
     enable(nr);
-    logger::get_logger() << logger::log_level::info << "Registered IRQ " << nr << " " << name;
+    log << logger::log_level::info << "Registered IRQ " << nr << " " << name;
 }
 
 namespace {
@@ -85,6 +86,7 @@ void empty_isr(uint32_t, stack_frame *) {
 } // namespace
 
 void initialize() {
+    log.set_name("irq");
     icw1_send();
     icw2_send();
     icw3_send();

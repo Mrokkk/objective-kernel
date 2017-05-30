@@ -18,6 +18,10 @@ logger::line_wrapper::~line_wrapper() {
 logger::logger(const utils::string &component) : component_(component) {
 }
 
+void logger::set_name(const char *name) {
+    component_ = name;
+}
+
 void logger::set_console(console::console &console) {
     instance_.console_ = &console;
     *instance_.console_ << data_;

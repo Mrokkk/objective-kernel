@@ -1,6 +1,7 @@
 #include <allocator.hpp>
 #include <algorithm.hpp>
 #include <kernel/boot/boot.hpp>
+#include <kernel/logger/logger.hpp>
 #include <kernel/memory/sections.hpp>
 
 #include "paging.hpp"
@@ -14,6 +15,12 @@ namespace memory {
 uint32_t __end = 0u;
 
 namespace paging {
+
+namespace {
+
+logger log;
+
+} // namespace
 
 page_directory_entry *page_dir = nullptr;
 page_table_entry *page_tables = nullptr;
@@ -47,6 +54,7 @@ void set_page_directory() {
 }
 
 void initialize() {
+    log.set_name("memory.paging");
     __end = reinterpret_cast<uint32_t>(phys_address(sections::__heap_start));
     paging::page_dir = virt_address(::page_dir);
     paging::page_table_entry *temp_pgt = paging::page_tables = virt_address(::page0);

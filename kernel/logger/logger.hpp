@@ -17,7 +17,7 @@ private:
     static console::console default_;
     static char data_[4096];
     static size_t index_;
-    utils::string component_;
+    const char *component_;
 
     static void default_printer(const char *c) {
         utils::copy(c, data_ + index_);
@@ -55,10 +55,12 @@ private:
 
 public:
 
+    logger() = default;
     logger(const utils::string &component);
 
     static void set_console(console::console &console);
     static logger &get_logger();
+    void set_name(const char *name);
     line_wrapper operator<<(log_level l);
 
     friend line_wrapper;
