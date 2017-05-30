@@ -15,5 +15,7 @@ extern module modules[];
 extern uint32_t modules_start;
 extern uint32_t modules_end;
 
+void initialize();
+
 } // namespace boot
 

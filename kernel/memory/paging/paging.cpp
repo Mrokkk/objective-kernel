@@ -72,6 +72,7 @@ void initialize() {
     }
     paging::page_table_set(0, 0);
     paging::page_directory_reload();
+    log << logger::log_level::debug << "Page tables: " << (int)memory::paging::page_tables_number;
 }
 
 }
