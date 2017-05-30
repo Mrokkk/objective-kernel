@@ -68,8 +68,10 @@ SECTIONS {
     __heap_start = .;
 
     /DISCARD/ : {
-        /**(.dynstr)*/
-        /**(.dynsym)*/
+        *(.dynamic)
+        *(.gnu.hash)
+        *(.dynstr)
+        *(.dynsym)
         *(.eh_frame)
         *(.note)
         *(.comment)
