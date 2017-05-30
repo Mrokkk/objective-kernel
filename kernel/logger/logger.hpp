@@ -56,7 +56,7 @@ private:
 public:
 
     logger() = default;
-    logger(const utils::string &component);
+    logger(const char *component);
 
     static void set_console(console::console &console);
     static logger &get_logger();
