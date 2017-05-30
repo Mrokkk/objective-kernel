@@ -1,19 +1,20 @@
 #include <array.hpp>
 
-#include <kernel/cxx.hpp>
 #include <drivers/vga.hpp>
-#include <kernel/cpu/cpu.hpp>
-#include <kernel/vfs/vfs.hpp>
-#include <kernel/vfs/file.hpp>
-#include <kernel/time/time.hpp>
 #include <drivers/keyboard.hpp>
-#include <kernel/vfs/ramfs.hpp>
-#include <kernel/boot/boot.hpp>
-#include <kernel/memory/memory.hpp>
-#include <kernel/logger/logger.hpp>
-#include <kernel/console/console.hpp>
-#include <kernel/scheduler/process.hpp>
-#include <kernel/memory/paging/paging.hpp>
+
+#include "cxx.hpp"
+#include "cpu/cpu.hpp"
+#include "vfs/vfs.hpp"
+#include "vfs/file.hpp"
+#include "time/time.hpp"
+#include "vfs/ramfs.hpp"
+#include "boot/boot.hpp"
+#include "memory/memory.hpp"
+#include "logger/logger.hpp"
+#include "console/console.hpp"
+#include "scheduler/process.hpp"
+#include "memory/paging/paging.hpp"
 
 utils::array<char, 2048> user_stack;
 

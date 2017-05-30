@@ -13,14 +13,25 @@ private:
 
     static logger instance_;
     static utils::spinlock spinlock_;
-    utils::string component_;
     static console::console *console_;
+    static console::console default_;
+    static char data_[4096];
+    static size_t index_;
+    utils::string component_;
+
+    static void default_printer(const char *c) {
+        utils::copy(c, data_ + index_);
+        index_ += utils::length(c);
+    }
 
     template <typename T>
     logger &operator<<(T t) {
         utils::scoped_lock l(spinlock_);
         if (console_) {
             *console_ << t;
+        }
+        else {
+            (default_ = default_printer) << t;
         }
         return *this;
     }
@@ -57,7 +68,8 @@ public:
 #define ASSERT(cond) \
     do { \
         if (!(cond)) { \
-            ::logger::get_logger() << ::logger::log_level::error << (utils::last_occurrence(__FILE__, '/') + 1) << ":" << __LINE__ << ": assertion failed: " << #cond << "\n"; \
+            ::logger::get_logger() << ::logger::log_level::error << (utils::last_occurrence(__FILE__, '/') + 1) \
+                                   << ":" << __LINE__ << ": assertion failed: " << #cond << "\n"; \
         } \
     } while (0)
 
