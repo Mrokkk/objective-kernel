@@ -40,6 +40,7 @@ void *operator new[](std::size_t, void *address);
 
 #define PACKED __attribute__((packed))
 #define SECTION(x) __attribute__ ((section(#x)))
+#define FASTCALL(x) __attribute__((regparm(3))) x
 
 #define EXPAND(x) x
 #define PASTE(a, b) a##b

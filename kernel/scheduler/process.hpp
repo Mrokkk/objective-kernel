@@ -22,6 +22,7 @@ struct process {
     cpu::gdt::tss context;
     void *stack;
     state stat = state::stopped;
+    utils::kernel_list<process>::node running;
 
 };
 
