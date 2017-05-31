@@ -29,7 +29,6 @@ gdt_entry gdt_entries[] = {
 };
 
 gdtr gdt{sizeof(gdt_entries) - 1, gdt_entries};
-tss tss(&kernel_stack);
 
 void initialize() {
     gdt.load();
@@ -39,9 +38,13 @@ void initialize() {
         mov %0, %%fs
         mov %0, %%gs
     )" :: "r" (cpu::segment::kernel_ds));
-    gdt_entries[5].base(reinterpret_cast<uint32_t>(&tss));
+}
+
+void set_tss(tss &t) {
     gdt_entries[5].limit(sizeof(tss) - 128);
-    tss.load();
+    cpu::gdt::gdt_entries[5].base(reinterpret_cast<uint32_t>(&t));
+    cpu::gdt::gdt_entries[5].access &= 0xf9; /* Clear busy bit */
+    t.load();
 }
 
 } // namespace gdt

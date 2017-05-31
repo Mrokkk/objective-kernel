@@ -106,7 +106,9 @@ struct tss final {
     uint16_t iomap_offset = 104;
     uint8_t io_bitmap[128];
 
-    tss() = default;
+    tss() {
+        utils::fill(io_bitmap, io_bitmap + 128, 0xff);
+    }
 
     tss(void *kernel_stack) : esp0(reinterpret_cast<uint32_t>(kernel_stack)) {
         utils::fill(io_bitmap, io_bitmap + 128, 0xff);
@@ -119,6 +121,7 @@ struct tss final {
 } PACKED;
 
 void initialize();
+void set_tss(tss &t);
 
 namespace detail {
 
@@ -193,8 +196,6 @@ enum type {
 };
 
 } // namespace flags
-
-extern gdt_entry gdt_entries[];
 
 } // namespace gdt
 
