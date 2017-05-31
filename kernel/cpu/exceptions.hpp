@@ -1,5 +1,3 @@
-#pragma once
-
 #define __NR_divide_error           0
 #define __NR_debug                  1
 #define __NR_nmi                    2

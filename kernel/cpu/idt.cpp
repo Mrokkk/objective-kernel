@@ -43,10 +43,10 @@ asmlinkage void syscall_handler();
     idt_entries[x].set_gate(reinterpret_cast<uint32_t>(syscall_handler), segment::kernel_cs, gdt::flags::type::trap_gate_32 | gdt::flags::ring3);
 
 #define exception_errno(x) \
-    idt_entries[__NR_##x].set_gate(reinterpret_cast<uint32_t>(exc_##x##_handler), segment::kernel_cs, gdt::flags::type::trap_gate_32)
+    idt_entries[__NR_##x].set_gate(reinterpret_cast<uint32_t>(exc_##x##_handler), segment::kernel_cs, gdt::flags::type::trap_gate_32);
 
 #define exception_noerrno(x) \
-    idt_entries[__NR_##x].set_gate(reinterpret_cast<uint32_t>(exc_##x##_handler), segment::kernel_cs, gdt::flags::type::trap_gate_32)
+    idt_entries[__NR_##x].set_gate(reinterpret_cast<uint32_t>(exc_##x##_handler), segment::kernel_cs, gdt::flags::type::trap_gate_32);
 
 void initialize() {
     #include "irqs.hpp"
