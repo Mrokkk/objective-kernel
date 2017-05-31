@@ -7,6 +7,9 @@ namespace scheduler {
 utils::list<utils::shared_ptr<process>> processes;
 logger log("scheduler");
 
+asmlinkage void do_scheduler() {
+}
+
 void initialize() {
     log << logger::log_level::debug << "Initializing...";
     auto init_process = utils::make_shared<process>();

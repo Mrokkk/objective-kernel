@@ -83,6 +83,7 @@
 ENTRY(systick_handler)
     incl jiffies
     SAVE_ALL
+    call do_scheduler
     PIC_EOI(0)
     RESTORE_ALL
     iret

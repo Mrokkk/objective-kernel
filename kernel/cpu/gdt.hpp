@@ -79,7 +79,7 @@ struct tss final {
 
     uint32_t prev_tss;
     uint32_t esp0;
-    uint32_t ss0;
+    uint32_t ss0 = segment::kernel_ds;
     uint32_t esp1;
     uint32_t ss1;
     uint32_t esp2;
@@ -103,16 +103,13 @@ struct tss final {
     uint32_t gs;
     uint32_t ldt;
     uint16_t trap;
-    uint16_t iomap_offset;
+    uint16_t iomap_offset = 104;
     uint8_t io_bitmap[128];
 
     tss() = default;
 
-    tss(void *kernel_stack) {
-        utils::fill(io_bitmap, io_bitmap + 128, 0u);
-        iomap_offset = 104;
-        ss0 = segment::kernel_ds;
-        esp0 = reinterpret_cast<uint32_t>(kernel_stack);
+    tss(void *kernel_stack) : esp0(reinterpret_cast<uint32_t>(kernel_stack)) {
+        utils::fill(io_bitmap, io_bitmap + 128, 0xff);
     }
 
     void load() const {
@@ -196,6 +193,8 @@ enum type {
 };
 
 } // namespace flags
+
+extern gdt_entry gdt_entries[];
 
 } // namespace gdt
 
