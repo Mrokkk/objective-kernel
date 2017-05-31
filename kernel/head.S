@@ -1,4 +1,4 @@
-#include <kernel/cpu/gdt.hpp>
+#include <kernel/cpu/segment.hpp>
 #include <kernel/boot/multiboot.hpp>
 #include <kernel/memory/paging/paging.hpp>
 

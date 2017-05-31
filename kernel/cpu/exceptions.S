@@ -1,4 +1,4 @@
-#include "gdt.hpp"
+#include "segment.hpp"
 
 #define EIP_PUSHED      0
 #define CS_PUSHED       4

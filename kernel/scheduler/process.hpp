@@ -3,7 +3,7 @@
 #include <list.hpp>
 #include <shared_ptr.hpp>
 #include <kernel_list.hpp>
-#include <kernel/cpu/gdt.hpp>
+#include <kernel/cpu/tss.hpp>
 
 namespace scheduler {
 
@@ -19,7 +19,7 @@ struct process {
     };
 
     pid_t pid, ppid;
-    cpu::gdt::tss context;
+    cpu::tss context;
     void *stack;
     state stat = state::stopped;
     utils::kernel_list<process>::node running;

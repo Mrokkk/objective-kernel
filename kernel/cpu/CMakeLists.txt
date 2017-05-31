@@ -8,4 +8,5 @@ add_library(cpu OBJECT
     idt.cpp
     irq.cpp
     pit.cpp
+    tss.cpp
 )
