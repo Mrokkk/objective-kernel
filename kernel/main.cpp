@@ -1,6 +1,8 @@
 #include <drivers/vga.hpp>
+#include <drivers/serial.hpp>
 #include <drivers/keyboard.hpp>
 
+#include "kernel.hpp"
 #include "cxx.hpp"
 #include "cpu/cpu.hpp"
 #include "vfs/vfs.hpp"
@@ -12,6 +14,7 @@
 #include "logger/logger.hpp"
 #include "console/console.hpp"
 #include "scheduler/process.hpp"
+#include "scheduler/scheduler.hpp"
 #include "memory/paging/paging.hpp"
 
 asmlinkage void main() {
@@ -19,17 +22,23 @@ asmlinkage void main() {
     cxx::initialize();
     cpu::initialize();
     boot::initialize();
+
+    kernel::kernel kernel;
+
     drivers::vga::initialize();
+    drivers::serial::initialize();
     drivers::keyboard::initialize();
+
     console::initialize(drivers::vga::print);
-    logger::set_console(console::cout);
+    console::console syslog;
+    syslog = drivers::serial::print;
+    logger::set_console(syslog);
+
     time::initialize();
-    scheduler::initialize();
-    ramfs::ramfs ramfs;
-    vfs::initialize(ramfs);
-    cpu::sti();
-    while (1) {
-        cpu::halt();
-    }
+
+    scheduler::scheduler scheduler_component;
+    kernel.register_component(scheduler_component);
+
+    kernel.run();
 }
 

@@ -1,7 +1,5 @@
 #pragma once
 
-#include <list.hpp>
-#include <shared_ptr.hpp>
 #include <kernel_list.hpp>
 #include <kernel/cpu/tss.hpp>
 
@@ -25,10 +23,6 @@ struct process {
     utils::kernel_list<process>::node running;
 
 };
-
-extern utils::list<utils::shared_ptr<process>> processes;
-
-void initialize();
 
 } // namespace scheduler
 

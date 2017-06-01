@@ -1,1 +1,1 @@
-add_library(scheduler OBJECT process.cpp)
+add_library(scheduler OBJECT process.cpp scheduler.cpp)
