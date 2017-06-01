@@ -5,6 +5,7 @@
 #include <kernel_list.hpp>
 #include <kernel/component.hpp>
 #include "process.hpp"
+#include "schedulable.hpp"
 
 namespace scheduler {
 
