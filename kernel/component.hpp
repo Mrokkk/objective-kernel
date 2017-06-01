@@ -5,11 +5,14 @@
 
 namespace kernel {
 
+class kernel;
+
 class component {
-public:
     utils::kernel_list<component>::node node_;
+public:
     virtual const char *name() = 0;
     virtual void initialize() = 0;
+    friend kernel;
 };
 
 } // namespace kernel

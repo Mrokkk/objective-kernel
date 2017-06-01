@@ -18,7 +18,7 @@ class scheduler : public kernel::component {
     uint8_t init_process_stack_[2048];
     process init_process_;
     process *current_process_ = &init_process_;
-    size_t context_switches;
+    size_t context_switches_;
     logger logger_;
 
 public:

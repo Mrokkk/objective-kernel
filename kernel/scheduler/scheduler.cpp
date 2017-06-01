@@ -43,7 +43,7 @@ void scheduler::schedule() {
         current_process_ = &init_process_;
     }
     process_switch(last, current_process_);
-    ++context_switches;
+    ++context_switches_;
 }
 
 scheduler::scheduler() : run_queue_(&process::running) {
@@ -55,6 +55,7 @@ const char *scheduler::name() {
 }
 
 void scheduler::initialize() {
+    (void)logger_; // FIXME
     init_process_.context.esp0 = reinterpret_cast<uint32_t>(init_process_stack_) + 2048;
     cpu::gdt::set_tss(init_process_.context);
 }
