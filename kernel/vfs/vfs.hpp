@@ -4,6 +4,7 @@
 #include <array.hpp>
 #include <maybe.hpp>
 
+#include <kernel/component.hpp>
 #include <kernel/logger/logger.hpp>
 
 #include "file.hpp"
@@ -14,8 +15,9 @@
 
 namespace vfs {
 
-class vfs {
+class vfs : public kernel::component {
 
+    constexpr static const char *name_ = "vfs";
     static null_block_device null_bd_;
     logger logger_;
 
@@ -34,7 +36,9 @@ public:
        read, write, read_write
     };
 
-    vfs(file_system &rootfs, block_device &bd);
+    vfs(file_system &rootfs, block_device &bd = null_bd_);
+    const char *name() override;
+    void initialize() override;
     utils::maybe<vnode_t> mount(const path_t &path, file_system &fs, block_device &bd);
     utils::maybe<vnode_t> lookup(const path_t &path);
     utils::maybe<vnode_t> create(const path_t &path, vnode::type type);

@@ -39,6 +39,10 @@ asmlinkage void main() {
     scheduler::scheduler scheduler_component;
     kernel.register_component(scheduler_component);
 
+    ramfs::ramfs ramfs;
+    vfs::vfs vfs_component(ramfs);
+    kernel.register_component(vfs_component);
+
     kernel.run();
 }
 
