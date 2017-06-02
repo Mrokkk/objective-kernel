@@ -270,7 +270,7 @@ int vsprintf(char *buf, const char *fmt, va_list args)
                 break;
 
             case 'x':
-                flags |= SMALL;
+                flags |= SMALL; // fallthrough
             case 'X':
                 base = 16;
                 break;
