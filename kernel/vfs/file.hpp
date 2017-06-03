@@ -33,7 +33,5 @@ public:
 
 };
 
-file_t open(const path_t &path, file::mode mode = file::mode::read);
-
 } // namespace vfs
 

@@ -50,9 +50,7 @@ public:
 
 };
 
-void initialize(file_system &fs, block_device &bd = null_bd_);
 vnode_t mount_fs(const path_t &path, file_system &fs, block_device &bd = null_bd_);
-cache &get_cache();
 
 } // namespace vfs
 
