@@ -1,1 +1,1 @@
-add_library(vfs OBJECT vfs.cpp vnode.cpp cache.cpp file.cpp ramfs.cpp globals.cpp)
+add_library(vfs OBJECT vfs.cpp vnode.cpp cache.cpp file.cpp ramfs.cpp)

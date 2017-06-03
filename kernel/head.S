@@ -65,6 +65,6 @@ page_table0:
 
 SECTION(.bss)
 
-.skip 8192
+.skip 4096 * 12
 ENTRY(kernel_stack)
 

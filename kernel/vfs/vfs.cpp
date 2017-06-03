@@ -18,6 +18,13 @@ vfs::vfs(file_system &rootfs, block_device &bd) : logger_("vfs") {
     mount_points_.push_back(utils::make_shared<mount_point>("/", rootfs, dev));
 }
 
+const char *vfs::name() {
+    return "vfs";
+}
+
+void vfs::initialize() {
+}
+
 bool vfs::node_exists(const path_t &filename, const vnode_t &parent) const {
     auto n = parent->mount_point->fs->lookup(filename, parent);
     return static_cast<bool>(n);
