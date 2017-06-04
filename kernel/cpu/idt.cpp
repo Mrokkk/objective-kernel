@@ -7,7 +7,7 @@ namespace idt {
 
 namespace {
 
-struct entry {
+struct entry final {
 
     uint16_t base_lo;
     uint16_t sel;
@@ -25,7 +25,7 @@ struct entry {
 
 } PACKED entries[256];
 
-struct idtr {
+struct idtr final {
 
     uint16_t limit;
     entry *base;

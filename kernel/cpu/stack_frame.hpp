@@ -4,7 +4,7 @@
 
 namespace cpu {
 
-struct stack_frame {
+struct stack_frame final {
 
     uint32_t ebx;
     uint32_t ecx;

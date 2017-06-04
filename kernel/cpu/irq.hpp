@@ -6,7 +6,7 @@ namespace cpu {
 
 namespace irq {
 
-struct irq {
+struct irq final {
 
     using handler = void(*)(uint32_t, stack_frame *);
 

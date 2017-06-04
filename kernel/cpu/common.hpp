@@ -2,7 +2,7 @@
 
 namespace cpu {
 
-class irq_lock {
+class irq_lock final {
 
     uint32_t _flags;
 
