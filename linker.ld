@@ -35,15 +35,14 @@ SECTIONS {
     . = ALIGN(4);
     .preinit_array : AT(ADDR(.preinit_array) - __kernel_offset) {
         PROVIDE_HIDDEN (__preinit_array_start = .);
-        KEEP (*(.preinit_array))
+        KEEP (*(.preinit_array*))
         PROVIDE_HIDDEN (__preinit_array_end = .);
     }
 
     . = ALIGN(4);
     .init_array : AT(ADDR(.init_array) - __kernel_offset) {
         __init_array_start = .;
-        KEEP (*(SORT_BY_INIT_PRIORITY(.init_array.*) SORT_BY_INIT_PRIORITY(.ctors.*)))
-        KEEP (*(.init_array .ctors))
+        KEEP (*(SORT_BY_INIT_PRIORITY(.init_array*) SORT_BY_INIT_PRIORITY(.ctors*)))
         __init_array_end = .;
     }
 
