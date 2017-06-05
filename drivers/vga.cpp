@@ -3,6 +3,8 @@
 #include <kernel/cpu/io.hpp>
 #include <kernel/memory/paging/paging.hpp>
 
+#include "vga.hpp"
+
 #define blink (1 << 7)
 #define RESX 80
 #define RESY 25
@@ -125,6 +127,15 @@ void print(const char *text) {
 
 void initialize() {
     cls();
+}
+
+const char *device::name() {
+    return "video";
+}
+
+int device::write(const char *buffer, size_t) {
+    print(buffer);
+    return 0;
 }
 
 } // namespace vga

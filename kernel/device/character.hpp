@@ -7,9 +7,17 @@ namespace device {
 class manager;
 
 struct character {
+
     virtual const char *name() = 0;
-    virtual int read(char *buffer, size_t size);
-    virtual int write(const char *buffer, size_t size);
+
+    virtual int read(char *, size_t) {
+        return -1;
+    }
+
+    virtual int write(const char *, size_t) {
+        return -1;
+    }
+
 private:
     utils::kernel_list<character>::node node_;
     friend manager;
