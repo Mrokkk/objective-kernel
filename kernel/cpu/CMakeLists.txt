@@ -9,4 +9,5 @@ add_library(cpu OBJECT
     irq.cpp
     pit.cpp
     tss.cpp
+    pic.cpp
 )

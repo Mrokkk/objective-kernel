@@ -16,7 +16,6 @@ struct irq final {
 };
 
 void initialize();
-void enable(uint32_t irq);
 void register_handler(uint32_t number, irq::handler handler, const char *name);
 
 } // namespace irq

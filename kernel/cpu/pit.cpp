@@ -1,5 +1,6 @@
 #include "io.hpp"
 #include "pit.hpp"
+#include "pic.hpp"
 #include "irq.hpp"
 
 #define HZ 100
@@ -18,7 +19,7 @@ void initialize() {
             PIT_PORT_COMMAND);
     outb(LATCH & 0xff, PIT_PORT_CHANNEL0);
     outb(LATCH >> 8, PIT_PORT_CHANNEL0);
-    irq::enable(0);
+    pic::enable(0);
 }
 
 } // namespace pit
