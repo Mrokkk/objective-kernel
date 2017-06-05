@@ -9,6 +9,7 @@ asmlinkage void FASTCALL(__process_switch(process *, process *next)) {
     cpu::gdt::set_tss(next->context);
 }
 
+#ifndef STUB_PROCESS_SWITCH
 #define process_switch(prev, next) \
     do {                                \
         asm volatile(                   \
@@ -36,6 +37,9 @@ asmlinkage void FASTCALL(__process_switch(process *, process *next)) {
               "m" (next->context.eip),  \
               "a" (prev), "d" (next));  \
     } while (0)
+#else
+void process_switch(process *, process *);
+#endif
 
 void scheduler::schedule() {
     auto last = current_process_;
