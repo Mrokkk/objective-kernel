@@ -29,8 +29,13 @@ using std::size_t;
 int vsprintf(char *buf, const char *fmt, va_list args);
 int sprintf(char *buf, const char *fmt, ...);
 
-void *operator new(std::size_t, void *address);
-void *operator new[](std::size_t, void *address);
+inline constexpr void *operator new(std::size_t, void *address) {
+    return address;
+}
+
+inline constexpr void *operator new[](std::size_t, void *address) {
+    return address;
+}
 
 #ifdef __cplusplus
 #define asmlinkage extern "C"
