@@ -36,12 +36,12 @@ asmlinkage NORETURN void main() {
 
     time::initialize();
 
-    scheduler::scheduler scheduler_component;
-    kernel.register_component(scheduler_component);
+    scheduler::scheduler scheduler;
+    kernel.register_component(scheduler);
 
     ramfs::ramfs ramfs;
-    vfs::vfs vfs_component(ramfs);
-    kernel.register_component(vfs_component);
+    vfs::vfs vfs(ramfs);
+    kernel.register_component(vfs);
 
     kernel.run();
     while (1);
