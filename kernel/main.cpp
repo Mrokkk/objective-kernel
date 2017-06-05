@@ -17,7 +17,7 @@
 #include "scheduler/scheduler.hpp"
 #include "memory/paging/paging.hpp"
 
-asmlinkage void main() {
+asmlinkage NORETURN void main() {
     memory::initialize();
     cxx::initialize();
     cpu::initialize();
@@ -44,5 +44,6 @@ asmlinkage void main() {
     kernel.register_component(vfs_component);
 
     kernel.run();
+    while (1);
 }
 
