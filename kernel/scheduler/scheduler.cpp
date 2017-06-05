@@ -1,52 +1,17 @@
 #include <kernel/cpu/gdt.hpp>
+#include <kernel/cpu/tss.hpp>
 #include "scheduler.hpp"
 
 namespace scheduler {
 
 scheduler *scheduler::instance_;
 
-asmlinkage void FASTCALL(__process_switch(process *, process *next)) {
-    cpu::gdt::set_tss(next->context);
-}
-
-#ifndef STUB_PROCESS_SWITCH
-#define process_switch(prev, next) \
-    do {                                \
-        asm volatile(                   \
-            "push %%gs;"                \
-            "pushl %%ebx;"              \
-            "pushl %%ecx;"              \
-            "pushl %%esi;"              \
-            "pushl %%edi;"              \
-            "pushl %%ebp;"              \
-            "movl %%esp, %0;"           \
-            "movl %2, %%esp;"           \
-            "movl $1f, %1;"             \
-            "pushl %3;"                 \
-            "jmp __process_switch;"     \
-            "1: "                       \
-            "popl %%ebp;"               \
-            "popl %%edi;"               \
-            "popl %%esi;"               \
-            "popl %%ecx;"               \
-            "popl %%ebx;"               \
-            "pop %%gs;"                 \
-            : "=m" (prev->context.esp), \
-              "=m" (prev->context.eip)  \
-            : "m" (next->context.esp),  \
-              "m" (next->context.eip),  \
-              "a" (prev), "d" (next));  \
-    } while (0)
-#else
-void process_switch(process *, process *);
-#endif
-
 void scheduler::schedule() {
     auto last = current_process_;
     if (run_queue_.empty()) {
         current_process_ = &init_process_;
     }
-    process_switch(last, current_process_);
+    cpu::context_switch(last->context, current_process_->context);
     ++context_switches_;
 }
 

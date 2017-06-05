@@ -41,5 +41,7 @@ struct tss final {
 
 } PACKED;
 
+void context_switch(tss &prev, tss &next);
+
 } // namespace cpu
 
