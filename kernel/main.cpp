@@ -12,6 +12,7 @@
 #include "boot/boot.hpp"
 #include "memory/memory.hpp"
 #include "logger/logger.hpp"
+#include "device/manager.hpp"
 #include "console/console.hpp"
 #include "scheduler/process.hpp"
 #include "scheduler/scheduler.hpp"
@@ -38,6 +39,9 @@ asmlinkage NORETURN void main() {
 
     scheduler::scheduler scheduler;
     kernel.register_component(scheduler);
+
+    device::manager device_manager;
+    kernel.register_component(device_manager);
 
     ramfs::ramfs ramfs;
     vfs::vfs vfs(ramfs);
