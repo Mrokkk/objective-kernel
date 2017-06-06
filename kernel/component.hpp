@@ -7,13 +7,16 @@ namespace kernel {
 
 class kernel;
 
-class component {
-    utils::kernel_list<component>::node node_;
-public:
+struct component {
+    component(const char *name);
     virtual ~component() = default;
-    virtual const char *name() = 0;
     virtual void initialize() = 0;
     friend kernel;
+private:
+    utils::kernel_list<component>::node node_;
+    const char *name_;
+protected:
+    logger syslog;
 };
 
 } // namespace kernel

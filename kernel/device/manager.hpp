@@ -13,11 +13,7 @@ class manager final : public kernel::component {
 
 public:
 
-    manager() : character_devices_(&character::node_) {
-    }
-
-    const char *name() override {
-        return "devices_manager";
+    manager() : kernel::component("device_manager"), character_devices_(&character::node_) {
     }
 
     void initialize() override {

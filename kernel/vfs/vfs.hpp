@@ -19,7 +19,6 @@ class vfs : public kernel::component {
 
     constexpr static const char *name_ = "vfs";
     static null_block_device null_bd_;
-    logger logger_;
 
     utils::array<block_device *, 32> block_devices_;
     unsigned bd_index_ = 0;
@@ -37,7 +36,6 @@ public:
     };
 
     vfs(file_system &rootfs, block_device &bd = null_bd_);
-    const char *name() override;
     void initialize() override;
     utils::maybe<vnode_t> mount(const path_t &path, file_system &fs, block_device &bd);
     utils::maybe<vnode_t> lookup(const path_t &path);

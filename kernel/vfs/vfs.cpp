@@ -11,15 +11,11 @@ namespace vfs {
 
 null_block_device vfs::null_bd_;
 
-vfs::vfs(file_system &rootfs, block_device &bd) : logger_("vfs") {
+vfs::vfs(file_system &rootfs, block_device &bd) : kernel::component(name_) {
     block_devices_[0] = &null_bd_;
     register_device(null_bd_); // FIXME
     auto dev = get_device_id(bd);
     mount_points_.push_back(utils::make_shared<mount_point>("/", rootfs, dev));
-}
-
-const char *vfs::name() {
-    return "vfs";
 }
 
 void vfs::initialize() {
@@ -53,7 +49,7 @@ utils::maybe<vnode_t> vfs::lookup(const path_t &path) {
         if (child_entry == nullptr) {
             node = mount_point->fs->lookup(utils::path(name), node);
             if (not node) {
-                logger_ << logger::log_level::warning << "no such file " << path;
+                syslog << logger::log_level::warning << "no such file " << path;
                 return utils::error(errno::err_no_such_file);
             }
             node->mount_point = mount_point;
@@ -63,12 +59,12 @@ utils::maybe<vnode_t> vfs::lookup(const path_t &path) {
         else {
             node = child_entry->node;
             if (not node) {
-                logger_ << logger::log_level::warning << "node is null";
+                syslog << logger::log_level::warning << "node is null";
             }
         }
         if (node->mount_point != mount_point) {
             if (node->mount_point == nullptr) {
-                logger_ << logger::log_level::warning << "no fs pointer for " << path;
+                syslog << logger::log_level::warning << "no fs pointer for " << path;
                 return utils::error(errno::err_no_root);
             }
             mount_point = node->mount_point;
@@ -90,10 +86,10 @@ utils::maybe<vnode_t> vfs::create(const path_t &path, vnode::type type) {
     }
     utils::path filename(path.basename());
     if (node_exists(filename, *dir_node)) {
-        logger_ << logger::log_level::warning << to_string(type) << " " << path << " exists";
+        syslog << logger::log_level::warning << to_string(type) << " " << path << " exists";
         return utils::error(errno::err_exists);
     }
-    logger_ << logger::log_level::debug << "creating " << to_string(type) << " " << path.get();
+    syslog << logger::log_level::debug << "creating " << to_string(type) << " " << path.get();
     auto new_node = dir_node->mount_point->fs->create(filename, *dir_node, type);
     if (not new_node) {
         return utils::error(errno::err_cannot_create);
@@ -103,7 +99,7 @@ utils::maybe<vnode_t> vfs::create(const path_t &path, vnode::type type) {
     dir_node->mount_point->vnodes_.push_back(new_node);
     auto cache_parent = cache_.find(*dir_node);
     if (not cache_parent) {
-        logger_ << logger::log_level::warning << "parent node for " << path << " isn\'t cached";
+        syslog << logger::log_level::warning << "parent node for " << path << " isn\'t cached";
         return new_node;
     }
     cache_.add(filename.get(), new_node, cache_parent);

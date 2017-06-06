@@ -9,7 +9,7 @@ add_subdirectory(vfs)
 add_subdirectory(device)
 
 set_property(SOURCE head.S PROPERTY LANGUAGE C)
-add_library(kernel head.S cxx.cpp kernel.cpp
+add_library(kernel head.S cxx.cpp kernel.cpp component.cpp
     $<TARGET_OBJECTS:boot>
     $<TARGET_OBJECTS:console>
     $<TARGET_OBJECTS:cpu>

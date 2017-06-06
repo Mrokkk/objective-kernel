@@ -15,16 +15,11 @@ void scheduler::schedule() {
     ++context_switches_;
 }
 
-scheduler::scheduler() : run_queue_(&process::running) {
+scheduler::scheduler() : kernel::component(name_), run_queue_(&process::running) {
     instance_ = this;
 }
 
-const char *scheduler::name() {
-    return name_;
-}
-
 void scheduler::initialize() {
-    (void)logger_; // FIXME
     init_process_.context.esp0 = reinterpret_cast<uint32_t>(init_process_stack_) + 2048;
     cpu::gdt::set_tss(init_process_.context);
 }
