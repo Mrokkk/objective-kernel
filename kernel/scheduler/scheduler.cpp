@@ -33,6 +33,15 @@ scheduler &scheduler::instance() {
     return *instance_;
 }
 
+void scheduler::clone_process() {
+    auto new_pid = ++current_pid_;
+    auto new_process = utils::make_shared<process>();
+    new_process->pid = new_pid;
+    new_process->ppid = current_process_->pid;
+    processes_.push_back(new_process);
+    run_queue_.push_back(*new_process);
+}
+
 asmlinkage void do_scheduler() {
     scheduler::instance().schedule();
 }

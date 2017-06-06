@@ -20,6 +20,7 @@ class scheduler : public kernel::component {
     process init_process_;
     process *current_process_ = &init_process_;
     size_t context_switches_;
+    pid_t current_pid_;
     logger logger_;
 
 public:
@@ -28,6 +29,7 @@ public:
     const char *name() override;
     void initialize() override;
     void schedule();
+    void clone_process();
     static scheduler &instance();
 
 };
