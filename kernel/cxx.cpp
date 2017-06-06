@@ -4,7 +4,7 @@
 
 namespace {
 
-logger log;
+logger log("cxx");
 
 } // namespace
 
@@ -70,7 +70,6 @@ asmlinkage init_fn __preinit_array_start[];
 asmlinkage init_fn __preinit_array_end[];
 
 void initialize() {
-    log.set_name("cxx");
     for (auto init_constructor = __preinit_array_start; init_constructor != __preinit_array_end; ++init_constructor) {
         (*init_constructor)();
     }

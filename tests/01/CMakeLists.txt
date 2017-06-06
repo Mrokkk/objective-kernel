@@ -68,10 +68,11 @@ endif()
 if(COVERAGE)
     add_coverage_targets(${PROJECT_NAME}-ut ut-run ut ${CMAKE_SOURCE_DIR}/kernel
         # Excluded files
-        ${CMAKE_SOURCE_DIR}/kernel/printf.cpp
+        ${CMAKE_SOURCE_DIR}/kernel/component.cpp
         ${CMAKE_SOURCE_DIR}/kernel/time/time.cpp
         ${CMAKE_SOURCE_DIR}/kernel/logger/logger.cpp
         ${CMAKE_SOURCE_DIR}/kernel/logger/logger.hpp
+        ${CMAKE_SOURCE_DIR}/kernel/console/printf.cpp
         ${CMAKE_SOURCE_DIR}/kernel/console/console.cpp
         ${CMAKE_SOURCE_DIR}/kernel/console/console.hpp)
 endif()

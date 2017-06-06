@@ -10,7 +10,7 @@ namespace boot {
 
 namespace {
 
-logger log;
+logger log("boot");
 
 } // namespace
 
@@ -27,7 +27,6 @@ void read_bootloader_data(void *data, uint32_t) {
 }
 
 void initialize() {
-    log.set_name("boot");
     log << logger::log_level::info << "Bootloader name: " << boot::bootloader_name;
     log << logger::log_level::info << "Boot command-line: " << boot::cmdline;
     log << logger::log_level::info << "Upper mem: " << (int)(boot::upper_mem / 1024) << "MiB";

@@ -10,7 +10,7 @@ namespace irq {
 namespace {
 
 irq irqs[32];
-logger log;
+logger log("irq");
 
 } // namespace
 
@@ -41,7 +41,6 @@ void empty_isr(uint32_t, stack_frame *) {
 } // namespace
 
 void initialize() {
-    log.set_name("irq");
     pic::initialize();
     // Reserved IRQ handlers
     register_handler(0, &empty_isr, "timer");

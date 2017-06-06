@@ -1,6 +1,6 @@
 coverage:
   ignore:
     - "tests/*"
-    - "kernel/printf.cpp"
     - "kernel/console/*"
     - "kernel/logger/*"
+    - "kernel/component.*"
