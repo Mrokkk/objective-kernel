@@ -16,12 +16,6 @@ uint32_t __end = 0u;
 
 namespace paging {
 
-namespace {
-
-logger log;
-
-} // namespace
-
 page_directory_entry *page_dir = nullptr;
 page_table_entry *page_tables = nullptr;
 uint32_t page_tables_number = 0u;
@@ -54,7 +48,6 @@ void set_page_directory() {
 }
 
 void initialize() {
-    log.set_name("memory.paging");
     __end = reinterpret_cast<uint32_t>(phys_address(sections::__heap_start));
     paging::page_dir = virt_address(::page_dir);
     paging::page_table_entry *temp_pgt = paging::page_tables = virt_address(::page0);
@@ -72,7 +65,6 @@ void initialize() {
     }
     paging::page_table_set(0, 0);
     paging::page_directory_reload();
-    log << logger::log_level::debug << "Page tables: " << (int)memory::paging::page_tables_number;
 }
 
 }
