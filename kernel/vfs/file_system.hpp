@@ -6,6 +6,7 @@
 namespace vfs {
 
 struct file_system {
+    virtual ~file_system() = default;
     virtual utils::string name() = 0;
     virtual vnode_t lookup(const path_t &path, vnode_t parent = nullptr) = 0;
     virtual vnode_t create(const path_t &path, vnode_t parent, vnode::type type) = 0;

@@ -10,6 +10,7 @@ class kernel;
 class component {
     utils::kernel_list<component>::node node_;
 public:
+    virtual ~component() = default;
     virtual const char *name() = 0;
     virtual void initialize() = 0;
     friend kernel;

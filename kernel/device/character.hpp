@@ -8,6 +8,7 @@ class manager;
 
 struct character {
 
+    virtual ~character() = default;
     virtual const char *name() = 0;
 
     virtual int read(char *, size_t) {
