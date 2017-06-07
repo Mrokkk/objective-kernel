@@ -35,14 +35,19 @@ add_executable(${PROJECT_NAME}-ut
     console.cpp
     vfs.cpp
     ramfs.cpp
+    scheduler.cpp
 )
 
+file(GLOB STUBS stubs/*.cpp)
+
 add_library(ut-common SHARED
+    ${STUBS}
     ${CMAKE_SOURCE_DIR}/kernel/time/time.cpp
     ${CMAKE_SOURCE_DIR}/kernel/logger/logger.cpp
     ${CMAKE_SOURCE_DIR}/kernel/console/printf.cpp
     ${CMAKE_SOURCE_DIR}/kernel/console/console.cpp
     ${CMAKE_SOURCE_DIR}/kernel/interfaces/component.cpp
+    ${CMAKE_SOURCE_DIR}/kernel/interfaces/scheduler.cpp
 )
 
 set_target_properties(ut-common PROPERTIES
@@ -56,10 +61,17 @@ add_library(ut-vfs SHARED
     ${CMAKE_SOURCE_DIR}/kernel/vfs/ramfs.cpp
 )
 
+add_library(ut-scheduler SHARED
+    ${CMAKE_SOURCE_DIR}/kernel/scheduler/scheduler.cpp
+)
+
 set_target_properties(ut-vfs PROPERTIES
     COMPILE_FLAGS "-Werror -include ${CMAKE_SOURCE_DIR}/kernel/definitions.hpp -include ${CMAKE_SOURCE_DIR}/kernel/cpu/common.hpp")
 
-target_link_libraries(${PROJECT_NAME}-ut ut-common ut-vfs)
+target_link_libraries(${PROJECT_NAME}-ut ut-common ut-vfs ut-scheduler)
+
+set_target_properties(ut-scheduler PROPERTIES
+    COMPILE_FLAGS "-Werror -include ${CMAKE_SOURCE_DIR}/kernel/definitions.hpp -include ${CMAKE_SOURCE_DIR}/kernel/cpu/common.hpp")
 
 add_run_target(${PROJECT_NAME}-ut ut-run)
 if (NOT SANITIZERS)

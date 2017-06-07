@@ -8,7 +8,7 @@ scheduler::scheduler() : run_queue_(&process::running) {
 }
 
 void scheduler::initialize() {
-    init_process_.context.esp0 = reinterpret_cast<uint32_t>(init_process_stack_) + init_stack_size_;
+    init_process_.context.esp0 = reinterpret_cast<size_t>(init_process_stack_) + init_stack_size_;
     cpu::gdt::set_tss(init_process_.context);
 }
 
