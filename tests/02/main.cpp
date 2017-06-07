@@ -102,7 +102,7 @@ asmlinkage void main() {
     cpu::initialize();
     drivers::serial::initialize();
     console::initialize(drivers::serial::print);
-    logger::set_console(console::cout);
+    logger::set_printer_function(drivers::serial::print);
     yatf::config config{true, false, false};
     console::cout << "Boot command-line: " << boot::cmdline << "\n";
     yatf::run_one(console::printf, boot::cmdline, config);

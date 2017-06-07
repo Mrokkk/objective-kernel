@@ -16,6 +16,6 @@ void print(const char *text) {
 
 void console_init() {
     console::initialize(&print);
-    logger::set_console(console::cout);
+    logger::set_printer_function(&print);
 }
 

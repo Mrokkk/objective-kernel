@@ -2,9 +2,8 @@
 #include "logger.hpp"
 
 logger logger::instance_("");
-console::console *logger::console_;
 utils::spinlock logger::spinlock_;
-console::console logger::default_;
+logger::printer_function logger::printer_;
 char logger::data_[4096];
 size_t logger::index_;
 
@@ -16,43 +15,100 @@ logger::line_wrapper::~line_wrapper() {
 }
 
 logger::logger(const char *component) : component_(component) {
-}
-
-void logger::set_console(console::console &console) {
-    instance_.console_ = &console;
-    *instance_.console_ << data_;
-}
-
-logger::line_wrapper logger::operator<<(log_level l) {
-    console::console *c = console_ ? console_ : &(default_ = default_printer);
+    if (printer_ == nullptr) {
+        printer_ = default_printer;
+    }
     if (index_ == 0u) {
         *data_ = 0;
     }
-    *c << "[" << time::jiffies << "]:[";
+}
+
+void logger::set_printer_function(logger::printer_function fn) {
+    printer_ = fn;
+    printer_(data_);
+}
+
+const char *log_level_to_string(logger::log_level l) {
     switch (l) {
-        case log_level::debug: {
-            *c << "DBG";
-            break;
+        case logger::log_level::debug: {
+            return "DBG";
         }
-        case log_level::info: {
-            *c << "INF";
-            break;
+        case logger::log_level::info: {
+            return "INF";
         }
-        case log_level::warning: {
-            *c << "WRN";
-            break;
+        case logger::log_level::warning: {
+            return "WRN";
         }
-        case log_level::error: {
-            *c << "ERR";
-            break;
+        case logger::log_level::error: {
+            return "ERR";
         }
         default: {
-            *c << "DBG";
-            break;
+            return "DBG";
         }
     }
-    *c << "]:" << component_ << ": ";
+}
 
+logger::line_wrapper logger::operator<<(log_level l) {
+    char buffer[128];
+    sprintf(buffer, "[0x%08x][%s]:%s: ", time::jiffies, log_level_to_string(l), component_);
+    printer_(buffer);
     return line_wrapper(*this);
+}
+
+logger &logger::operator=(printer_function fn) {
+    printer_ = fn;
+    return *this;
+}
+
+logger &logger::operator<<(const char *str) {
+    printer_(str);
+    return *this;
+}
+
+logger &logger::operator<<(char str[]) {
+    printer_(str);
+    return *this;
+}
+
+logger &logger::operator<<(int a) {
+    char buf[32];
+    sprintf(buf, "%d", a);
+    printer_(buf);
+    return *this;
+}
+
+logger &logger::operator<<(uint32_t a) {
+    char buf[32];
+    sprintf(buf, "0x%08x", a);
+    printer_(buf);
+    return *this;
+}
+
+logger &logger::operator<<(uint64_t a) {
+    char buf[32];
+    sprintf(buf, "0x%08x", a);
+    printer_(buf);
+    return *this;
+}
+
+logger &logger::operator<<(uint16_t a) {
+    char buf[32];
+    sprintf(buf, "0x%04x", a);
+    printer_(buf);
+    return *this;
+}
+
+logger &logger::operator<<(uint8_t a) {
+    char buf[32];
+    sprintf(buf, "0x%02x", a);
+    printer_(buf);
+    return *this;
+}
+
+logger &logger::operator<<(char c) {
+    char buf[3]{};
+    *buf = c;
+    printer_(buf);
+    return *this;
 }
 

@@ -31,9 +31,7 @@ asmlinkage NORETURN void main() {
     drivers::keyboard::initialize();
 
     console::initialize(drivers::vga::print);
-    console::console syslog;
-    syslog = drivers::serial::print;
-    logger::set_console(syslog);
+    logger::set_printer_function(drivers::serial::print);
 
     time::initialize();
 

@@ -1,9 +1,11 @@
 #pragma once
 
 #include <string.hpp>
-#include <kernel/console/console.hpp>
+#include <spinlock.hpp>
 
 struct logger {
+
+    using printer_function = void(*)(const char *);
 
     enum class log_level {
         debug, info, warning, error
@@ -13,8 +15,7 @@ private:
 
     static logger instance_;
     static utils::spinlock spinlock_;
-    static console::console *console_;
-    static console::console default_;
+    static printer_function printer_;
     static char data_[4096];
     static size_t index_;
     const char *component_;
@@ -24,15 +25,25 @@ private:
         index_ += utils::length(c);
     }
 
+    logger &operator=(printer_function fn);
+    logger &operator<<(const char *str);
+    logger &operator<<(char str[]);
+    logger &operator<<(int a);
+    logger &operator<<(uint64_t a);
+    logger &operator<<(uint32_t a);
+    logger &operator<<(uint16_t a);
+    logger &operator<<(uint8_t a);
+    logger &operator<<(char c);
+
     template <typename T>
-    logger &operator<<(T t) {
-        utils::scoped_lock l(spinlock_);
-        if (console_) {
-            *console_ << t;
-        }
-        else {
-            (default_ = default_printer) << t;
-        }
+    typename utils::enable_if<
+        !utils::is_same<
+            typename utils::remove_const<T>::type, char
+        >::value, logger &
+    >::type operator<<(T *a) {
+        char buf[32];
+        sprintf(buf, "0x%08x", reinterpret_cast<uint32_t>(a));
+        printer_(buf);
         return *this;
     }
 
@@ -57,18 +68,10 @@ public:
 
     logger(const char *component);
 
-    static void set_console(console::console &console);
+    static void set_printer_function(printer_function fn);
     line_wrapper operator<<(log_level l);
 
     friend line_wrapper;
 
 };
-
-#define ASSERT(cond) \
-    do { \
-        if (!(cond)) { \
-            ::logger::get_logger() << ::logger::log_level::error << (utils::last_occurrence(__FILE__, '/') + 1) \
-                                   << ":" << __LINE__ << ": assertion failed: " << #cond << "\n"; \
-        } \
-    } while (0)
 
