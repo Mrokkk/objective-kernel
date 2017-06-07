@@ -1,1 +1,1 @@
-add_library(device OBJECT manager.cpp)
+add_library(device OBJECT manager.cpp character.cpp)
