@@ -20,10 +20,11 @@ class scheduler : public interfaces::scheduler {
     process *current_process_ = &init_process_;
     pid_t current_pid_;
 
+    void initialize() override;
+
 public:
 
     scheduler();
-    void initialize() override;
     void schedule() override;
     void clone_process() override;
 

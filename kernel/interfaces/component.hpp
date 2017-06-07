@@ -9,17 +9,17 @@ class kernel;
 
 namespace interfaces {
 
-
 struct component {
     component(const char *name);
     virtual ~component() = default;
+protected:
     virtual void initialize() = 0;
-    friend ::kernel::kernel;
+    logger syslog;
 private:
     utils::kernel_list<component>::node node_;
     const char *name_;
-protected:
-    logger syslog;
+
+    friend kernel::kernel;
 };
 
 } // namespace kernel
