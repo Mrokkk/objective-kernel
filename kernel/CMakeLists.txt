@@ -7,6 +7,7 @@ add_subdirectory(scheduler)
 add_subdirectory(time)
 add_subdirectory(vfs)
 add_subdirectory(device)
+add_subdirectory(interrupt)
 
 set_property(SOURCE head.S PROPERTY LANGUAGE C)
 add_library(kernel head.S cxx.cpp kernel.cpp component.cpp
@@ -19,5 +20,6 @@ add_library(kernel head.S cxx.cpp kernel.cpp component.cpp
     $<TARGET_OBJECTS:time>
     $<TARGET_OBJECTS:vfs>
     $<TARGET_OBJECTS:device>
+    $<TARGET_OBJECTS:interrupt>
 )
 

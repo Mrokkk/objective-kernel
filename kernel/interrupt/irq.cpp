@@ -1,11 +1,8 @@
 #include "irq.hpp"
-#include "pic.hpp"
-#include "stack_frame.hpp"
+#include <kernel/cpu/pic.hpp>
 #include <kernel/logger/logger.hpp>
 
-namespace cpu {
-
-namespace irq {
+namespace interrupt {
 
 namespace {
 
@@ -14,7 +11,7 @@ logger log("irq");
 
 } // namespace
 
-asmlinkage void do_irq(uint32_t nr, stack_frame *frame) {
+asmlinkage void do_irq(uint32_t nr, cpu::stack_frame *frame) {
     if (irqs[nr].handler_) {
         irqs[nr].handler_(nr, frame);
         return;
@@ -29,26 +26,24 @@ void register_handler(uint32_t nr, irq::handler handler, const char *name) {
     }
     irqs[nr].handler_ = handler;
     irqs[nr].name_ = name;
-    pic::enable(nr);
+    cpu::pic::enable(nr);
     log << logger::log_level::info << "Registered IRQ " << nr << " " << name;
 }
 
 namespace {
 
-void empty_isr(uint32_t, stack_frame *) {
+void empty_isr(uint32_t, cpu::stack_frame *) {
 }
 
 } // namespace
 
 void initialize() {
-    pic::initialize();
+    cpu::pic::initialize();
     // Reserved IRQ handlers
     register_handler(0, &empty_isr, "timer");
     register_handler(2, &empty_isr, "cascade");
     register_handler(13, &empty_isr, "fpu");
 }
 
-} // namespace irq
-
-} // namespace cpu
+} // namespace interrupt
 

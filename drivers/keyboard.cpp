@@ -1,5 +1,5 @@
 #include <kernel/cpu/io.hpp>
-#include <kernel/cpu/irq.hpp>
+#include <kernel/interrupt/irq.hpp>
 #include <kernel/console/console.hpp>
 #include "keyboard.hpp"
 
@@ -156,7 +156,7 @@ void initialize() {
 
     keyboard_enable();
 
-    cpu::irq::register_handler(0x01, &irs, "keyboard");
+    interrupt::register_handler(0x01, &irs, "keyboard");
 }
 
 } // namespace keyboard

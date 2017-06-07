@@ -1,14 +1,12 @@
 #pragma once
 
-#include "stack_frame.hpp"
+#include <kernel/cpu/stack_frame.hpp>
 
-namespace cpu {
-
-namespace irq {
+namespace interrupt {
 
 struct irq final {
 
-    using handler = void(*)(uint32_t, stack_frame *);
+    using handler = void(*)(uint32_t, cpu::stack_frame *);
 
     handler handler_;
     const char *name_;
@@ -18,7 +16,5 @@ struct irq final {
 void initialize();
 void register_handler(uint32_t number, irq::handler handler, const char *name);
 
-} // namespace irq
-
-} // namespace cpu
+} // namespace interrupt
 

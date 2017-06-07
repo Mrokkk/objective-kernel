@@ -1,7 +1,6 @@
 #include <kernel/memory/paging/paging.hpp>
 #include "gdt.hpp"
 #include "idt.hpp"
-#include "irq.hpp"
 
 namespace cpu {
 
@@ -15,7 +14,6 @@ void reboot() {
 void initialize() {
     gdt::initialize();
     idt::initialize();
-    irq::initialize();
 }
 
 } // namespace cpu

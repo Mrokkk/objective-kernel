@@ -17,12 +17,14 @@
 #include "scheduler/process.hpp"
 #include "scheduler/scheduler.hpp"
 #include "memory/paging/paging.hpp"
+#include "interrupt/irq.hpp"
 
 asmlinkage NORETURN void main() {
     memory::initialize();
     cxx::initialize();
     cpu::initialize();
     boot::initialize();
+    interrupt::initialize();
 
     kernel::kernel kernel;
 

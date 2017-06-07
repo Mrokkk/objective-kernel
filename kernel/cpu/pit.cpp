@@ -1,7 +1,6 @@
 #include "io.hpp"
 #include "pit.hpp"
 #include "pic.hpp"
-#include "irq.hpp"
 
 #define HZ 100
 
