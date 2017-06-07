@@ -6,7 +6,7 @@ namespace scheduler {
 
 scheduler *scheduler::instance_;
 
-scheduler::scheduler() : kernel::component(name_), run_queue_(&process::running) {
+scheduler::scheduler() : interfaces::component(name_), run_queue_(&process::running) {
     instance_ = this;
 }
 

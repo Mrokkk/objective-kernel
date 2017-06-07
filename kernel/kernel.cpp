@@ -1,12 +1,12 @@
 #include "kernel.hpp"
-#include "component.hpp"
+#include "interfaces/component.hpp"
 
 namespace kernel {
 
-kernel::kernel() : components_(&component::node_), logger_("kernel") {
+kernel::kernel() : components_(&interfaces::component::node_), logger_("kernel") {
 }
 
-void kernel::register_component(component &c) {
+void kernel::register_component(interfaces::component &c) {
     components_.push_back(c);
 }
 

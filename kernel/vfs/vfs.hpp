@@ -4,8 +4,8 @@
 #include <array.hpp>
 #include <maybe.hpp>
 
-#include <kernel/component.hpp>
 #include <kernel/logger/logger.hpp>
+#include <kernel/interfaces/component.hpp>
 
 #include "file.hpp"
 #include "cache.hpp"
@@ -15,7 +15,7 @@
 
 namespace vfs {
 
-class vfs : public kernel::component {
+class vfs : public interfaces::component {
 
     constexpr static const char *name_ = "vfs";
     static null_block_device null_bd_;

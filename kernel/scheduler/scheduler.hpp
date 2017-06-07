@@ -3,13 +3,13 @@
 #include <list.hpp>
 #include <shared_ptr.hpp>
 #include <kernel_list.hpp>
-#include <kernel/component.hpp>
+#include <kernel/interfaces/component.hpp>
 #include "process.hpp"
 #include "schedulable.hpp"
 
 namespace scheduler {
 
-class scheduler : public kernel::component {
+class scheduler : public interfaces::component {
 
     constexpr static const char *name_ = "scheduler";
     constexpr static const size_t init_stack_size_ = 2048;

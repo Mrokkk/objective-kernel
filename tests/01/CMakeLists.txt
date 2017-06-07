@@ -42,7 +42,7 @@ add_library(ut-common SHARED
     ${CMAKE_SOURCE_DIR}/kernel/logger/logger.cpp
     ${CMAKE_SOURCE_DIR}/kernel/console/printf.cpp
     ${CMAKE_SOURCE_DIR}/kernel/console/console.cpp
-    ${CMAKE_SOURCE_DIR}/kernel/component.cpp
+    ${CMAKE_SOURCE_DIR}/kernel/interfaces/component.cpp
 )
 
 set_target_properties(ut-common PROPERTIES

@@ -11,7 +11,7 @@ namespace vfs {
 
 null_block_device vfs::null_bd_;
 
-vfs::vfs(file_system &rootfs, block_device &bd) : kernel::component(name_) {
+vfs::vfs(file_system &rootfs, block_device &bd) : interfaces::component(name_) {
     block_devices_[0] = &null_bd_;
     register_device(null_bd_); // FIXME
     auto dev = get_device_id(bd);

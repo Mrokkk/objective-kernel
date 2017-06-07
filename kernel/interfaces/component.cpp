@@ -1,6 +1,6 @@
 #include "component.hpp"
 
-namespace kernel {
+namespace interfaces {
 
 component::component(const char *name) : name_(name), syslog(name) {
 }
