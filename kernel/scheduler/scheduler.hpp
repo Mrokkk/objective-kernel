@@ -3,17 +3,15 @@
 #include <list.hpp>
 #include <shared_ptr.hpp>
 #include <kernel_list.hpp>
-#include <kernel/interfaces/component.hpp>
+#include <kernel/interfaces/scheduler.hpp>
 #include "process.hpp"
 #include "schedulable.hpp"
 
 namespace scheduler {
 
-class scheduler : public interfaces::component {
+class scheduler : public interfaces::scheduler {
 
-    constexpr static const char *name_ = "scheduler";
     constexpr static const size_t init_stack_size_ = 2048;
-    static scheduler *instance_;
 
     utils::list<utils::shared_ptr<process>> processes_;
     utils::kernel_list<process> run_queue_;
@@ -26,9 +24,8 @@ public:
 
     scheduler();
     void initialize() override;
-    void schedule();
-    void clone_process();
-    static scheduler &instance();
+    void schedule() override;
+    void clone_process() override;
 
 };
 

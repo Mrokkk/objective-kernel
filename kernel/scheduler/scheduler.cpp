@@ -4,10 +4,7 @@
 
 namespace scheduler {
 
-scheduler *scheduler::instance_;
-
-scheduler::scheduler() : interfaces::component(name_), run_queue_(&process::running) {
-    instance_ = this;
+scheduler::scheduler() : run_queue_(&process::running) {
 }
 
 void scheduler::initialize() {
@@ -30,10 +27,6 @@ void scheduler::clone_process() {
     new_process->ppid = current_process_->pid;
     processes_.push_back(new_process);
     run_queue_.push_back(*new_process);
-}
-
-scheduler &scheduler::instance() {
-    return *instance_;
 }
 
 asmlinkage void do_scheduler() {

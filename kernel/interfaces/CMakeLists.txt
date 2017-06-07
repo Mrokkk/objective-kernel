@@ -1,1 +1,1 @@
-add_library(interfaces OBJECT component.cpp)
+add_library(interfaces OBJECT component.cpp scheduler.cpp)
