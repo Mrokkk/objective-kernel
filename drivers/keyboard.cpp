@@ -1,6 +1,6 @@
 #include <kernel/cpu/io.hpp>
-#include <kernel/interrupt/irq.hpp>
 #include <kernel/console/console.hpp>
+#include <kernel/interrupt/manager.hpp>
 #include "keyboard.hpp"
 
 namespace drivers {
@@ -156,7 +156,7 @@ void initialize() {
 
     keyboard_enable();
 
-    interrupt::register_handler(0x01, &irs, "keyboard");
+    interrupt::manager::instance().register_handler(0x01, &irs, "keyboard");
 }
 
 } // namespace keyboard

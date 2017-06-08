@@ -1,1 +1,1 @@
-add_library(interrupt OBJECT irq.cpp)
+add_library(interrupt OBJECT manager.cpp)

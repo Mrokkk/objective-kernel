@@ -17,25 +17,18 @@
 #include "scheduler/process.hpp"
 #include "scheduler/scheduler.hpp"
 #include "memory/paging/paging.hpp"
-#include "interrupt/irq.hpp"
+#include "interrupt/manager.hpp"
 
 asmlinkage NORETURN void main() {
     memory::initialize();
     cxx::initialize();
     cpu::initialize();
     boot::initialize();
-    interrupt::initialize();
 
     kernel::kernel kernel;
 
-    drivers::vga::initialize();
-    drivers::serial::initialize();
-    drivers::keyboard::initialize();
-
-    console::initialize(drivers::vga::print);
-    logger::set_printer_function(drivers::serial::print);
-
-    time::initialize();
+    interrupt::manager interrupt_manager;
+    kernel.register_component(interrupt_manager);
 
     scheduler::scheduler scheduler;
     kernel.register_component(scheduler);
@@ -46,6 +39,15 @@ asmlinkage NORETURN void main() {
     ramfs::ramfs ramfs;
     vfs::vfs vfs(ramfs);
     kernel.register_component(vfs);
+
+    drivers::vga::initialize();
+    drivers::serial::initialize();
+    drivers::keyboard::initialize();
+
+    console::initialize(drivers::vga::print);
+    logger::set_printer_function(drivers::serial::print);
+
+    time::initialize();
 
     kernel.run();
     while (1);

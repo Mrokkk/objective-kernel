@@ -13,8 +13,5 @@ struct irq final {
 
 };
 
-void initialize();
-void register_handler(uint32_t number, irq::handler handler, const char *name);
-
 } // namespace interrupt
 
