@@ -3,4 +3,4 @@ coverage:
     - "tests/*"
     - "kernel/console/*"
     - "kernel/logger/*"
-    - "kernel/component.*"
+    - "kernel/interfaces/component.*"
