@@ -9,6 +9,7 @@ add_subdirectory(vfs)
 add_subdirectory(device)
 add_subdirectory(interrupt)
 add_subdirectory(interfaces)
+add_subdirectory(glue)
 
 set_property(SOURCE head.S PROPERTY LANGUAGE C)
 add_library(kernel head.S cxx.cpp kernel.cpp
@@ -23,5 +24,6 @@ add_library(kernel head.S cxx.cpp kernel.cpp
     $<TARGET_OBJECTS:device>
     $<TARGET_OBJECTS:interrupt>
     $<TARGET_OBJECTS:interfaces>
+    $<TARGET_OBJECTS:glue>
 )
 

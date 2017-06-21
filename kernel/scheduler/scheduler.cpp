@@ -29,9 +29,5 @@ void scheduler::clone_process() {
     run_queue_.push_back(*new_process);
 }
 
-asmlinkage void do_scheduler() {
-    scheduler::instance().schedule();
-}
-
 } // namespace scheduler
 
