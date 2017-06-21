@@ -31,33 +31,29 @@ void *memset(void *ptr, int value, unsigned n) {
 
 } // asmlinkage
 
-void atomic_increment(void *addr) {
-    asm volatile("lock incl (%0)" :: "r" (addr));
-}
+namespace yacppl {
 
-void atomic_decrement(void *addr) {
-    asm volatile("lock decl (%0)" :: "r" (addr));
-}
-
-void spinlock_lock(volatile size_t *lock) {
-    size_t dummy = SPINLOCK_LOCKED;
+void spinlock::lock() {
+    size_t dummy = static_cast<size_t>(state::locked);
     asm volatile(R"(
         1: lock xchg %0, %1
         test %1, %1
         jnz 1b)"
-        : "=m" (*lock)
+        : "=m" (lock_)
         : "r" (dummy)
         : "memory");
 }
 
-void spinlock_unlock(volatile size_t *lock) {
-    size_t dummy = SPINLOCK_UNLOCKED;
+void spinlock::unlock() {
+    size_t dummy = static_cast<size_t>(state::unlocked);
     asm volatile(
         "lock xchg %0, %1"
-        : "=m" (*lock)
+        : "=m" (lock_)
         : "r" (dummy)
         : "memory");
 }
+
+} // namespace yacppl
 
 namespace cxx {
 
