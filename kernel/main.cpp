@@ -19,11 +19,21 @@
 #include "memory/paging/paging.hpp"
 #include "interrupt/manager.hpp"
 
-asmlinkage NORETURN void main() {
+void early_initialization() {
     memory::initialize();
     cxx::initialize();
     cpu::initialize();
     boot::initialize();
+}
+
+void initialize_drivers() {
+    drivers::vga::initialize();
+    drivers::serial::initialize();
+    drivers::keyboard::initialize();
+}
+
+asmlinkage NORETURN void main() {
+    early_initialization();
 
     kernel::kernel kernel;
 
@@ -36,13 +46,7 @@ asmlinkage NORETURN void main() {
     device::manager device_manager;
     kernel.register_component(device_manager);
 
-    ramfs::ramfs ramfs;
-    vfs::vfs vfs(ramfs);
-    kernel.register_component(vfs);
-
-    drivers::vga::initialize();
-    drivers::serial::initialize();
-    drivers::keyboard::initialize();
+    initialize_drivers();
 
     console::initialize(drivers::vga::print);
     logger::set_printer_function(drivers::serial::print);

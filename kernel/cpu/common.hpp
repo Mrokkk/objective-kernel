@@ -2,11 +2,7 @@
 
 namespace cpu {
 
-class irq_lock final {
-
-    uint32_t _flags;
-
-public:
+struct irq_lock final {
 
     irq_lock() {
         asm volatile("pushfl; popl %0; cli" : "=r" (_flags) :: "memory");
@@ -16,10 +12,12 @@ public:
         asm volatile("pushl %0; popfl" :: "r" (_flags) : "memory");
     }
 
+private:
+    uint32_t _flags;
 };
 
 inline irq_lock make_irq_lock() {
-    return {};
+    return irq_lock();
 }
 
 inline void halt() {

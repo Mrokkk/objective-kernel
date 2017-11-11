@@ -67,7 +67,7 @@ void initialize() {
     paging::page_directory_reload();
 }
 
-}
+} // namespace paging
 
 } // namespace memory
 

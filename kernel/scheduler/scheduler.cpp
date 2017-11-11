@@ -21,7 +21,7 @@ void scheduler::schedule() {
 }
 
 void scheduler::clone_process() {
-    auto new_pid = ++current_pid_;
+    const auto new_pid = ++current_pid_;
     auto new_process = utils::make_shared<process>();
     new_process->pid = new_pid;
     new_process->ppid = current_process_->pid;

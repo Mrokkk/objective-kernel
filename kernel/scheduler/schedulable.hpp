@@ -4,7 +4,7 @@
 
 namespace scheduler {
 
-class scheduler;
+struct scheduler;
 
 class schedulable {
     utils::kernel_list<schedulable>::node node_;

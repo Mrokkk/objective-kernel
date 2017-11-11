@@ -9,9 +9,16 @@
 
 namespace scheduler {
 
-class scheduler : public interfaces::scheduler {
+struct scheduler : public interfaces::scheduler {
 
     constexpr static const size_t init_stack_size_ = 2048;
+
+    scheduler();
+    void schedule() override;
+    void clone_process() override;
+
+private:
+    void initialize() override;
 
     utils::list<utils::shared_ptr<process>> processes_;
     utils::kernel_list<process> run_queue_;
@@ -20,13 +27,6 @@ class scheduler : public interfaces::scheduler {
     process *current_process_ = &init_process_;
     pid_t current_pid_;
 
-    void initialize() override;
-
-public:
-
-    scheduler();
-    void schedule() override;
-    void clone_process() override;
 
 };
 
