@@ -5,17 +5,15 @@
 
 namespace kernel {
 
-class kernel {
-
-    utils::kernel_list<interfaces::component> components_;
-    logger logger_;
-
-public:
+struct kernel {
 
     kernel();
     void register_component(interfaces::component &c);
     void run();
 
+private:
+    utils::kernel_list<interfaces::component> components_;
+    logger logger_;
 };
 
 } // namespace kernel

@@ -4,7 +4,7 @@
 #include <kernel/logger/logger.hpp>
 
 namespace kernel {
-class kernel;
+struct kernel;
 } // namespace kernel
 
 namespace interfaces {

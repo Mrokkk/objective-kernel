@@ -1,4 +1,4 @@
-#include <cstdarg>
+#include <stdarg.h>
 #include <function.hpp>
 #include "console.hpp"
 

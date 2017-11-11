@@ -14,26 +14,18 @@
 
 #else
 
-#include <cstddef>
-#include <cstdint>
-#include <cstdarg>
-
-using std::uint8_t;
-using std::uint16_t;
-using std::uint32_t;
-using std::int8_t;
-using std::int16_t;
-using std::int32_t;
-using std::size_t;
+#include <stddef.h>
+#include <stdint.h>
+#include <stdarg.h>
 
 int vsprintf(char *buf, const char *fmt, va_list args);
 int sprintf(char *buf, const char *fmt, ...);
 
-inline constexpr void *operator new(std::size_t, void *address) {
+inline constexpr void *operator new(size_t, void *address) {
     return address;
 }
 
-inline constexpr void *operator new[](std::size_t, void *address) {
+inline constexpr void *operator new[](size_t, void *address) {
     return address;
 }
 
