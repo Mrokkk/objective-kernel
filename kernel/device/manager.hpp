@@ -7,11 +7,7 @@
 
 namespace device {
 
-class manager final : public interfaces::component {
-
-    utils::kernel_list<character> character_devices_;
-
-public:
+struct manager final : public interfaces::component {
 
     manager() : interfaces::component("device_manager"), character_devices_(&character::node_) {
     }
@@ -19,6 +15,8 @@ public:
     void initialize() override {
     }
 
+private:
+    utils::kernel_list<character> character_devices_;
 };
 
 } // namespace device

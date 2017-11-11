@@ -4,7 +4,7 @@
 
 namespace device {
 
-class manager;
+struct manager;
 
 struct character {
 

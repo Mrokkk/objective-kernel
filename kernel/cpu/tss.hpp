@@ -6,6 +6,10 @@ namespace cpu {
 
 struct tss final {
 
+    tss();
+    tss(void *kernel_stack);
+    void load() const;
+
     uint32_t prev_tss;
     uint32_t esp0;
     uint32_t ss0 = segment::kernel_ds;
@@ -34,10 +38,6 @@ struct tss final {
     uint16_t trap;
     uint16_t iomap_offset = 104;
     uint8_t io_bitmap[128];
-
-    tss();
-    tss(void *kernel_stack);
-    void load() const;
 
 } PACKED;
 
