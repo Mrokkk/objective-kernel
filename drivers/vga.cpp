@@ -1,7 +1,7 @@
 #include <string.hpp>
 #include <algorithm.hpp>
 #include <kernel/cpu/io.hpp>
-#include <kernel/memory/paging/paging.hpp>
+#include <kernel/memory/memory.hpp>
 
 #include "vga.hpp"
 

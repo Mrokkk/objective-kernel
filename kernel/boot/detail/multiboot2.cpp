@@ -1,4 +1,4 @@
-#include <kernel/memory/paging/paging.hpp>
+#include <kernel/cpu/mmu.hpp>
 
 #include "../boot.hpp"
 #include "../multiboot.hpp"

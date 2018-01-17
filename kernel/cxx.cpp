@@ -1,6 +1,6 @@
 #include <allocator.hpp>
 #include <kernel/logger/logger.hpp>
-#include <kernel/memory/paging/paging.hpp>
+#include <kernel/memory/memory.hpp>
 
 namespace {
 

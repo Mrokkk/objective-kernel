@@ -1,7 +1,6 @@
 #include <string.hpp>
 
 #include <kernel/logger/logger.hpp>
-#include <kernel/memory/paging/paging.hpp>
 
 #include "boot.hpp"
 #include "detail/common.hpp"

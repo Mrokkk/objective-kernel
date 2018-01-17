@@ -1,6 +1,6 @@
 #include <kernel/cpu/segment.hpp>
 #include <kernel/boot/multiboot.hpp>
-#include <kernel/memory/paging/paging.hpp>
+#include <kernel/cpu/mmu.hpp>
 
 ALIGN(4)
 SECTION(.multiboot)

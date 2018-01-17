@@ -1,23 +1,22 @@
-#include <drivers/vga.hpp>
-#include <drivers/serial.hpp>
 #include <drivers/keyboard.hpp>
+#include <drivers/serial.hpp>
+#include <drivers/vga.hpp>
 
-#include "kernel.hpp"
-#include "cxx.hpp"
-#include "cpu/cpu.hpp"
-#include "vfs/vfs.hpp"
-#include "vfs/file.hpp"
-#include "time/time.hpp"
-#include "vfs/ramfs.hpp"
 #include "boot/boot.hpp"
-#include "memory/memory.hpp"
-#include "logger/logger.hpp"
-#include "device/manager.hpp"
 #include "console/console.hpp"
+#include "cpu/cpu.hpp"
+#include "cxx.hpp"
+#include "device/manager.hpp"
+#include "interrupt/manager.hpp"
+#include "kernel.hpp"
+#include "logger/logger.hpp"
+#include "memory/memory.hpp"
 #include "scheduler/process.hpp"
 #include "scheduler/scheduler.hpp"
-#include "memory/paging/paging.hpp"
-#include "interrupt/manager.hpp"
+#include "time/time.hpp"
+#include "vfs/file.hpp"
+#include "vfs/ramfs.hpp"
+#include "vfs/vfs.hpp"
 
 void early_initialization() {
     memory::initialize();

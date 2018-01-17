@@ -1,4 +1,4 @@
-#include <kernel/memory/paging/paging.hpp>
+#include <kernel/memory/memory.hpp>
 #include "gdt.hpp"
 #include "idt.hpp"
 
