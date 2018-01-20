@@ -1,7 +1,9 @@
 #pragma once
 
-#include <spinlock.hpp>
+#include <kernel/lazy_instance.hpp>
 #include <kernel_list.hpp>
+#include <spinlock.hpp>
+#include "virtual_memory_manager.hpp"
 
 namespace memory {
 
@@ -74,9 +76,6 @@ class allocator final {
     }
 
     memory_block *create_memory_block(size_t size) {
-        if (end_ == 0 && heap_ == 0) {
-            grow_heap();
-        }
         if (heap_ + _memory_block_size + size >= end_) {
             grow_heap();
         }
@@ -87,8 +86,11 @@ class allocator final {
 
 public:
 
-    constexpr explicit allocator(BackendAllocator* backend_allocator)
-        : blocks_(&memory_block::list_), backend_allocator_(backend_allocator) {}
+    explicit allocator(BackendAllocator* backend_allocator)
+            : blocks_(&memory_block::list_)
+            , backend_allocator_(backend_allocator) {
+        grow_heap();
+    }
 
     void *allocate(size_t size) {
         adapt_size(size);
@@ -126,6 +128,9 @@ public:
 
 template <class BackendAllocator, size_t _memory_block_size>
 utils::spinlock allocator<BackendAllocator, _memory_block_size>::spinlock_;
+
+constexpr const size_t memory_block_size = 32;
+extern utils::lazy_instance<allocator<virtual_memory_manager, memory_block_size>> heap_allocator;
 
 } // namespace memory
 

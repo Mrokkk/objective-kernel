@@ -35,6 +35,7 @@ inline constexpr void *operator new[](size_t, void *address) {
 #define asmlinkage
 #endif
 
+#define ALIGN(x) __attribute__((aligned(x)))
 #define PACKED __attribute__((packed))
 #define SECTION(x) __attribute__ ((section(#x)))
 #define FASTCALL(x) __attribute__((regparm(3))) x

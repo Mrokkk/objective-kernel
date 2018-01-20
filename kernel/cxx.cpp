@@ -1,5 +1,5 @@
-#include <allocator.hpp>
 #include <kernel/logger/logger.hpp>
+#include <kernel/memory/allocator.hpp>
 #include <kernel/memory/memory.hpp>
 
 namespace {
@@ -8,9 +8,33 @@ logger log("cxx");
 
 } // namespace
 
+void *operator new(size_t size) {
+    return memory::heap_allocator->allocate(size);
+}
+
+void operator delete(void *address) noexcept {
+    memory::heap_allocator->free(address);
+}
+
+void operator delete(void *address, size_t) noexcept {
+    memory::heap_allocator->free(address);
+}
+
+void *operator new[](size_t size) {
+    return memory::heap_allocator->allocate(size);
+}
+
+void operator delete[](void *address) noexcept {
+    memory::heap_allocator->free(address);
+}
+
+void operator delete[](void *address, size_t) noexcept {
+    memory::heap_allocator->free(address);
+}
+
 asmlinkage {
 
-void * __dso_handle = 0;
+void *__dso_handle = nullptr;
 
 int __cxa_atexit(void (*)(void *), void *, void *) {
     return 0;
@@ -18,7 +42,9 @@ int __cxa_atexit(void (*)(void *), void *, void *) {
 
 void __cxa_pure_virtual() {
     log << logger::log_level::error << "PANIC: called pure virtual method\n";
-    while (1);
+    while (1) {
+        cpu::halt();
+    }
 }
 
 // for clang
