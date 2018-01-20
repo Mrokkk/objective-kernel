@@ -97,9 +97,9 @@ TEST(kernel_allocator, can_allocate_and_free) {
 } // namespace test_cases
 
 asmlinkage void main() {
-    memory::initialize();
     cxx::initialize();
     cpu::initialize();
+    memory::initialize();
     drivers::serial::initialize();
     console::initialize(drivers::serial::print);
     logger::set_printer_function(drivers::serial::print);

@@ -4,23 +4,28 @@
 
 namespace memory {
 
-template <typename Type>
-inline Type align(Type address, uint32_t alignment) {
+template <typename T>
+inline T align(T address, uint32_t alignment) {
     auto mod = (uint32_t)address % alignment;
     if (mod != 0) {
-        return reinterpret_cast<Type >((((uint32_t)address + alignment - 1) / 1024) * 1024);
+        return reinterpret_cast<T >((((uint32_t)address + alignment - 1) / 1024) * 1024);
     }
     return address;
 }
 
-template <typename Type>
-constexpr inline Type virt_address(Type address) {
-    return reinterpret_cast<Type>(reinterpret_cast<uint32_t>(address) + KERNEL_PAGE_OFFSET);
+template <typename T>
+constexpr inline bool in_kernel_space(T address) {
+    return reinterpret_cast<uint32_t>(address) > KERNEL_PAGE_OFFSET;
 }
 
-template <typename Type>
-constexpr inline Type phys_address(Type address) {
-    return reinterpret_cast<Type>(reinterpret_cast<uint32_t>(address) - KERNEL_PAGE_OFFSET);
+template <typename T>
+constexpr inline T phys2virt(T address) {
+    return reinterpret_cast<T>(reinterpret_cast<uint32_t>(address) + KERNEL_PAGE_OFFSET);
+}
+
+template <typename T>
+constexpr inline T virt2phys(T address) {
+    return reinterpret_cast<T>(reinterpret_cast<uint32_t>(address) - KERNEL_PAGE_OFFSET);
 }
 
 template <typename T>

@@ -19,10 +19,10 @@
 #include "vfs/vfs.hpp"
 
 void early_initialization() {
-    memory::initialize();
     cxx::initialize();
     cpu::initialize();
     boot::initialize();
+    memory::initialize();
 }
 
 void initialize_drivers() {

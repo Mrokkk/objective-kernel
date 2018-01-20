@@ -1,16 +1,14 @@
 #pragma once
 
+#include <algorithm.hpp>
+#include <iterator.hpp>
 #include <kernel_list.hpp>
+#include <kernel/logger/logger.hpp>
+
 #include "memory.hpp"
 #include "physical_memory_manager.hpp"
 
-asmlinkage cpu::mmu::page_directory_entry page_dir[];
-asmlinkage cpu::mmu::page_table_entry page0[];
-
 namespace memory {
-
-extern cpu::mmu::page_directory_entry kernel_page_dir[];
-extern cpu::mmu::page_table_entry kernel_page_table[];
 
 struct address_space {
     cpu::mmu::page_directory_entry *page_dir;
@@ -27,6 +25,11 @@ struct virtual_memory_manager {
 
 private:
     void initialize();
+
+    template <typename T>
+    void clear_dir_or_table(T table) {
+        utils::fill((uint32_t *)table, (uint32_t *)table + 1024, 0);
+    }
 
     inline void page_set(cpu::mmu::page_table_entry *page_table, int nr, uint32_t val) {
         reinterpret_cast<uint32_t *>(page_table)[nr] = val;
@@ -47,6 +50,7 @@ private:
     physical_memory_manager *pmm_;
     address_space kernel_address_space_;
     utils::kernel_list<address_space> address_spaces_;
+    logger log_;
 };
 
 } // namespace memory

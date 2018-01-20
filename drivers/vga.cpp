@@ -56,7 +56,7 @@ public:
 
 } PACKED;
 
-video_char *pointer = reinterpret_cast<video_char *>(memory::virt_address(0xb8000u));
+video_char *pointer = reinterpret_cast<video_char *>(memory::phys2virt(0xb8000u));
 uint8_t default_attribute = forecolor(color::gray) | backcolor(color::black);
 uint8_t csr_x;
 uint8_t csr_y;
