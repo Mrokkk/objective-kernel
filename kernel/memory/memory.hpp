@@ -2,6 +2,10 @@
 
 #include <kernel/cpu/mmu.hpp>
 
+#define KERNEL_PAGE_OFFSET 0xc0000000
+
+#ifndef __ASSEMBLER__
+
 namespace memory {
 
 template <typename T>
@@ -45,4 +49,6 @@ constexpr inline uint32_t page_table_index(T address) {
 void initialize();
 
 } // namespace memory
+
+#endif
 

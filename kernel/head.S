@@ -1,5 +1,5 @@
 #include <kernel/boot/multiboot.hpp>
-#include <kernel/cpu/mmu.hpp>
+#include <kernel/memory/memory.hpp>
 
 ALIGN(4)
 SECTION(.multiboot)
