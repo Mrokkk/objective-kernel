@@ -32,7 +32,8 @@ set(CMAKE_CXX_FLAGS "-m32 -fdiagnostics-color=always -std=c++1z -ffreestanding -
 -mno-sse3 -mno-sse4 -mno-avx -O${OPTIMIZE_LEVEL} -g3 \
 -include ${CMAKE_SOURCE_DIR}/kernel/definitions.hpp -include ${CMAKE_SOURCE_DIR}/kernel/cpu/common.hpp -fno-PIC")
 
-set(CMAKE_EXE_LINKER_FLAGS "-Wl,-T${CMAKE_SOURCE_DIR}/linker.ld -Wl,-Map=kernel.map -Wl,--oformat -Wl,elf32-i386 -Wl,-m -Wl,elf_i386 -nostartfiles -nostdlib")
+set(CMAKE_EXE_LINKER_FLAGS "-Wl,-T${CMAKE_SOURCE_DIR}/linker.ld -Wl,-Map=kernel.map -Wl,--oformat -Wl,elf32-i386 \
+-Wl,-m -Wl,elf_i386 -nostartfiles -nostdlib -Wl,--build-id=none")
 
 if(MULTIBOOT2)
     add_compile_options("-DMULTIBOOT2")
