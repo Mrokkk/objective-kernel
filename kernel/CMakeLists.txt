@@ -12,7 +12,7 @@ add_subdirectory(interfaces)
 add_subdirectory(glue)
 
 set_property(SOURCE head.S PROPERTY LANGUAGE C)
-add_library(kernel head.S cxx.cpp kernel.cpp
+add_library(kernel head.S kernel.cpp
     $<TARGET_OBJECTS:boot>
     $<TARGET_OBJECTS:console>
     $<TARGET_OBJECTS:cpu>

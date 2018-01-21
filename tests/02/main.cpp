@@ -1,7 +1,6 @@
 #include <shared_ptr.hpp>
 #include <unique_ptr.hpp>
 
-#include <kernel/cxx.hpp>
 #include <drivers/serial.hpp>
 #include <kernel/cpu/cpu.hpp>
 #include <kernel/vfs/vfs.hpp>
@@ -97,7 +96,6 @@ TEST(kernel_allocator, can_allocate_and_free) {
 } // namespace test_cases
 
 asmlinkage void main() {
-    cxx::initialize();
     cpu::initialize();
     memory::initialize();
     drivers::serial::initialize();

@@ -1,4 +1,3 @@
-#include <kernel/cpu/segment.hpp>
 #include <kernel/boot/multiboot.hpp>
 #include <kernel/cpu/mmu.hpp>
 
@@ -47,6 +46,7 @@ ENTRY(_start)
     jmp *%eax
 
 1:  mov $kernel_stack, %esp
+    call global_constructors
     call main
 
 1:  jmp 1b

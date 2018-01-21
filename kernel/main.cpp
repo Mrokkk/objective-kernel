@@ -5,7 +5,6 @@
 #include "boot/boot.hpp"
 #include "console/console.hpp"
 #include "cpu/cpu.hpp"
-#include "cxx.hpp"
 #include "device/manager.hpp"
 #include "interrupt/manager.hpp"
 #include "kernel.hpp"
@@ -19,7 +18,6 @@
 #include "vfs/vfs.hpp"
 
 void early_initialization() {
-    cxx::initialize();
     cpu::initialize();
     boot::initialize();
     memory::initialize();
