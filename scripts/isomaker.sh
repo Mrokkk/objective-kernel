@@ -48,6 +48,9 @@ done
 
 # For debug: set debug=all
 menu_entry="set timeout=0
+serial --unit=0 --speed=9600
+terminal_input serial
+terminal_output serial
 set default=0
 menuentry "${binary}" {
     if ! ${multiboot_command} /kernel ${args}; then reboot; fi
@@ -55,16 +58,9 @@ menuentry "${binary}" {
     boot
 }"
 
-serial_set="serial --unit=0 --speed=9600
-terminal_input serial
-terminal_output serial"
-
 mkdir -p ${name}.d/boot/grub
 
 echo "${menu_entry}" >${name}.d/boot/grub/grub.cfg
-if [ "${serial}" ]; then
-    echo "${serial_set}" >>${name}.d/boot/grub/grub.cfg
-fi
 
 for mod in "${modules[@]}"; do
     cp ${mod} ${name}.d

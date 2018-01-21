@@ -8,9 +8,23 @@
 
 namespace memory {
 
+struct mmap {
+    enum class type {
+        unknown,
+        unavailable,
+        available,
+        device
+    };
+    type type;
+    uint32_t base;
+    uint32_t size;
+};
+
+extern struct mmap memory_map[];
+
 template <typename T>
-inline T align(T address, uint32_t alignment) {
-    auto mod = (uint32_t)address % alignment;
+constexpr inline T align(T address, const uint32_t alignment) {
+    const auto mod = (uint32_t)address % alignment;
     if (mod != 0) {
         return reinterpret_cast<T >((((uint32_t)address + alignment - 1) / 1024) * 1024);
     }

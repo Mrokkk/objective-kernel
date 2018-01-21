@@ -9,4 +9,5 @@ add_library(cpu OBJECT
     pit.cpp
     tss.cpp
     pic.cpp
+    apm.cpp
 )
