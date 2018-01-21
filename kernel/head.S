@@ -25,12 +25,11 @@ ENTRY(_start)
     call read_bootloader_data
 
     mov $page0, %edi
-    movl $PAGE_FLAGS_FOR_1MB, %eax
+    movl $PAGE_INIT_FLAGS, %eax
 1:  stosl
     add $PAGE_SIZE, %eax
-    cmp $0x100000 + PAGE_FLAGS_FOR_1MB, %eax
+    cmp $0x100000 + PAGE_INIT_FLAGS, %eax
     jne 1b
-    or $PGT_USER, %eax
 1:  stosl
     add $PAGE_SIZE, %eax
     cmp $__heap_start - KERNEL_PAGE_OFFSET + PAGE_INIT_FLAGS, %eax
