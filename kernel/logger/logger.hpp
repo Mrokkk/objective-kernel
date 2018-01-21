@@ -5,21 +5,35 @@
 
 struct logger {
 
+    class line_wrapper {
+
+        explicit line_wrapper(logger &logger);
+        logger &logger_;
+
+    public:
+        template <typename T>
+        line_wrapper &operator<<(T t) {
+            logger_ << t;
+            return *this;
+        }
+        ~line_wrapper();
+        friend logger;
+    };
+
     using printer_function = void(*)(const char *);
 
-    enum class log_level {
+    enum log_level {
         debug, info, warning, error
     };
 
+    logger(const char *component);
+
+    static void set_printer_function(printer_function fn);
+    line_wrapper operator<<(log_level l);
+
+    friend line_wrapper;
+
 private:
-
-    static logger instance_;
-    static utils::spinlock spinlock_;
-    static printer_function printer_;
-    static char data_[4096];
-    static size_t index_;
-    const char *component_;
-
     static void default_printer(const char *c) {
         utils::copy(c, data_ + index_);
         index_ += utils::length(c);
@@ -47,31 +61,11 @@ private:
         return *this;
     }
 
-    class line_wrapper {
-
-        logger &logger_;
-
-    public:
-
-        explicit line_wrapper(logger &logger);
-        ~line_wrapper();
-
-        template <typename T>
-        line_wrapper &operator<<(T t) {
-            logger_ << t;
-            return *this;
-        }
-
-    };
-
-public:
-
-    logger(const char *component);
-
-    static void set_printer_function(printer_function fn);
-    line_wrapper operator<<(log_level l);
-
-    friend line_wrapper;
-
+    static logger instance_;
+    static utils::spinlock spinlock_;
+    static printer_function printer_;
+    static char data_[4096];
+    static size_t index_;
+    const char *component_;
 };
 

@@ -26,9 +26,9 @@ void read_bootloader_data(void *data, uint32_t) {
 }
 
 void initialize() {
-    log << logger::log_level::info << "Bootloader name: " << boot::bootloader_name;
-    log << logger::log_level::info << "Boot command-line: " << boot::cmdline;
-    log << logger::log_level::info << "Upper mem: " << (int)(boot::upper_mem / 1024) << "MiB";
+    log << logger::info << "Bootloader name: " << boot::bootloader_name;
+    log << logger::info << "Boot command-line: " << boot::cmdline;
+    log << logger::info << "Upper mem: " << (int)(boot::upper_mem / 1024) << "MiB";
     for (auto i = 0u; modules[i].end != 0; ++i) {
         log << logger::log_level::info << "Module: " << boot::modules[i].name << " @ " << boot::modules[i].start << " - " << boot::modules[i].end;
     }

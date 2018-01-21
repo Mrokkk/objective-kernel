@@ -5,13 +5,13 @@ namespace interrupt {
 
 void manager::register_handler(uint32_t nr, interfaces::interrupt_handler fn, const char *name) {
     if (irqs_[nr].handler_) {
-        syslog << logger::log_level::error << "Cannot register IRQ " << nr;
+        syslog << logger::error << "Cannot register IRQ " << nr;
         return;
     }
     irqs_[nr].handler_ = fn;
     irqs_[nr].name_ = name;
     cpu::pic::enable(nr);
-    syslog << logger::log_level::info << "Registered IRQ " << nr << " " << name;
+    syslog << logger::info << "Registered IRQ " << nr << " " << name;
 }
 
 void manager::handle_irq(uint32_t nr, cpu::stack_frame *frame) {
@@ -19,7 +19,7 @@ void manager::handle_irq(uint32_t nr, cpu::stack_frame *frame) {
         irqs_[nr].handler_(nr, frame);
         return;
     }
-    syslog << logger::log_level::error << "Not handled INT " << (int)nr;
+    syslog << logger::error << "Not handled INT " << (int)nr;
 }
 
 namespace {

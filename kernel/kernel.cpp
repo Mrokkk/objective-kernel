@@ -12,7 +12,7 @@ void kernel::register_component(interfaces::component &c) {
 
 void kernel::run() {
     for (auto &c : components_) {
-        logger_ << logger::log_level::info << "Initializing " << c.name_;
+        logger_ << logger::info << "Initializing " << c.name_;
         c.initialize();
     }
     cpu::sti();
