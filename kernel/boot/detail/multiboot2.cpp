@@ -1,4 +1,4 @@
-#include <kernel/cpu/mmu.hpp>
+#include <kernel/memory/memory.hpp>
 
 #include "../boot.hpp"
 #include "../multiboot.hpp"
