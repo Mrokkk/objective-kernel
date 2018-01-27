@@ -17,12 +17,6 @@
 #include "vfs/ramfs.hpp"
 #include "vfs/vfs.hpp"
 
-void early_initialization() {
-    cpu::initialize();
-    boot::initialize();
-    memory::initialize();
-}
-
 void initialize_drivers() {
     drivers::vga::initialize();
     drivers::serial::initialize();
@@ -30,7 +24,8 @@ void initialize_drivers() {
 }
 
 asmlinkage NORETURN void main() {
-    early_initialization();
+    cpu::initialize();
+    memory::initialize();
 
     kernel::kernel kernel;
 
@@ -48,6 +43,7 @@ asmlinkage NORETURN void main() {
     console::initialize(drivers::vga::print);
     logger::set_printer_function(drivers::serial::print);
 
+    boot::print_boot_info();
     time::initialize();
 
     kernel.run();

@@ -30,7 +30,7 @@ void read_bootloader_data(void *data, uint32_t) {
     detail::read_bootloader(data);
 }
 
-void initialize() {
+void print_boot_info() {
     log << logger::info << "Bootloader name: " << boot::bootloader_name;
     log << logger::info << "Boot command-line: " << boot::cmdline;
     log << logger::info << "Lower mem: " << (int)(boot::lower_mem) << "kiB";

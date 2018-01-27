@@ -19,7 +19,7 @@ extern uint32_t mmap_length;
 extern uint32_t mmap_address;
 extern uint32_t apm_table_address;
 
-void initialize();
+void print_boot_info();
 
 } // namespace boot
 
