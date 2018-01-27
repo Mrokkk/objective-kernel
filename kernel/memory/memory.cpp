@@ -1,5 +1,5 @@
+#include <lazy_instance.hpp>
 #include <kernel/boot/boot.hpp>
-#include <kernel/lazy_instance.hpp>
 #include <kernel/logger/logger.hpp>
 #include <kernel/memory/sections.hpp>
 

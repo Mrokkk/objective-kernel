@@ -1,7 +1,7 @@
 #pragma once
 
-#include <kernel/lazy_instance.hpp>
 #include <kernel_list.hpp>
+#include <lazy_instance.hpp>
 #include <spinlock.hpp>
 #include "virtual_memory_manager.hpp"
 
