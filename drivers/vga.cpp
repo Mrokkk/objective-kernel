@@ -2,10 +2,10 @@
 #include <algorithm.hpp>
 #include <kernel/cpu/io.hpp>
 #include <kernel/memory/memory.hpp>
+#include <kernel/interfaces/device_manager.hpp>
 
 #include "vga.hpp"
 
-#define blink (1 << 7)
 #define RESX 80
 #define RESY 25
 
@@ -13,39 +13,26 @@ namespace drivers {
 
 namespace vga {
 
-enum class color : uint8_t {
-    black,
-    blue,
-    green,
-    cyan,
-    red,
-    magenta,
-    brown,
-    gray,
-    dark_gray,
-    bright_blue,
-    bright_green,
-    bright_cyan,
-    bright_red,
-    bright_magenta,
-    yellow,
-    white
-};
+struct video_char final {
 
-constexpr uint8_t forecolor(color c) {
-    return static_cast<uint8_t>(c) & 0xf;
-}
-
-constexpr uint8_t backcolor(color c) {
-    return (static_cast<uint8_t>(c) << 4) & 0x7f;
-}
-
-class video_char final {
-
-    uint8_t char_;
-    uint8_t attr_;
-
-public:
+    enum class color : uint8_t {
+        black,
+        blue,
+        green,
+        cyan,
+        red,
+        magenta,
+        brown,
+        gray,
+        dark_gray,
+        bright_blue,
+        bright_green,
+        bright_cyan,
+        bright_red,
+        bright_magenta,
+        yellow,
+        white
+    };
 
     video_char() : char_(' '), attr_(forecolor(color::gray) | backcolor(color::black)) {
     }
@@ -54,10 +41,21 @@ public:
             : char_(c), attr_(attr) {
     }
 
+private:
+
+    constexpr static uint8_t forecolor(color c) {
+        return static_cast<uint8_t>(c) & 0xf;
+    }
+
+    constexpr static uint8_t backcolor(color c) {
+        return (static_cast<uint8_t>(c) << 4) & 0x7f;
+    }
+
+    uint8_t char_;
+    uint8_t attr_;
 } PACKED;
 
 video_char *pointer = reinterpret_cast<video_char *>(memory::phys2virt(0xb8000u));
-uint8_t default_attribute = forecolor(color::gray) | backcolor(color::black);
 uint8_t csr_x;
 uint8_t csr_y;
 
@@ -125,17 +123,22 @@ void print(const char *text) {
     }
 }
 
+struct device final : public ::device::character {
+    const char *name() override {
+        return "video";
+    }
+
+    int write(const char *buffer, size_t) override {
+        print(buffer);
+        return 0;
+    }
+};
+
+device dev;
+
 void initialize() {
     cls();
-}
-
-const char *device::name() {
-    return "video";
-}
-
-int device::write(const char *buffer, size_t) {
-    print(buffer);
-    return 0;
+    interfaces::device_manager::instance().register_device(dev);
 }
 
 } // namespace vga

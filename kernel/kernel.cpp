@@ -1,5 +1,7 @@
-#include "kernel.hpp"
 #include "interfaces/component.hpp"
+#include "kernel.hpp"
+#include "time/time.hpp"
+#include "boot/boot.hpp"
 
 namespace kernel {
 
@@ -15,6 +17,8 @@ void kernel::run() {
         logger_ << logger::info << "Initializing " << c.name_;
         c.initialize();
     }
+    boot::print_boot_info();
+    time::initialize();
     cpu::sti();
     while (1) {
         cpu::halt();
