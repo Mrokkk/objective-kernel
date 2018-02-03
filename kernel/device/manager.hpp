@@ -20,7 +20,7 @@ struct manager final : public interfaces::device_manager {
 
 private:
 
-    constexpr uint16_t device_hash(const character::type type, const character::id_t id) const {
+    constexpr static uint16_t device_hash(const character::type type, const character::id_t id) {
         return static_cast<uint16_t>(type) << 8 | static_cast<uint16_t>(id);
     }
 
