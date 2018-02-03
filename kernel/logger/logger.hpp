@@ -2,15 +2,12 @@
 
 #include <string.hpp>
 #include <spinlock.hpp>
+#include <kernel/device/character.hpp>
 
 struct logger {
 
-    class line_wrapper {
+    struct line_wrapper {
 
-        explicit line_wrapper(logger &logger);
-        logger &logger_;
-
-    public:
         template <typename T>
         line_wrapper &operator<<(T t) {
             logger_ << t;
@@ -18,9 +15,12 @@ struct logger {
         }
         ~line_wrapper();
         friend logger;
-    };
 
-    using printer_function = void(*)(const char *);
+    private:
+        explicit line_wrapper(logger &logger);
+
+        logger &logger_;
+    };
 
     enum log_level {
         debug, info, warning, error
@@ -28,18 +28,25 @@ struct logger {
 
     logger(const char *component);
 
-    static void set_printer_function(printer_function fn);
+    static void initialize();
+    static void set_driver(device::character *device);
     line_wrapper operator<<(log_level l);
 
     friend line_wrapper;
 
 private:
-    static void default_printer(const char *c) {
-        utils::copy(c, data_ + index_);
-        index_ += utils::length(c);
+
+    static void print(const char *c) {
+        const auto len = utils::length(c);
+        if (device_) {
+            device_->write(c, len);
+        }
+        else {
+            utils::copy(c, data_ + index_);
+            index_ += len;
+        }
     }
 
-    logger &operator=(printer_function fn);
     logger &operator<<(const char *str);
     logger &operator<<(char str[]);
     logger &operator<<(int a);
@@ -57,13 +64,13 @@ private:
     >::type operator<<(T *a) {
         char buf[32];
         sprintf(buf, "0x%08x", reinterpret_cast<uint32_t>(a));
-        printer_(buf);
+        print(buf);
         return *this;
     }
 
     static logger instance_;
     static utils::spinlock spinlock_;
-    static printer_function printer_;
+    static device::character *device_;
     static char data_[4096];
     static size_t index_;
     const char *component_;

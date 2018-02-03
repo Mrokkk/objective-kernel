@@ -29,7 +29,7 @@ set(CMAKE_C_FLAGS "-include ${CMAKE_SOURCE_DIR}/kernel/definitions.hpp -m32 -fdi
 
 set(CMAKE_CXX_FLAGS "-m32 -fdiagnostics-color=always -std=c++1z -ffreestanding -nostdlib -Wall -Wextra -Werror \
 -fno-builtin -fno-exceptions -fno-rtti -fno-stack-protector -mno-sse -mno-sse2 -fno-asynchronous-unwind-tables \
--mno-sse3 -mno-sse4 -mno-avx -O${OPTIMIZE_LEVEL} -g3 \
+-mno-sse3 -mno-sse4 -mno-avx -O${OPTIMIZE_LEVEL} -g3 -fno-threadsafe-statics \
 -include ${CMAKE_SOURCE_DIR}/kernel/definitions.hpp -include ${CMAKE_SOURCE_DIR}/kernel/cpu/common.hpp -fno-PIC")
 
 set(CMAKE_EXE_LINKER_FLAGS "-Wl,-T${CMAKE_SOURCE_DIR}/linker.ld -Wl,-Map=kernel.map -Wl,--oformat -Wl,elf32-i386 \

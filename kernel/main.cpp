@@ -1,5 +1,4 @@
-#include <drivers/keyboard.hpp>
-#include <drivers/serial.hpp>
+#include <drivers/tty.hpp>
 #include <drivers/vga.hpp>
 
 #include "cpu/cpu.hpp"
@@ -16,12 +15,15 @@
 #include "logger/logger.hpp"
 
 void initialize_drivers() {
-    drivers::vga::initialize();
-    drivers::serial::initialize();
-    drivers::keyboard::initialize();
+    drivers::tty::initialize();
+
+    auto tty2 = interfaces::device_manager::instance().get_character_device(device::character::type::tty, 2);
+    if (not tty2) {
+        return;
+    }
+    logger::set_driver(tty2);
 
     console::initialize(drivers::vga::print);
-    logger::set_printer_function(drivers::serial::print);
 }
 
 asmlinkage NORETURN void main() {

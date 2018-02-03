@@ -1,6 +1,7 @@
 #include <shared_ptr.hpp>
 #include <unique_ptr.hpp>
 
+#include <drivers/tty.hpp>
 #include <drivers/serial.hpp>
 #include <kernel/cpu/cpu.hpp>
 #include <kernel/vfs/vfs.hpp>
@@ -8,7 +9,12 @@
 #include <kernel/boot/boot.hpp>
 #include <kernel/vfs/ramfs.hpp>
 #include <kernel/memory/memory.hpp>
+#include <kernel/kernel.hpp>
+#include <kernel/device/manager.hpp>
 #include <kernel/logger/logger.hpp>
+#include <kernel/interfaces/device_manager.hpp>
+#include <kernel/interfaces/device_manager.hpp>
+#include <kernel/interrupt/manager.hpp>
 #include <kernel/console/console.hpp>
 
 #define YATF_MAIN
@@ -98,10 +104,25 @@ TEST(kernel_allocator, can_allocate_and_free) {
 asmlinkage void main() {
     cpu::initialize();
     memory::initialize();
-    drivers::serial::initialize();
-    console::initialize(drivers::serial::print);
-    logger::set_printer_function(drivers::serial::print);
+
+    kernel::kernel kernel;
+
+    interrupt::manager interrupt_manager;
+    kernel.register_component(interrupt_manager);
+
+    device::manager device_manager;
+    kernel.register_component(device_manager);
+
+    drivers::tty::initialize();
+
+    auto tty2 = interfaces::device_manager::instance().get_character_device(device::character::type::tty, 2);
+    if (not tty2) {
+        return;
+    }
+    logger::set_driver(tty2);
+
     yatf::config config{true, false, false};
+    console::initialize(drivers::serial::print);
     console::cout << "Boot command-line: " << boot::cmdline << "\n";
     yatf::run_one(console::printf, boot::cmdline, config);
     cpu::reboot();

@@ -10,7 +10,7 @@ struct kernel;
 namespace interfaces {
 
 struct component {
-    component(const char *name);
+    explicit component(const char *name);
     virtual ~component() = default;
 protected:
     virtual void initialize() = 0;

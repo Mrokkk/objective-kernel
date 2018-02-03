@@ -8,6 +8,14 @@ struct manager;
 
 struct character {
 
+    using id_t = unsigned char;
+
+    enum class type {
+        none,
+        tty
+    };
+
+    character(const type, const id_t);
     virtual ~character() = default;
     virtual const char *name() = 0;
 
@@ -15,7 +23,8 @@ struct character {
     virtual int write(const char *, size_t);
 
 private:
-    utils::kernel_list<character>::node node_;
+    const type type_;
+    const id_t id_;
     friend manager;
 };
 

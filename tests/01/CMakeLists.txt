@@ -48,6 +48,7 @@ add_library(ut-common SHARED
     ${CMAKE_SOURCE_DIR}/kernel/console/console.cpp
     ${CMAKE_SOURCE_DIR}/kernel/interfaces/component.cpp
     ${CMAKE_SOURCE_DIR}/kernel/interfaces/scheduler.cpp
+    ${CMAKE_SOURCE_DIR}/kernel/device/character.cpp
 )
 
 set_target_properties(ut-common PROPERTIES

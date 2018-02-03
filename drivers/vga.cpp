@@ -123,22 +123,15 @@ void print(const char *text) {
     }
 }
 
-struct device final : public ::device::character {
-    const char *name() override {
-        return "video";
+int write(const char *buffer, size_t n) {
+    while (n--) {
+        putch(*buffer++);
     }
-
-    int write(const char *buffer, size_t) override {
-        print(buffer);
-        return 0;
-    }
-};
-
-device dev;
+    return n;
+}
 
 void initialize() {
     cls();
-    interfaces::device_manager::instance().register_device(dev);
 }
 
 } // namespace vga

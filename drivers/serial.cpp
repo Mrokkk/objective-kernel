@@ -47,6 +47,11 @@ void print(const char *string) {
         send(*string, ports::com1);
 }
 
+int write(const char *buffer, size_t n) {
+    print(buffer);
+    return n;
+}
+
 } // namespace serial
 
 } // namespace drivers

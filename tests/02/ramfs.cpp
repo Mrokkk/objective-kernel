@@ -5,7 +5,7 @@ namespace {
 
 void lookup_for(ramfs::ramfs &ramfs, const std::initializer_list<utils::string> &names) {
     for (const auto &name : names) {
-        REQUIRE(ramfs.lookup(vfs::path_t(name), ramfs.lookup("/", nullptr)));
+        REQUIRE(ramfs.lookup(vfs::path_t(name), ramfs.lookup("/", {})));
     }
 }
 
@@ -16,11 +16,11 @@ namespace test_cases {
 TEST(ramfs, can_create_nodes) {
     ramfs::ramfs ramfs;
     REQUIRE_EQ((const char *)ramfs.name(), "ramfs");
-    REQUIRE_FALSE(ramfs.lookup("file", nullptr));
-    REQUIRE_FALSE(ramfs.lookup("/file", nullptr));
-    REQUIRE_FALSE(ramfs.lookup("dir/file", nullptr));
-    REQUIRE_FALSE(ramfs.lookup("/dir/file", nullptr));
-    auto root = ramfs.lookup("/", nullptr);
+    REQUIRE_FALSE(ramfs.lookup("file", {}));
+    REQUIRE_FALSE(ramfs.lookup("/file", {}));
+    REQUIRE_FALSE(ramfs.lookup("dir/file", {}));
+    REQUIRE_FALSE(ramfs.lookup("/dir/file", {}));
+    auto root = ramfs.lookup("/", {});
     REQUIRE(root);
     REQUIRE(root->node_type == vfs::vnode::type::dir);
     REQUIRE_EQ(root->id, 1u);

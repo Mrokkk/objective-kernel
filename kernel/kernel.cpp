@@ -1,4 +1,5 @@
 #include "interfaces/component.hpp"
+#include "interfaces/device_manager.hpp"
 #include "kernel.hpp"
 #include "time/time.hpp"
 #include "boot/boot.hpp"
