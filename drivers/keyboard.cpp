@@ -1,6 +1,5 @@
 #include <kernel/cpu/io.hpp>
-#include <kernel/console/console.hpp>
-#include <kernel/interrupt/manager.hpp>
+#include <kernel/kernel.hpp>
 #include "keyboard.hpp"
 
 namespace drivers {
@@ -115,8 +114,8 @@ void irs(uint32_t, cpu::stack_frame *) {
     auto scan_code = keyboard_receive();
     if (scan_code > 0x39) return;
     keyboard_disable();
-    auto character = scancodes[scan_code][0];
-    console::printf("%c", character);
+    //auto character = scancodes[scan_code][0];
+    //console::printf("%c", character);
     keyboard_enable();
 }
 
@@ -156,7 +155,7 @@ void initialize() {
 
     keyboard_enable();
 
-    interrupt::manager::instance().register_handler(0x01, &irs, "keyboard");
+    kernel::kernel::interrupt_manager().register_handler(0x01, &irs, "keyboard");
 }
 
 } // namespace keyboard

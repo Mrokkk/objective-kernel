@@ -1,5 +1,4 @@
 add_subdirectory(boot)
-add_subdirectory(console)
 add_subdirectory(cpu)
 add_subdirectory(memory)
 add_subdirectory(logger)
@@ -14,7 +13,6 @@ add_subdirectory(glue)
 set_property(SOURCE head.S PROPERTY LANGUAGE C)
 add_library(kernel head.S kernel.cpp
     $<TARGET_OBJECTS:boot>
-    $<TARGET_OBJECTS:console>
     $<TARGET_OBJECTS:cpu>
     $<TARGET_OBJECTS:memory>
     $<TARGET_OBJECTS:logger>

@@ -32,6 +32,17 @@ struct logger {
     static void set_driver(device::character *device);
     line_wrapper operator<<(log_level l);
 
+    static int printf(const char* fmt, ...) {
+        char buf[1024];
+        va_list args;
+        va_start(args, fmt);
+        vsprintf(buf, fmt, args);
+        va_end(args);
+        if (device_)
+            device_->write(buf, utils::length(buf));
+        return 0;
+    }
+
     friend line_wrapper;
 
 private:

@@ -1,5 +1,5 @@
 #include <shared_ptr.hpp>
-#include <kernel/interfaces/device_manager.hpp>
+#include <kernel/kernel.hpp>
 #include "keyboard.hpp"
 #include "serial.hpp"
 #include "tty.hpp"
@@ -37,11 +37,11 @@ void initialize() {
 
     utils::shared_ptr<device::character> tty1 =
         utils::make_shared<drivers::tty::driver>(nullptr, vga::write, 1);
-    interfaces::device_manager::instance().register_device(tty1);
+    kernel::kernel::device_manager().register_device(tty1);
 
     utils::shared_ptr<device::character> tty2 =
         utils::make_shared<drivers::tty::driver>(nullptr, serial::write, 2);
-    interfaces::device_manager::instance().register_device(tty2);
+    kernel::kernel::device_manager().register_device(tty2);
 }
 
 } // namespace tty

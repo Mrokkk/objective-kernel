@@ -1,6 +1,6 @@
 #pragma once
 
-#include <kernel/console/console.hpp>
+#include <kernel/logger/logger.hpp>
 
 namespace cpu {
 
@@ -23,7 +23,7 @@ struct stack_frame final {
     uint32_t esp;
     uint16_t ss, __ss;
 
-    friend console::console &operator<<(console::console &c, const stack_frame &s);
+    friend logger::line_wrapper& operator<<(logger::line_wrapper& c, const stack_frame &s);
 
 };
 

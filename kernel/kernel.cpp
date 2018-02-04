@@ -6,18 +6,42 @@
 
 namespace kernel {
 
-kernel::kernel() : components_(&interfaces::component::node_), logger_("kernel") {
+interfaces::device_manager* kernel::device_manager_;
+interfaces::interrupt_manager* kernel::interrupt_manager_;
+interfaces::scheduler* kernel::scheduler_;
+
+kernel::kernel()
+        : logger_("kernel") {
 }
 
-void kernel::register_component(interfaces::component &c) {
-    components_.push_back(c);
+void kernel::register_device_manager(interfaces::device_manager& device_manager) {
+    device_manager_ = &device_manager;
+}
+
+void kernel::register_interrupt_manager(interfaces::interrupt_manager& interrupt_manager) {
+    interrupt_manager_ = &interrupt_manager;
+}
+
+void kernel::register_scheduler(interfaces::scheduler& scheduler) {
+    scheduler_ = &scheduler;
+}
+
+interfaces::interrupt_manager& kernel::interrupt_manager() {
+    return *interrupt_manager_;
+}
+
+interfaces::device_manager& kernel::device_manager() {
+    return *device_manager_;
+}
+
+interfaces::scheduler& kernel::scheduler() {
+    return *scheduler_;
 }
 
 void kernel::run() {
-    for (auto &c : components_) {
-        logger_ << logger::info << "Initializing " << c.name_;
-        c.initialize();
-    }
+    interrupt_manager_->initialize();
+    scheduler_->initialize();
+    device_manager_->initialize();
     boot::print_boot_info();
     time::initialize();
     cpu::sti();

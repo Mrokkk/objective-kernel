@@ -15,7 +15,6 @@
 #include <kernel/interfaces/device_manager.hpp>
 #include <kernel/interfaces/device_manager.hpp>
 #include <kernel/interrupt/manager.hpp>
-#include <kernel/console/console.hpp>
 
 #define YATF_MAIN
 #include <yatf.hpp>
@@ -108,23 +107,21 @@ asmlinkage void main() {
     kernel::kernel kernel;
 
     interrupt::manager interrupt_manager;
-    kernel.register_component(interrupt_manager);
+    kernel.register_interrupt_manager(interrupt_manager);
 
     device::manager device_manager;
-    kernel.register_component(device_manager);
+    kernel.register_device_manager(device_manager);
 
     drivers::tty::initialize();
 
-    auto tty2 = interfaces::device_manager::instance().get_character_device(device::character::type::tty, 2);
+    auto tty2 = device_manager.get_character_device(device::character::type::tty, 2);
     if (not tty2) {
         return;
     }
     logger::set_driver(tty2);
 
     yatf::config config{true, false, false};
-    console::initialize(drivers::serial::print);
-    console::cout << "Boot command-line: " << boot::cmdline << "\n";
-    yatf::run_one(console::printf, boot::cmdline, config);
+    yatf::run_one(logger::printf, boot::cmdline, config);
     cpu::reboot();
     while (1);
 }

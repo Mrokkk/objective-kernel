@@ -2,14 +2,8 @@
 
 namespace interfaces {
 
-scheduler *scheduler::instance_;
-
-scheduler::scheduler() : component("scheduler") {
-    instance_ = this;
-}
-
-scheduler &scheduler::instance() {
-    return *instance_;
+scheduler::scheduler()
+        : component("scheduler") {
 }
 
 } // namespace interfaces

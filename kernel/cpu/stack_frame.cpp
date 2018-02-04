@@ -1,9 +1,8 @@
-#include <kernel/console/console.hpp>
 #include "stack_frame.hpp"
 
 namespace cpu {
 
-console::console &operator<<(console::console &c, const stack_frame &s) {
+logger::line_wrapper& operator<<(logger::line_wrapper& c, const stack_frame &s) {
     return c << "EAX=" << s.eax << "; "
         << "EBX=" << s.ebx << "; "
         << "ECX=" << s.ecx << "; "

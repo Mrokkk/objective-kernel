@@ -44,8 +44,7 @@ add_library(ut-common SHARED
     ${STUBS}
     ${CMAKE_SOURCE_DIR}/kernel/time/time.cpp
     ${CMAKE_SOURCE_DIR}/kernel/logger/logger.cpp
-    ${CMAKE_SOURCE_DIR}/kernel/console/printf.cpp
-    ${CMAKE_SOURCE_DIR}/kernel/console/console.cpp
+    ${CMAKE_SOURCE_DIR}/kernel/logger/printf.cpp
     ${CMAKE_SOURCE_DIR}/kernel/interfaces/component.cpp
     ${CMAKE_SOURCE_DIR}/kernel/interfaces/scheduler.cpp
     ${CMAKE_SOURCE_DIR}/kernel/device/character.cpp

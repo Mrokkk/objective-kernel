@@ -16,9 +16,7 @@ protected:
     virtual void initialize() = 0;
     logger syslog;
 private:
-    utils::kernel_list<component>::node node_;
     const char *name_;
-
     friend kernel::kernel;
 };
 

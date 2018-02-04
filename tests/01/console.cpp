@@ -4,7 +4,6 @@ namespace yacppl {}
 namespace utils = yacppl;
 int vsprintf(char *buf, const char *fmt, va_list args);
 int sprintf(char *buf, const char *fmt, ...);
-#include <kernel/console/console.hpp>
 #include <kernel/device/character.hpp>
 #include <kernel/logger/logger.hpp>
 #include <unistd.h>
@@ -33,7 +32,6 @@ void print(const char *text) {
 }
 
 void console_init() {
-    console::initialize(&print);
     logger::set_driver(&char_device);
 }
 
