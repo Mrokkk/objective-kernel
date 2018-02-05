@@ -4,8 +4,6 @@
 #include "time/time.hpp"
 #include "boot/boot.hpp"
 
-namespace kernel {
-
 interfaces::device_manager* kernel::device_manager_;
 interfaces::interrupt_manager* kernel::interrupt_manager_;
 interfaces::scheduler* kernel::scheduler_;
@@ -38,7 +36,7 @@ interfaces::scheduler& kernel::scheduler() {
     return *scheduler_;
 }
 
-void kernel::run() {
+NORETURN void kernel::run() {
     interrupt_manager_->initialize();
     scheduler_->initialize();
     device_manager_->initialize();
@@ -50,4 +48,3 @@ void kernel::run() {
     }
 }
 
-} // namespace kernel

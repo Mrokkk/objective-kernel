@@ -104,7 +104,7 @@ asmlinkage void main() {
     cpu::initialize();
     memory::initialize();
 
-    kernel::kernel kernel;
+    kernel kernel;
 
     interrupt::manager interrupt_manager;
     kernel.register_interrupt_manager(interrupt_manager);
@@ -121,7 +121,7 @@ asmlinkage void main() {
     logger::set_driver(tty2);
 
     yatf::config config{true, false, false};
-    yatf::run_one(logger::printf, boot::cmdline, config);
+    yatf::run_one(logger::printf, boot::boot_data.cmdline, config);
     cpu::reboot();
     while (1);
 }

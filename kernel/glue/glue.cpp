@@ -3,10 +3,10 @@
 #include <kernel/kernel.hpp>
 
 asmlinkage void do_scheduler() {
-    kernel::kernel::scheduler().schedule();
+    kernel::scheduler().schedule();
 }
 
 asmlinkage void do_irq(uint32_t nr, cpu::stack_frame *frame) {
-    kernel::kernel::interrupt_manager().handle_irq(nr, frame);
+    kernel::interrupt_manager().handle_irq(nr, frame);
 }
 

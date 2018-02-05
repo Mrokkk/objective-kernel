@@ -16,7 +16,7 @@ utils::lazy_instance<allocator<virtual_memory_manager, memory_block_size>> heap_
 struct mmap memory_map[16];
 
 void initialize() {
-    pmm.initialize(align(boot::upper_mem, 1024) * 1024,
+    pmm.initialize(align(boot::boot_data.upper_mem, 1024) * 1024,
         reinterpret_cast<uint32_t>(virt2phys(sections::__heap_start)));
     vmm.initialize(pmm.get());
     heap_allocator.initialize(vmm.get());

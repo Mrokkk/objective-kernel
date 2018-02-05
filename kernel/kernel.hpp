@@ -6,8 +6,6 @@
 #include "interfaces/interrupt_manager.hpp"
 #include "interfaces/scheduler.hpp"
 
-namespace kernel {
-
 struct kernel {
 
     kernel();
@@ -26,6 +24,4 @@ private:
     static interfaces::scheduler* scheduler_;
     logger logger_;
 };
-
-} // namespace kernel
 

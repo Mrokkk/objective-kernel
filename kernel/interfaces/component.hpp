@@ -3,9 +3,7 @@
 #include <kernel_list.hpp>
 #include <kernel/logger/logger.hpp>
 
-namespace kernel {
 struct kernel;
-} // namespace kernel
 
 namespace interfaces {
 
@@ -17,7 +15,7 @@ protected:
     logger syslog;
 private:
     const char *name_;
-    friend kernel::kernel;
+    friend kernel;
 };
 
 } // namespace kernel

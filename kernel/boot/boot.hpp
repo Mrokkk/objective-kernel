@@ -7,17 +7,21 @@ struct module {
     char name[128];
 };
 
-extern char bootloader_name[];
-extern char cmdline[];
-extern uint32_t lower_mem;
-extern uint32_t upper_mem;
-extern uint32_t modules_end;
+struct data {
+    char bootloader_name[32];
+    char cmdline[256];
+    uint32_t lower_mem;
+    uint32_t upper_mem;
+    uint32_t modules_start;
+    uint32_t modules_end;
+    uint32_t mmap_length;
+    uint32_t mmap_address;
+    uint32_t apm_table_address;
+};
+
 extern module modules[];
-extern uint32_t modules_start;
-extern uint32_t modules_end;
-extern uint32_t mmap_length;
-extern uint32_t mmap_address;
-extern uint32_t apm_table_address;
+
+extern data boot_data;
 
 void print_boot_info();
 

@@ -28,7 +28,7 @@ asmlinkage NORETURN void main() {
     cpu::initialize();
     memory::initialize();
 
-    kernel::kernel kernel;
+    kernel kernel;
 
     interrupt::manager interrupt_manager;
     kernel.register_interrupt_manager(interrupt_manager);
