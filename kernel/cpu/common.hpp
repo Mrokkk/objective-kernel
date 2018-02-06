@@ -5,15 +5,15 @@ namespace cpu {
 struct irq_lock final {
 
     irq_lock() {
-        asm volatile("pushfl; popl %0; cli" : "=r" (_flags) :: "memory");
+        asm volatile("pushfl; popl %0; cli" : "=r" (flags_) :: "memory");
     }
 
     ~irq_lock() {
-        asm volatile("pushl %0; popfl" :: "r" (_flags) : "memory");
+        asm volatile("pushl %0; popfl" :: "r" (flags_) : "memory");
     }
 
 private:
-    uint32_t _flags;
+    uint32_t flags_;
 };
 
 inline irq_lock make_irq_lock() {

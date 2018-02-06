@@ -82,14 +82,14 @@ struct gdt_entry final {
 struct gdtr final {
 
     uint16_t limit;
-    gdt_entry *base;
+    gdt_entry* base;
 
     void load() const;
 
 } PACKED;
 
 void initialize();
-void set_tss(tss &t);
+void set_tss(tss& t);
 
 } // namespace gdt
 

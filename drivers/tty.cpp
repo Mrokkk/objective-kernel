@@ -16,14 +16,14 @@ driver::driver(const driver::read_t read, const driver::write_t write,
         , write_(write) {
 }
 
-int driver::read(char *buffer, size_t n) {
+int driver::read(char* buffer, size_t n) {
     if (not read_) {
         return -1;
     }
     return read_(buffer, n);
 }
 
-int driver::write(const char *buffer, size_t n) {
+int driver::write(const char* buffer, size_t n) {
     if (not write_) {
         return -1;
     }

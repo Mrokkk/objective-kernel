@@ -14,9 +14,9 @@ struct manager final : public interfaces::device_manager {
     explicit manager();
     void initialize() override;
 
-    void register_device(utils::shared_ptr<block> &dev) override;
-    void register_device(utils::shared_ptr<character> &dev) override;
-    character *get_character_device(const character::type type, const character::id_t id) override;
+    void register_device(utils::shared_ptr<block>& dev) override;
+    void register_device(utils::shared_ptr<character>& dev) override;
+    character* get_character_device(const character::type type, const character::id_t id) override;
 
 private:
 

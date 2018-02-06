@@ -19,7 +19,7 @@ class allocator final {
 
         template <typename Ptr>
         Ptr pointer_offset(Ptr ptr, int off) {
-            return reinterpret_cast<Ptr>(reinterpret_cast<char *>(ptr) + off);
+            return reinterpret_cast<Ptr>(reinterpret_cast<char*>(ptr) + off);
         }
 
     public:
@@ -36,7 +36,7 @@ class allocator final {
             auto old_size = size;
             size = pivot;
             free = false;
-            auto new_block = reinterpret_cast<memory_block *>(pointer_offset(data(), pivot));
+            auto new_block = reinterpret_cast<memory_block*>(pointer_offset(data(), pivot));
             new_block->size = old_size - _memory_block_size - size;
             new_block->free = true;
             list_.insert(&new_block->list_);
@@ -50,17 +50,17 @@ class allocator final {
         }
 
         void *data() {
-            return reinterpret_cast<_data *>(this)->block_ptr;
+            return reinterpret_cast<_data*>(this)->block_ptr;
         }
 
-        constexpr void *operator new(size_t, void *address) {
+        constexpr void *operator new(size_t, void* address) {
             return address;
         }
 
     };
 
     utils::kernel_list<memory_block> blocks_;
-    BackendAllocator *backend_allocator_;
+    BackendAllocator* backend_allocator_;
     static utils::spinlock spinlock_;
     uint32_t heap_ = 0;
     uint32_t end_ = 0;
@@ -75,11 +75,11 @@ class allocator final {
         end_ = heap_ + 4096;
     }
 
-    memory_block *create_memory_block(size_t size) {
+    memory_block* create_memory_block(size_t size) {
         if (heap_ + _memory_block_size + size >= end_) {
             grow_heap();
         }
-        auto block = new((void *)heap_) memory_block(size);
+        auto block = new((void*)heap_) memory_block(size);
         heap_ += _memory_block_size + size;
         return block;
     }
@@ -92,10 +92,10 @@ public:
         grow_heap();
     }
 
-    void *allocate(size_t size) {
+    void* allocate(size_t size) {
         adapt_size(size);
         auto _ = make_scoped_lock(spinlock_);
-        for (auto &temp : blocks_) {
+        for (auto& temp : blocks_) {
             if (temp.free && temp.size >= size) {
                 temp.try_to_divide(size);
                 return temp.data();
@@ -107,9 +107,9 @@ public:
         return new_block->data();
     }
 
-    bool free(void *address) {
+    bool free(void* address) {
         auto _ = make_scoped_lock(spinlock_);
-        for (auto &temp : blocks_) {
+        for (auto& temp : blocks_) {
             if (temp.data() == address) {
                 temp.free = true;
                 return true;

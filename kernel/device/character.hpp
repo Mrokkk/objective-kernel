@@ -17,10 +17,10 @@ struct character {
 
     character(const type, const id_t);
     virtual ~character() = default;
-    virtual const char *name() = 0;
+    virtual const char* name() = 0;
 
-    virtual int read(char *, size_t);
-    virtual int write(const char *, size_t);
+    virtual int read(char*, size_t);
+    virtual int write(const char*, size_t);
 
 private:
     const type type_;

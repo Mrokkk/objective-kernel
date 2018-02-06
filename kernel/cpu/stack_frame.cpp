@@ -2,7 +2,7 @@
 
 namespace cpu {
 
-logger::line_wrapper& operator<<(logger::line_wrapper& c, const stack_frame &s) {
+logger::line_wrapper& operator<<(logger::line_wrapper& c, const stack_frame& s) {
     return c << "EAX=" << s.eax << "; "
         << "EBX=" << s.ebx << "; "
         << "ECX=" << s.ecx << "; "

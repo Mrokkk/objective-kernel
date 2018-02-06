@@ -12,8 +12,8 @@ struct driver {
 };
 
 void initialize();
-void print(const char *text);
-int write(const char *buffer, size_t n);
+void print(const char* text);
+int write(const char* buffer, size_t n);
 
 } // namespace vga
 

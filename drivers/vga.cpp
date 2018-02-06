@@ -34,7 +34,9 @@ struct video_char final {
         white
     };
 
-    video_char() : char_(' '), attr_(forecolor(color::gray) | backcolor(color::black)) {
+    video_char()
+            : char_(' ')
+            , attr_(forecolor(color::gray) | backcolor(color::black)) {
     }
 
     video_char(uint8_t c, uint8_t attr = forecolor(color::gray) | backcolor(color::black))
@@ -55,7 +57,7 @@ private:
     uint8_t attr_;
 } PACKED;
 
-video_char *pointer = reinterpret_cast<video_char *>(memory::phys2virt(0xb8000u));
+video_char* pointer = reinterpret_cast<video_char*>(memory::phys2virt(0xb8000u));
 uint8_t csr_x;
 uint8_t csr_y;
 
@@ -65,7 +67,7 @@ uint16_t current_offset_get() {
 
 void scroll() {
     video_char blank;
-    if(csr_y >= RESY) {
+    if (csr_y >= RESY) {
         auto temp = csr_y - RESY + 1;
         utils::copy(pointer + temp * RESX, pointer, (RESY - temp) * RESX);
         utils::fill(pointer + (RESY - temp) * RESX, RESX, blank);
@@ -117,13 +119,13 @@ void putch(unsigned char c) {
     move_csr();
 }
 
-void print(const char *text) {
+void print(const char* text) {
     while (*text) {
         putch(*text++);
     }
 }
 
-int write(const char *buffer, size_t n) {
+int write(const char* buffer, size_t n) {
     while (n--) {
         putch(*buffer++);
     }

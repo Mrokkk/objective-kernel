@@ -24,7 +24,7 @@ private:
     utils::kernel_list<process> run_queue_;
     uint8_t init_process_stack_[init_stack_size_];
     process init_process_;
-    process *current_process_ = &init_process_;
+    process* current_process_ = &init_process_;
     pid_t current_pid_;
 
 

@@ -7,7 +7,7 @@ namespace cpu {
 struct tss final {
 
     tss();
-    tss(void *kernel_stack);
+    tss(void* kernel_stack);
     void load() const;
 
     uint32_t prev_tss;
@@ -41,7 +41,7 @@ struct tss final {
 
 } PACKED;
 
-void context_switch(tss &prev, tss &next);
+void context_switch(tss& prev, tss& next);
 
 } // namespace cpu
 

@@ -6,7 +6,7 @@ asmlinkage void do_scheduler() {
     kernel::scheduler().schedule();
 }
 
-asmlinkage void do_irq(uint32_t nr, cpu::stack_frame *frame) {
+asmlinkage void do_irq(const uint32_t nr, cpu::stack_frame* frame) {
     kernel::interrupt_manager().handle_irq(nr, frame);
 }
 

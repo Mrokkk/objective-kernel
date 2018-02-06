@@ -18,7 +18,7 @@ struct process {
 
     pid_t pid, ppid;
     cpu::tss context;
-    void *stack;
+    void* stack;
     state stat = state::stopped;
     utils::kernel_list<process>::node running;
 

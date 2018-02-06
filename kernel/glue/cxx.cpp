@@ -1,35 +1,35 @@
 #include <kernel/logger/logger.hpp>
 #include <kernel/memory/allocator.hpp>
 
-void *operator new(size_t size) {
+void* operator new(size_t size) {
     return memory::heap_allocator->allocate(size);
 }
 
-void operator delete(void *address) noexcept {
+void operator delete(void* address) noexcept {
     memory::heap_allocator->free(address);
 }
 
-void operator delete(void *address, size_t) noexcept {
+void operator delete(void* address, size_t) noexcept {
     memory::heap_allocator->free(address);
 }
 
-void *operator new[](size_t size) {
+void* operator new[](size_t size) {
     return memory::heap_allocator->allocate(size);
 }
 
-void operator delete[](void *address) noexcept {
+void operator delete[](void* address) noexcept {
     memory::heap_allocator->free(address);
 }
 
-void operator delete[](void *address, size_t) noexcept {
+void operator delete[](void* address, size_t) noexcept {
     memory::heap_allocator->free(address);
 }
 
 asmlinkage {
 
-void *__dso_handle = nullptr;
+void* __dso_handle = nullptr;
 
-int __cxa_atexit(void (*)(void *), void *, void *) {
+int __cxa_atexit(void (*)(void*), void*, void*) {
     return 0;
 }
 
@@ -41,9 +41,9 @@ void __cxa_pure_virtual() {
 }
 
 // for clang
-void *memset(void *ptr, int value, unsigned n) {
+void* memset(void* ptr, int value, unsigned n) {
     for (auto i = 0u; i < n; ++i) {
-        *reinterpret_cast<char *>(ptr) = value;
+        *reinterpret_cast<char*>(ptr) = value;
     }
     return ptr;
 }

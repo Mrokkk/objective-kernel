@@ -14,7 +14,7 @@ struct irq final {
 
 private:
     handler handler_;
-    const char *name_;
+    const char* name_;
 };
 
 } // namespace interrupt

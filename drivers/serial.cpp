@@ -42,12 +42,12 @@ void send(char a, int port) {
 
 } // namespace anon
 
-void print(const char *string) {
+void print(const char* string) {
     for (; *string; string++)
         send(*string, ports::com1);
 }
 
-int write(const char *buffer, size_t n) {
+int write(const char* buffer, size_t n) {
     print(buffer);
     return n;
 }

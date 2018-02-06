@@ -92,14 +92,13 @@ const char *scancodes[] = {
 namespace {
 
 void keyboard_wait() {
-    int i;
-    for (i=0; i<10000; i++)
+    for (auto i = 0; i < 10000; ++i)
         if (!(cpu::io::inb(STATUS_PORT) & 0x2))
             return;
     //printk("Keyboard waiting timeout\n");
 }
 
-void keyboard_send_command(uint8_t byte) {
+void keyboard_send_command(const uint8_t byte) {
     keyboard_wait();
     cpu::io::outb(byte, CMD_PORT);
     cpu::io::io_wait();
@@ -110,7 +109,7 @@ uint8_t keyboard_receive() {
     return cpu::io::inb(DATA_PORT);
 }
 
-void irs(uint32_t, cpu::stack_frame *) {
+void irs(uint32_t, cpu::stack_frame*) {
     auto scan_code = keyboard_receive();
     if (scan_code > 0x39) return;
     keyboard_disable();

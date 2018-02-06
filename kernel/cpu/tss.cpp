@@ -8,7 +8,8 @@ tss::tss() {
     utils::fill(io_bitmap, io_bitmap + 128, 0xff);
 }
 
-tss::tss(void *kernel_stack) : esp0(reinterpret_cast<uint32_t>(kernel_stack)) {
+tss::tss(void* kernel_stack)
+        : esp0(reinterpret_cast<uint32_t>(kernel_stack)) {
     utils::fill(io_bitmap, io_bitmap + 128, 0xff);
 }
 
@@ -16,11 +17,11 @@ void tss::load() const {
     asm volatile("ltr %%ax" :: "a" (segment::task));
 }
 
-asmlinkage void FASTCALL(__context_switch(tss *, tss *next)) {
+asmlinkage void FASTCALL(__context_switch(tss*, tss* next)) {
     gdt::set_tss(*next);
 }
 
-void context_switch(tss &prev, tss &next) {
+void context_switch(tss& prev, tss& next) {
     asm volatile(R"(
         push %%gs
         pushl %%ebx

@@ -7,11 +7,11 @@ character::character(const type t, const id_t id)
         , id_(id) {
 }
 
-int character::read(char *, size_t) {
+int character::read(char*, size_t) {
     return -1;
 }
 
-int character::write(const char *, size_t) {
+int character::write(const char*, size_t) {
     return -1;
 }
 

@@ -8,13 +8,13 @@ struct kernel;
 namespace interfaces {
 
 struct component {
-    explicit component(const char *name);
+    explicit component(const char* name);
     virtual ~component() = default;
 protected:
     virtual void initialize() = 0;
     logger syslog;
 private:
-    const char *name_;
+    const char* name_;
     friend kernel;
 };
 

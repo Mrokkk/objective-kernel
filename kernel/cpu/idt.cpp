@@ -28,7 +28,7 @@ struct entry final {
 struct idtr final {
 
     uint16_t limit;
-    entry *base;
+    entry* base;
 
     void load() {
         asm volatile(
