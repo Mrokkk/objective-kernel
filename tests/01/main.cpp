@@ -1,4 +1,3 @@
-#define YATF_MAIN
 #include <yatf.hpp>
 #include <cstdio>
 #include <spinlock.hpp>
