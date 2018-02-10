@@ -2,7 +2,7 @@
 
 #include <string.hpp>
 #include <spinlock.hpp>
-#include <kernel/device/character.hpp>
+#include <kernel/interfaces/character_device.hpp>
 
 struct logger {
 
@@ -25,7 +25,7 @@ struct logger {
 
     logger(const char* component);
 
-    static void set_driver(device::character* device);
+    static void set_driver(interfaces::character_device* device);
     line_wrapper operator<<(const log_level l);
 
     static int printf(const char* fmt, ...) {
@@ -76,7 +76,7 @@ private:
 
     static logger instance_;
     static utils::spinlock spinlock_;
-    static device::character* device_;
+    static interfaces::character_device* device_;
     static char data_[4096];
     static size_t index_;
     const char* component_;

@@ -1,9 +1,11 @@
+#include <shared_ptr.hpp>
 #include <kernel/cpu/io.hpp>
+#include <kernel/kernel.hpp>
 
 #include "serial.hpp"
+#include "tty.hpp"
 
 namespace drivers {
-
 namespace serial {
 
 enum ports {
@@ -13,46 +15,74 @@ enum ports {
     com4 = 0x2e8
 };
 
-int initialize() {
-    constexpr const uint16_t port = ports::com1;
-    cpu::io::outb(0x00, port + 1);    /* Disable all interrupts*/
-    cpu::io::outb(0x80, port + 3);    /* Enable DLAB (set baud rate divisor) */
-    cpu::io::outb(0x01, port + 0);    /* Set divisor to 3 (lo byte) 38400 baud */
-    cpu::io::outb(0x00, port + 1);    /*                  (hi byte) */
-    cpu::io::outb(0x03, port + 3);    /* 8 bits, no parity, one stop bit */
-    cpu::io::outb(0xc7, port + 2);    /* Enable FIFO, clear them, with 14-byte threshold */
-    cpu::io::outb(0x0b, port + 4);    /* IRQs enabled, RTS/DSR set */
-    /* Enable interrupt for receiving */
-    cpu::io::outb(0x01, port + 1);
-    return 0;
-}
+struct driver final : tty::driver {
+
+    explicit driver(const ports port)
+            : tty::driver(tty::driver::type::serial, port_to_id(port))
+            , port_(port) {
+        cpu::io::outb(0x00, port + 1);    /* Disable all interrupts*/
+        cpu::io::outb(0x80, port + 3);    /* Enable DLAB (set baud rate divisor) */
+        cpu::io::outb(0x01, port + 0);    /* Set divisor to 3 (lo byte) 38400 baud */
+        cpu::io::outb(0x00, port + 1);    /*                  (hi byte) */
+        cpu::io::outb(0x03, port + 3);    /* 8 bits, no parity, one stop bit */
+        cpu::io::outb(0xc7, port + 2);    /* Enable FIFO, clear them, with 14-byte threshold */
+        cpu::io::outb(0x0b, port + 4);    /* IRQs enabled, RTS/DSR set */
+        cpu::io::outb(0x01, port + 1);    /* Enable interrupt for receiving */
+    }
+
+    int write(const char* buffer, size_t n) {
+        for (auto i = 0u; i < n; ++i) {
+            send(buffer[i]);
+        }
+        return n;
+    }
+
+private:
+
+    int is_transmit_empty() const {
+        return cpu::io::inb(port_ + 5) & 0x20;
+    }
+
+    void send(char a) {
+        if (a == '\n')
+            send('\r');
+        while (is_transmit_empty() == 0);
+        cpu::io::outb(a, port_);
+    }
+
+    constexpr static interfaces::character_device::id_t port_to_id(const ports port) {
+        switch (port) {
+            case ports::com1:
+                return 1;
+            case ports::com2:
+                return 2;
+            case ports::com3:
+                return 3;
+            case ports::com4:
+                return 4;
+        }
+        return 0;
+    }
+
+    const ports port_;
+};
 
 namespace {
 
-static inline int is_transmit_empty() {
-    return cpu::io::inb(ports::com1 + 5) & 0x20;
+void initialize_port(const ports port) {
+    utils::shared_ptr<interfaces::character_device> ttyS = utils::make_shared<driver>(port);
+    kernel::device_manager().register_device(ttyS);
 }
 
-void send(char a, int port) {
-    if (a == '\n')
-        send('\r', port);
-    while (is_transmit_empty() == 0);
-    cpu::io::outb(a, port);
-}
+} // namespace
 
-} // namespace anon
-
-void print(const char* string) {
-    for (; *string; string++)
-        send(*string, ports::com1);
-}
-
-int write(const char* buffer, size_t n) {
-    print(buffer);
-    return n;
+void initialize() {
+    initialize_port(ports::com1);
+    initialize_port(ports::com2);
+    initialize_port(ports::com3);
+    initialize_port(ports::com4);
 }
 
 } // namespace serial
-
 } // namespace drivers
 

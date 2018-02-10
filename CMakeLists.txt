@@ -71,7 +71,7 @@ endif()
 add_custom_target(
     iso
     COMMAND echo "dummy module" >module
-    COMMAND ${CMAKE_SOURCE_DIR}/scripts/isomaker.sh -o ${PROJECT_NAME} --args hello --module module ${MULTIBOOT_FLAG}
+    COMMAND ${CMAKE_SOURCE_DIR}/scripts/isomaker.sh -o ${PROJECT_NAME} --args "syslog=ttyS1" --module module ${MULTIBOOT_FLAG}
     DEPENDS ${PROJECT_NAME}
     COMMENT "Building bootable ISO"
 )

@@ -7,6 +7,12 @@ struct module {
     char name[128];
 };
 
+struct memory_region {
+    uint32_t base;
+    uint32_t size;
+    uint32_t type;
+};
+
 struct data {
     char bootloader_name[32];
     char cmdline[256];
@@ -14,9 +20,10 @@ struct data {
     uint32_t upper_mem;
     uint32_t modules_start;
     uint32_t modules_end;
-    uint32_t mmap_length;
-    uint32_t mmap_address;
+    size_t memory_map_size;
+    memory_region memory_map[10];
     uint32_t apm_table_address;
+    bool elf_symbols;
 };
 
 extern module modules[];

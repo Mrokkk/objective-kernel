@@ -20,8 +20,8 @@ void initialize() {
         reinterpret_cast<uint32_t>(virt2phys(sections::__heap_start)));
     vmm.initialize(pmm.get());
     heap_allocator.initialize(vmm.get());
-    for (auto i = 0; memory::memory_map[i].base != 0; ++i) {
-        logger("memory") << logger::info << "mmap[" << i << "]: " << memory::memory_map[i].base
+    for (auto i = 0u; i < boot::boot_data.memory_map_size; ++i) {
+        logger("memory") << logger::info << "mmap[" << (int)i << "]: " << memory::memory_map[i].base
             << " size: " << memory::memory_map[i].size
             << " type: " << (int)memory::memory_map[i].type;
     }

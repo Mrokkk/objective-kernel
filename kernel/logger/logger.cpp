@@ -3,7 +3,7 @@
 
 logger logger::instance_("");
 utils::spinlock logger::spinlock_;
-device::character* logger::device_ = nullptr;
+interfaces::character_device* logger::device_ = nullptr;
 char logger::data_[4096];
 size_t logger::index_;
 
@@ -22,7 +22,7 @@ logger::logger(const char* component)
     }
 }
 
-void logger::set_driver(device::character* device) {
+void logger::set_driver(interfaces::character_device* device) {
     device_ = device;
     device_->write(data_, utils::length(data_));
 }

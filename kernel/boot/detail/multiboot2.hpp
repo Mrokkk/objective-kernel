@@ -20,6 +20,13 @@ struct mb2_module_tag {
     char *name;
 } PACKED;
 
+struct mb2_mmap_entry {
+    uint64_t base_addr;
+    uint64_t length;
+    uint32_t type;
+    uint32_t reserved;
+} PACKED;
+
 #endif
 
 #define MULTIBOOT_TAG_TYPE_END               0
@@ -34,7 +41,7 @@ struct mb2_module_tag {
 #define MULTIBOOT_TAG_TYPE_ELF_SECTIONS      9
 #define MULTIBOOT_TAG_TYPE_APM               10
 
-#define MULTIBOOT_HEADER_MAGIC 0xE85250D6
+#define MULTIBOOT_HEADER_MAGIC 0xe85250d6
 #define MULTIBOOT_HEADER_ARCH  0
 
 #define MULTIBOOT_HEADER() \

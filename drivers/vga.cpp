@@ -2,16 +2,27 @@
 #include <algorithm.hpp>
 #include <kernel/cpu/io.hpp>
 #include <kernel/memory/memory.hpp>
-#include <kernel/interfaces/device_manager.hpp>
-
+#include <kernel/kernel.hpp>
+#include <kernel/interfaces/character_device.hpp>
+#include "tty.hpp"
 #include "vga.hpp"
 
 #define RESX 80
 #define RESY 25
 
 namespace drivers {
-
 namespace vga {
+
+struct driver final : tty::driver {
+    explicit driver(size_t dev_id)
+            : tty::driver(tty::driver::type::console, dev_id) {
+    }
+
+    int write(const char* buffer, size_t n) {
+        print(buffer);
+        return n;
+    }
+};
 
 struct video_char final {
 
@@ -134,9 +145,10 @@ int write(const char* buffer, size_t n) {
 
 void initialize() {
     cls();
+    utils::shared_ptr<interfaces::character_device> tty1 = utils::make_shared<driver>(1);
+    kernel::device_manager().register_device(tty1);
 }
 
 } // namespace vga
-
 } // namespace drivers
 

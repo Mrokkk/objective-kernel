@@ -1,8 +1,11 @@
+#include <drivers/vga.hpp>
+#include <drivers/serial.hpp>
+#include "boot/boot.hpp"
+#include "cmdline_parser.hpp"
 #include "interfaces/component.hpp"
 #include "interfaces/device_manager.hpp"
 #include "kernel.hpp"
 #include "time/time.hpp"
-#include "boot/boot.hpp"
 
 interfaces::device_manager* kernel::device_manager_;
 interfaces::interrupt_manager* kernel::interrupt_manager_;
@@ -41,8 +44,10 @@ NORETURN void kernel::run() {
     scheduler_->initialize();
     device_manager_->initialize();
     boot::print_boot_info();
+    parse_cmdline();
     time::initialize();
     cpu::sti();
+    logger_ << logger::info << "enabled interrupts";
     while (1) {
         cpu::halt();
     }

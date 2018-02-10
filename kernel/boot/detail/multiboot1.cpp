@@ -34,12 +34,12 @@ void read_mmap(uint32_t, uint32_t mmap_address) {
     for (mm = (struct memory_map *)mmap_address, i = 0;
          mm->base_addr_low + (mm->length_low - 1) != 0xffffffff;
          ++i) {
-        mm = (memory_map *)((unsigned int)mm + mm->size + 4);
         mmap[i].type = convert_memory_type(mm->type);
         mmap[i].base = mm->base_addr_low;
         mmap[i].size = mm->length_low;
+        mm = (memory_map *)((unsigned int)mm + mm->size + 4);
     }
-    mmap[i].base = 0;
+    boot_data_physical()->memory_map_size = i;
 }
 
 asmlinkage SECTION(.boot)
@@ -50,8 +50,6 @@ void read_bootloader_data(void *tag) {
     strcpy(mb_data->bootloader_name, boot_data->bootloader_name);
     boot_data->lower_mem = mb_data->mem_lower;
     boot_data->upper_mem = mb_data->mem_upper;
-    boot_data->mmap_length = mb_data->mmap_length;
-    boot_data->mmap_address = mb_data->mmap_addr;
     read_mmap(mb_data->mmap_length, mb_data->mmap_addr);
     boot_data->apm_table_address = mb_data->apm_table;
     if (mb_data->flags & (1 << 3) && mb_data->mods_count) {

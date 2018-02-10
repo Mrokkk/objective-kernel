@@ -11,7 +11,7 @@ add_subdirectory(interfaces)
 add_subdirectory(glue)
 
 set_property(SOURCE head.S PROPERTY LANGUAGE C)
-add_library(kernel head.S kernel.cpp
+add_library(kernel head.S kernel.cpp cmdline_parser.cpp
     $<TARGET_OBJECTS:boot>
     $<TARGET_OBJECTS:cpu>
     $<TARGET_OBJECTS:memory>

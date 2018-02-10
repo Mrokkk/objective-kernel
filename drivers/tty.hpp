@@ -1,33 +1,22 @@
 #pragma once
 
-#include <kernel/device/character.hpp>
+#include <kernel/interfaces/character_device.hpp>
 
 namespace drivers {
-
 namespace tty {
 
-struct driver final : public device::character {
-
-    using read_t = int (*)(char*, size_t);
-    using write_t = int (*)(const char*, size_t);
-
-    explicit driver(const read_t, const write_t, const device::character::id_t);
-
-    const char *name() override {
-        return "tty";
-    }
-
-    int read(char*, size_t) override;
-    int write(const char*, size_t) override;
-
-private:
-    const read_t read_;
-    const write_t write_;
+struct driver : public interfaces::character_device {
+    enum class type {
+        console,
+        serial
+    };
+    explicit driver(const type type, const interfaces::character_device::id_t id);
+    const char* name() override;
+protected:
+    type type_;
+    char name_[32];
 };
 
-void initialize();
-
 } // namespace tty
-
 } // namespace drivers
 
