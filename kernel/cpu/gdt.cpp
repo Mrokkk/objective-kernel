@@ -64,7 +64,7 @@ gdt_entry gdt_entries[] = {
     descriptor_entry(flags::dpl::ring3 | flags::type::data | flags::granularity::u4kB | flags::size::u32bit, 0x0, 0xffffffff),
 
     // TSS
-    descriptor_entry(flags::type::tss32, 0, sizeof(tss) - 128)
+    descriptor_entry(flags::type::tss32, 0, sizeof(tss) - sizeof(tss::io_bitmap))
 
 };
 
@@ -88,9 +88,9 @@ void initialize() {
     )" :: "r" (cpu::segment::kernel_ds));
 }
 
-void set_tss(tss &t) {
+void set_tss(tss& t) {
     cpu::gdt::gdt_entries[5].base(reinterpret_cast<uint32_t>(&t));
-    cpu::gdt::gdt_entries[5].access &= 0xf9; /* Clear busy bit */
+    cpu::gdt::gdt_entries[5].access &= 0xf9; // Clear busy bit
     t.load();
 }
 

@@ -3,7 +3,7 @@
 namespace interfaces {
 
 component::component(const char* name)
-        : syslog(name)
+        : log_(name)
         , name_(name) {
 }
 

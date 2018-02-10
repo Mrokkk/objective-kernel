@@ -16,7 +16,7 @@ void manager::register_device(shared_ptr<block_device>&) {
 }
 
 void manager::register_device(shared_ptr<character_device>& dev) {
-    syslog << logger::info << "registering " << dev->name() << " device";
+    log_ << logger::info << "registering " << dev->name() << " device";
     const auto hash = device_hash(dev->get_type(), dev->get_id());
     character_map_.insert(utils::make_pair(hash, dev.get()));
     character_devices_.push_back(dev);

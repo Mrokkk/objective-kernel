@@ -51,14 +51,19 @@ struct gdt_entry final {
     uint8_t base_high;
 
     constexpr gdt_entry(uint16_t ll, uint16_t bl, uint8_t bm, uint8_t a, uint8_t g, uint8_t bh)
-            : limit_low(ll), base_low(bl), base_middle(bm), access(a), granularity(g), base_high(bh) {
+            : limit_low(ll)
+            , base_low(bl)
+            , base_middle(bm)
+            , access(a)
+            , granularity(g)
+            , base_high(bh) {
     }
 
     uint32_t limit() const {
         return limit_low | (granularity & 0xf) << 16;
     }
 
-    void limit(uint32_t l) {
+    void limit(const uint32_t l) {
         limit_low = l & 0xffff;
         granularity = (l >> 16) & 0xf;
     }
@@ -67,7 +72,7 @@ struct gdt_entry final {
         return base_low | (base_middle << 16) | (base_high << 24);
     }
 
-    void base(uint32_t b) {
+    void base(const uint32_t b) {
         base_low = b & 0xffff;
         base_middle = (b >> 16) & 0xff;
         base_high = (b >> 24) & 0xff;

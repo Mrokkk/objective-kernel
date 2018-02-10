@@ -15,7 +15,7 @@ struct entry final {
     uint8_t  flags;
     uint16_t base_hi;
 
-    void set_gate(uint32_t base, uint16_t selector, uint32_t f) {
+    void set_gate(const uint32_t base, const uint16_t selector, const uint32_t f) {
         base_lo = base & 0xFFFF;
         base_hi = (base >> 16) & 0xFFFF;
         sel = selector;

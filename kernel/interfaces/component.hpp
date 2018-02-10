@@ -12,7 +12,7 @@ struct component {
     virtual ~component() = default;
 protected:
     virtual void initialize() = 0;
-    logger syslog;
+    logger log_;
 private:
     const char* name_;
     friend kernel;
